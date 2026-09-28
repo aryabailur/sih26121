@@ -52,7 +52,7 @@ npm run dev
 The frontend proxies `/api/*` to the backend (`NWIS_BACKEND_URL`, default `http://127.0.0.1:8000`), so the UI
 also works from another laptop on the same network during a live demo.
 
-Run the backend tests: `cd backend && python -m pytest -q` (8 end-to-end API tests).
+Run the backend tests: `cd backend && python -m pytest -q` (10 end-to-end API tests).
 
 ---
 
@@ -161,6 +161,7 @@ synthesise the answer over the same cited evidence when demo mode is off (see be
 | ![](docs/screenshots/05-nearby-wells.png) **Nearby Wells** — radius, filters, similarity | ![](docs/screenshots/06-well-intelligence.png) **Well Intelligence** — depth-aligned events & parameters |
 | ![](docs/screenshots/07-correlate-compare.png) **Correlate & Compare** — formation tops across wells | ![](docs/screenshots/08-evidence-search.png) **Evidence Search** — cited answer + evidence cards |
 | ![](docs/screenshots/10-risk-explorer.png) **Risk Explorer** — profile, alert log, model card | ![](docs/screenshots/11-document-review.png) **Document Intelligence** — extraction & human review |
+| ![](docs/screenshots/13-mud-weight-window.png) **Mud-weight window** — live ECD meets the offset-calibrated Barail fracture gradient | ![](docs/screenshots/09-source-viewer.png) **Source viewer** — every citation opens the report page |
 
 ---
 
@@ -207,7 +208,7 @@ backend/
   seed/                   field definition, report corpus, parameter generator, sample PDF
   services/               risk_engine · search_engine · document_processor · similarity · nlp · llm (optional)
   routers/                wells · events · formations · risk · search · documents · simulation
-  tests/                  test_api.py (+ scenario_sweep / search_debug / answer_preview dev tools)
+  tests/                  test_api.py · test_pressure.py (+ scenario_sweep / search_debug / answer_preview dev tools)
 frontend/
   app/dashboard/          6 screens + Correlate & Compare
   components/             map · dashboard · risk · search · well · documents · shared · ui
