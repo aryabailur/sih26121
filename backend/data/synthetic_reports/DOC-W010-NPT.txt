@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W010-NPT | well=W010 | type=NPT_report | date=2022-03-30 | pages=4
+### TITLE NPT Report OIL-AX-11
+### SUMMARY NPT — momentary stuck pipe at 3,402 m (KCl 4.5%); top-drive failure.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION NPT Overview | DEPTH 0-3680 ===
+NPT report OIL-AX-11 (29° J-profile, TD 3,680 m in Sylhet). Total NPT 13 hrs: momentary stuck pipe in Kopili (3 hrs) and top-drive IBOP failure (10 hrs).
+=== PAGE 2 | SECTION NPT Event 1 | DEPTH 3395-3410 ===
+Pipe stuck momentarily on a connection at 3,402 m with 150 kN overpull; worked free with jars in 2 hours. Cause: swelling Kopili shale with KCl depleted to 4.5%. KCl restored to 7%. Lesson: check KCl every tour while in the Kopili. NPT 3 hrs.
+=== PAGE 3 | SECTION NPT Event 2 | DEPTH 1980-1985 ===
+Top drive IBOP actuator failure at 1,982 m (hydraulic seal); actuator replaced from rig spares. NPT 10 hrs.

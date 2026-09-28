@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W009-NPT | well=W009 | type=NPT_report | date=2022-08-24 | pages=4
+### TITLE NPT Report OIL-AX-22
+### SUMMARY NPT — lower Kopili torque/stick-slip; mud pump failure.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION NPT Overview | DEPTH 0-3500 ===
+NPT report OIL-AX-22 (near-vertical development well, TD 3,500 m in Kopili). Total NPT 14 hrs across two events: torque/stick-slip near TD (6 hrs) and mud pump failure (8 hrs).
+=== PAGE 2 | SECTION NPT Event 1 | DEPTH 3480-3498 ===
+Erratic torque rising from 15 to 27 kN·m with stick-slip at 3,480–3,498 m; TD called early at 3,500 m. Cause: cuttings bed and PDC bit whirl in the Kopili. Actions: reduced WOB, increased RPM and pumped sweeps. NPT 6 hrs.
+=== PAGE 3 | SECTION NPT Event 2 | DEPTH 2310-2320 ===
+Mud pump #2 failure (fluid-end valve washout) at 2,315 m; drilled on a single pump at reduced rate. Valves and seats replaced; pump-maintenance check added to the tour sheet. NPT 8 hrs.

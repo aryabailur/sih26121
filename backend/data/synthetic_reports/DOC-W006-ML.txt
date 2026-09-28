@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W006-ML | well=W006 | type=mud_log | date=2022-06-02 | pages=11
+### TITLE Mud Log OIL-AX-55
+### SUMMARY Mud log — Girujan clay balling, differential sticking, partial losses at 3,172 m.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Lithology & Hole Condition | DEPTH 0-900 ===
+Girujan clays 0–810 m: soft, sticky, reactive. Hole enlargement and clay balling at 450–520 m; tight hole on trip out (NPT 3 hrs). Reamed; added 3% KCl and glycol to the mud system.
+=== PAGE 2 | SECTION Drilling Events Log | DEPTH 2880-2890 ===
+Differential sticking after a 10-minute static survey at 2,886 m (Barail); freed with 40 t (392 kN) overpull and jarring after 6 hours. Cause: depleted Barail sand, 1.40 sg overbalance and high fluid loss (API FL 6 ml). Actions: API fluid loss reduced below 4 ml; surveys taken while rotating slowly.
+=== PAGE 3 | SECTION Losses & Gas Record | DEPTH 3150-3220 ===
+Partial losses of 8–12 m³/hr at 3,172 m; 38 m³ lost in total (3,170–3,205 m). ECD at onset 1.51 sg; mud weight 1.41 sg. Cause: induced fractures in Barail sandstone. Mitigation: reduced flow rate from 2,050 to 1,750 l/min and pumped a 60 ppb LCM pill; losses healed in 5 hours (NPT 7 hrs). Lesson: drill the Barail between 3,150 and 3,220 m with ECD below 1.48 sg.

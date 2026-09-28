@@ -1,0 +1,8 @@
+### NWIS-DOC id=DOC-W014-WCR | well=W014 | type=WCR | date=2018-01-08 | pages=18
+### TITLE Well Completion Report OIL-DB-03
+### SUMMARY Regional completion report — OIL-DB-03.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Well Summary | DEPTH 0-3800 ===
+WELL COMPLETION REPORT — OIL-DB-03 (exploration well), Tingrai Block (regional), Upper Assam Shelf. Spud 2017-10-02, rig released 2017-12-30. Total depth 3,800 m MD. Target: Sylhet Limestone. Maximum inclination 1° (azimuth 0°). Casing: 13-3/8" at 830 m, 9-5/8" at 3,060 m. Formation tops (MD): Girujan surface; Tipam 830 m; Namsang 1,640 m; Barail 2,430 m; Kopili 3,330 m; Sylhet 3,565 m. Regional exploration well, Tingrai Block (regional).
+=== PAGE 3 | SECTION Well Control | DEPTH 3570-3585 ===
+Gas kick with 2.1 m³ pit gain at 3,572 m (Sylhet top); shut in and killed with 1.54 sg mud by Driller's method; NPT 10 hrs. Overpressured Sylhet top below the Kopili seal.

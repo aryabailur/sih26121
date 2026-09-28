@@ -1,0 +1,12 @@
+### NWIS-DOC id=DOC-W003-WCR | well=W003 | type=WCR | date=2022-12-15 | pages=24
+### TITLE Well Completion Report OIL-AX-88
+### SUMMARY Completion report — Kopili stuck pipe, fishing, MWD failure, KCl lessons.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Well Summary | DEPTH 0-3720 ===
+WELL COMPLETION REPORT — OIL-AX-88 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2022-09-15, rig released 2022-12-02. Total depth 3,720 m MD. Target: Sylhet Limestone. Maximum inclination 30° (azimuth 220°). Casing: 20" at 60 m, 13-3/8" at 800 m, 9-5/8" at 3,020 m, 7" liner to 3,715 m. Formation tops (MD): Girujan surface; Tipam 795 m; Namsang 1,600 m; Barail 2,410 m; Kopili 3,310 m; Sylhet 3,605 m. Total NPT 74 hrs: stuck pipe in Kopili (36 hrs), logging tool fishing (22 hrs), MWD failure (11 hrs), cavings (5 hrs).
+=== PAGE 5 | SECTION NPT Summary | DEPTH 2600-3420 ===
+NPT summary: MWD pulser failure at 2,612 m (Barail) — pulled out to change tool, 11 hrs; seal failure with LCM plugging suspected; LCM particle size screened to MWD tolerance thereafter. Stuck pipe at 3,400 m (Kopili) — 36 hrs. Cavings 3,352–3,370 m — 5 hrs.
+=== PAGE 8 | SECTION Logging Operations | DEPTH 3700-3715 ===
+Density-neutron logging tool stuck at 3,712 m in the Sylhet Limestone; recovered by cut-and-thread fishing with an overshot on drill pipe after 22 hours. Cause: differential sticking of the tool against permeable Sylhet limestone with 1.44 sg overbalance. Recommendation: log the Sylhet on drill pipe (TLC) or minimise stationary readings.
+=== PAGE 11 | SECTION Lessons Learned | DEPTH 3300-3600 ===
+Kopili Shale lessons: inhibition is critical — the stuck pipe at 3,400 m occurred with KCl at 4%. Maintain KCl ≥7%, MBT below 10 kg/m³, and keep connections short. Enter the Kopili with at least 1.43 sg mud weight. The 7% KCl practice has been recommended for all subsequent OIL-AX wells.

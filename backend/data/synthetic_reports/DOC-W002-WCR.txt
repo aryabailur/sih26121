@@ -1,0 +1,12 @@
+### NWIS-DOC id=DOC-W002-WCR | well=W002 | type=WCR | date=2023-04-20 | pages=28
+### TITLE Well Completion Report OIL-AX-99
+### SUMMARY Completion report — losses, Kopili tight hole, liner cement shortfall and lessons.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Well Summary | DEPTH 0-3650 ===
+WELL COMPLETION REPORT — OIL-AX-99 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2023-02-02, rig released 2023-04-10. Total depth 3,650 m MD. Target: Sylhet Limestone. Maximum inclination 26° (azimuth 55°). Casing: 20" at 60 m, 13-3/8" at 805 m, 9-5/8" at 3,005 m, 7" liner 2,900–3,645 m. Formation tops (MD): Girujan surface; Tipam 805 m; Namsang 1,610 m; Barail 2,395 m; Kopili 3,300 m; Sylhet 3,595 m. Principal drilling problems: total losses in Barail at 3,150–3,220 m (18 hrs NPT), tight hole in Kopili, 7" liner cement shortfall. Total NPT 38 hrs.
+=== PAGE 6 | SECTION Drilling Problems Summary | DEPTH 3440-3455 ===
+Kopili Shale (3,300–3,595 m): tight spot at 3,448 m during wiper trip with 20 t (196 kN) overpull; reamed twice. Cause attributed to time-dependent swelling / creep of the Kopili shale after 70 hours of open-hole exposure. Mud weight raised from 1.42 to 1.44 sg. NPT 4 hrs. Recommendation: schedule wiper trips before Kopili exposure exceeds 72 hours.
+=== PAGE 9 | SECTION Casing & Cementing | DEPTH 3000-3220 ===
+7" liner cementing: partial losses of 12 m³ during displacement; top of cement evaluated 180 m below plan by CBL. Root cause: cementing across the not-fully-healed Barail loss zone (3,150–3,220 m); ECD during displacement reached 1.58 sg. Remedial: top-up squeeze through the liner lap. A lightweight (1.55 sg) lead slurry has been adopted for future wells. NPT 14 hrs.
+=== PAGE 12 | SECTION Lessons Learned | DEPTH 3100-3250 ===
+Key lessons for offset planning: (1) The Barail loss window (3,150–3,220 m) is fracture-controlled — hold ECD ≤1.48 sg and pre-treat with LCM. (2) Cure losses completely before cementing across the Barail; use lightweight lead slurry. (3) In the Kopili, limit open-hole exposure and maintain mud weight ≥1.44 sg.

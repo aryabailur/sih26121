@@ -1,0 +1,12 @@
+### NWIS-DOC id=DOC-W001-DDR68 | well=W001 | type=DDR | date=2026-09-28 | pages=5
+### TITLE DDR OIL-AX-102 Day 68
+### SUMMARY Active well Day 68 — drilling Barail at 3,100 m; no losses.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3062-3100 ===
+DAILY DRILLING REPORT — OIL-AX-102 | Report No. 68 | Date: 2026-09-28 | Rig: Rig DR-07 (2000 HP) | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,062 m MD; depth 24:00 hrs 3,100 m MD; 24-hr progress 38 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Barail Group. Mud system: KCl-polymer WBM, mud weight 1.40 sg, ECD 1.45 sg. 24-hr summary: Drilled 8-1/2" hole in Barail Group from 3,062 m to 3,100 m. Parameters steady, no losses. Next 24-hr forecast: Drill ahead in Barail towards the Kopili Shale (prognosed top 3,290 m).
+=== PAGE 2 | SECTION Drilling Parameters & Mud Properties | DEPTH 3062-3100 ===
+Drilling parameters 3,062–3,100 m: WOB 167–177 kN, RPM 118–122, torque 15.5–15.7 kN·m, flow rate 1886–1907 l/min, standpipe pressure 3799–3847 psi, average ROP 12.0–13.4 m/hr, hook load 1120–1127 kN. Mud properties at 3,100 m: MW 1.40 sg, ECD 1.45 sg, PV 22 cP, YP 18 lb/100ft², gels 5/11, API fluid loss 4.2 ml, KCl 6.5%, pH 9.6, LGS 5.5%. Background gas 27 units.
+=== PAGE 3 | SECTION Operations Time Log | DEPTH 3062-3100 ===
+00:00–05:30 Drilled 3,062–3,078 m, WOB 17 t, 120 RPM, 1,900 l/min. 05:30–06:00 Survey: 28.1° / 40°. 06:00–14:00 Drilled 3,078–3,092 m. 14:00–14:30 Circulated bottoms-up, shakers clean. 14:30–24:00 Drilled to 3,100 m. Pit volume stable; no losses; background gas 25 units.
+=== PAGE 4 | SECTION Cumulative Events & NPT | DEPTH 0-3100 ===
+Cumulative NPT to date 12 hrs. (1) Tight hole while pulling out at 610–655 m in Girujan clays with 15 t (147 kN) overpull; back-reamed, MW raised to 1.12 sg, 3% KCl added (3 hrs). (2) Bit balling in Namsang claystone at 1,845 m; ROP fell from 18 to 4 m/hr; tripped for a PDC with larger junk slots, flow raised to 3,000 l/min (9 hrs).

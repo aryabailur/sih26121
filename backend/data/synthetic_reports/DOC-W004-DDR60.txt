@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W004-DDR60 | well=W004 | type=DDR | date=2022-02-14 | pages=5
+### TITLE DDR OIL-AX-77 Day 60
+### SUMMARY Day 60 — torque 14 → 32 kN·m with stick-slip at 3,500–3,540 m; hole cleaning.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3488-3540 ===
+DAILY DRILLING REPORT — OIL-AX-77 | Report No. 60 | Date: 2022-02-14 | Rig: Rig DR-02 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,488 m MD; depth 24:00 hrs 3,540 m MD; 24-hr progress 52 m. Hole size 8-1/2"; last casing 9-5/8" at 3,040 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.44 sg, ECD 1.49 sg. 24-hr summary: Drilled lower Kopili 3,488–3,540 m at 35° inclination. Progressive torque increase with stick-slip; increased flow rate and off-bottom rotation; torque normalised. Next 24-hr forecast: Drill to TD 3,580 m; circulate clean; POOH for logs.
+=== PAGE 2 | SECTION Drilling Parameters & Events | DEPTH 3500-3540 ===
+Progressive torque increase from 14 kN·m to 32 kN·m while drilling 3500-3540m. Intermittent stick-slip observed (surface RPM oscillating 80–140). Root cause: poor hole cleaning in high-angle section (35°). Cuttings bed accumulation in Kopili shale. Mitigation: increased flow rate from 1800 to 2200 l/min, rotated off-bottom at 120 RPM for 30 min every 2 stands. Torque normalized. NPT 8 hrs.
+=== PAGE 3 | SECTION Hole Cleaning Programme | DEPTH 3450-3580 ===
+Revised hole-cleaning programme for inclination above 30°: minimum flow 2,200 l/min, pipe rotation ≥120 RPM, tandem sweeps (low-vis/high-vis) every 2 stands, cuttings-bed monitoring by torque & drag trend. Lesson: drill the lower Kopili at ≥2,200 l/min where inclination exceeds 30°.

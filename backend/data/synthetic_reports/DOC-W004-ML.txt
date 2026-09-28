@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W004-ML | well=W004 | type=mud_log | date=2022-02-20 | pages=12
+### TITLE Mud Log OIL-AX-77
+### SUMMARY Mud log — twist-off in Namsang and pack-off/torque in Kopili.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Lithology Summary | DEPTH 0-3580 ===
+Lithology: Girujan clays to 820 m; Tipam sandstone 820–1,625 m; Namsang sand/shale interbeds 1,625–2,420 m with hard stringers; Barail 2,420–3,320 m; Kopili shale 3,320–3,580 m (TD). High-angle J-profile, 35° tangent from 1,700 m.
+=== PAGE 2 | SECTION Drilling Events Log | DEPTH 2240-2245 ===
+Drill-string twist-off at 2,241 m (fatigue crack in a 6-1/2" drill collar pin) while drilling Namsang interbeds; 142 m fish recovered with an 8-1/8" overshot after two runs. Cause: connection fatigue from high lateral vibration. NPT 30 hrs. Drill-collar inspection every 250 rotating hours instituted.
+=== PAGE 3 | SECTION Drilling Events Log | DEPTH 3460-3540 ===
+Pack-off tendency with standpipe pressure spikes of +250 psi at 3,468 m (Kopili, 35°) — cuttings loading; reduced ROP to 8 m/hr and pumped tandem sweeps (NPT 3 hrs). From 3,500 m torque rose progressively with stick-slip; see DDR Day 60.

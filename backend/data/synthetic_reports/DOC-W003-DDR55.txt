@@ -1,0 +1,12 @@
+### NWIS-DOC id=DOC-W003-DDR55 | well=W003 | type=DDR | date=2022-11-08 | pages=9
+### TITLE DDR OIL-AX-88 Day 55
+### SUMMARY Day 55 — stuck pipe at 3,400 m in Kopili; 36 hrs NPT; KCl raised to 7%.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3372-3400 ===
+DAILY DRILLING REPORT — OIL-AX-88 | Report No. 55 | Date: 2022-11-08 | Rig: Rig DR-07 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,372 m MD; depth 24:00 hrs 3,400 m MD; 24-hr progress 28 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.43 sg, ECD 1.48 sg. 24-hr summary: Drilled Kopili Shale 3,372–3,400 m. Changed BHA (MWD). Pipe stuck at 3,400 m on connection; worked pipe, spotted diesel-based fluid; pipe freed after 12 hours of working. Next 24-hr forecast: Circulate and condition mud, raise KCl to 7%, wiper trip, resume drilling.
+=== PAGE 3 | SECTION Mud Report | DEPTH 3372-3400 ===
+Mud report: KCl-polymer WBM, MW 1.43 sg, KCl 4.0% (programme 7%; depleted by dilution), PV 20 cP, YP 17, API fluid loss 5.4 ml, MBT 12 kg/m³ rising — indicating shale reactivity. Cuttings soft and sticky; shale swelling observed in cuttings from 3,385 m.
+=== PAGE 7 | SECTION Stuck Pipe Incident | DEPTH 3380-3420 ===
+Stuck pipe incident report. Pipe stuck at 3400m during connection. Overpull of 80 kN. Shale swelling observed in cuttings. Hole had been left open for 45 minutes during BHA change prior to the connection. Root cause: reactive Kopili shale swelling due to inadequate KCl inhibition in mud system (4% vs 7% programme); hole left open for 45 minutes during BHA change. Freeing: spotted 15 m³ of diesel-based spotting fluid, worked pipe for 12 hours, freed at 120 kN overpull. Increased KCl to 7% in mud system. NPT 36 hrs including conditioning and wiper trip.
+=== PAGE 8 | SECTION Freeing Operations & Forecast | DEPTH 3380-3420 ===
+After freeing, circulated bottoms-up with high-viscosity sweep, cavings reduced. Reamed 3,380–3,420 m. Lessons: maintain KCl ≥7% before entering the Kopili; keep static time under 15 minutes; spot a pill before BHA changes; monitor MBT each tour. These practices are to be carried into the OIL-AX well programme.

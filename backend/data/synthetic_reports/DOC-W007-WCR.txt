@@ -1,0 +1,14 @@
+### NWIS-DOC id=DOC-W007-WCR | well=W007 | type=WCR | date=2021-12-28 | pages=30
+### TITLE Well Completion Report OIL-AX-44
+### SUMMARY Completion report — channeling behind 9-5/8" casing at 2,800–2,850 m; squeeze.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Well Summary | DEPTH 0-3600 ===
+WELL COMPLETION REPORT — OIL-AX-44 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2021-10-01, rig released 2021-12-20. Total depth 3,600 m MD. Target: Kopili Shale. Maximum inclination 24° (azimuth 250°). Casing: 20" at 60 m, 13-3/8" at 800 m, 9-5/8" at 3,010 m, 7" liner to 3,595 m. Formation tops (MD): Girujan surface; Tipam 800 m; Namsang 1,595 m; Barail 2,390 m; Kopili 3,295 m; Sylhet 3,585 m. Total NPT 59 hrs: squeeze cementing (48 hrs), Namsang gas influx (5 hrs), casing held up (6 hrs).
+=== PAGE 9 | SECTION Well Control | DEPTH 2150-2160 ===
+Minor gas influx at 2,154 m (Namsang): 0.8 m³ pit gain, flow check positive, shut in with SIDPP 120 psi. Cause: gas-charged Namsang sand with marginal 1.28 sg mud weight. Circulated out through the choke with 1.32 sg mud using the Wait & Weight method. NPT 5 hrs.
+=== PAGE 14 | SECTION Casing Programme | DEPTH 0-3600 ===
+Casing: 13-3/8" to 800 m; 9-5/8" to 3,010 m (held up at 2,768 m, washed down); 7" liner 2,900–3,595 m. 9-5/8" centralisation: one bow-spring centraliser every 4 joints through the 24° tangent (programme minimum).
+=== PAGE 22 | SECTION Cement Evaluation | DEPTH 2800-2850 ===
+Poor cement bond log in 9-5/8" casing across Barail Group. Channeling detected from 2800-2850m. Root cause: inadequate mud removal due to low flow rates during cementing (displacement 4 bpm). Eccentric casing in deviated section (stand-off <60%). Squeeze cement job performed. CBL re-run showed acceptable bond. Recommendation: use centralizers every 2 joints in deviated sections. NPT 48 hrs.
+=== PAGE 24 | SECTION Lessons Learned | DEPTH 2750-2900 ===
+Cementing lessons: centralise every 2 joints in deviated sections (stand-off ≥70%), displace at turbulent flow, condition mud (reduce YP) before cementing. Compare OIL-AX-66, where one centraliser per joint gave good bond.

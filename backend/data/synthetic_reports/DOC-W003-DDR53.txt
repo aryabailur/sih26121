@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W003-DDR53 | well=W003 | type=DDR | date=2022-11-06 | pages=6
+### TITLE DDR OIL-AX-88 Day 53
+### SUMMARY Day 53 — Kopili cavings and erratic torque at 3,352–3,370 m.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3318-3372 ===
+DAILY DRILLING REPORT — OIL-AX-88 | Report No. 53 | Date: 2022-11-06 | Rig: Rig DR-07 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,318 m MD; depth 24:00 hrs 3,372 m MD; 24-hr progress 54 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.43 sg, ECD 1.48 sg. 24-hr summary: Drilled from Barail into Kopili Shale (top 3,310 m). Cavings and erratic torque from 3,352 m; raised MW. Next 24-hr forecast: Continue drilling Kopili with sweeps every stand.
+=== PAGE 4 | SECTION Hole Condition | DEPTH 3350-3370 ===
+Splintery cavings (15% of returns) and erratic torque at 3,352–3,370 m; 3 m³ of cavings over 6 hours. Assessed as mechanical instability of Kopili shale with 1.41 sg mud weight below the collapse gradient. Raised mud weight to 1.43 sg and pumped high-viscosity sweeps; cavings reduced to 3%. NPT 5 hrs.
+=== PAGE 5 | SECTION Drilling Parameters & Mud Properties | DEPTH 3318-3372 ===
+Drilling parameters 3,318–3,372 m: WOB 173–181 kN, RPM 108–112, torque 16.5–29.5 kN·m, flow rate 1892–1912 l/min, standpipe pressure 3976–4104 psi, average ROP 8.0–9.1 m/hr, hook load 1172–1306 kN. Mud properties at 3,372 m: MW 1.43 sg, ECD 1.48 sg, PV 22 cP, YP 18 lb/100ft², gels 5/11, API fluid loss 4.2 ml, KCl 4.5%, pH 9.6, LGS 5.5%. Background gas 25 units. KCl dropping with dilution; programme 7%.

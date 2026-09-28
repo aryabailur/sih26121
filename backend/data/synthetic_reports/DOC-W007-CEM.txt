@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W007-CEM | well=W007 | type=cementing_report | date=2021-11-27 | pages=6
+### TITLE 9-5/8-in Casing Cementing Report OIL-AX-44
+### SUMMARY 9-5/8" cementing — casing held up; low-rate displacement and sparse centralisation.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Casing Running | DEPTH 2760-3010 ===
+9-5/8" casing held up at 2,768 m; last three joints washed down; landed at 3,010 m. Cause: ledges in interbedded Barail and no wiper trip before running casing. NPT 6 hrs.
+=== PAGE 2 | SECTION Job Design | DEPTH 2400-3010 ===
+Slurry: lead 1.60 sg, tail 1.90 sg. Spacer 8 m³. Planned displacement 4 bpm (laminar) to limit ECD. Centralisers 1 per 4 joints (bow-spring). Stand-off modelled 55–60% through 24° tangent.
+=== PAGE 3 | SECTION Job Execution & Returns | DEPTH 2400-3010 ===
+Pumped as planned; full returns. Bumped plug with 500 psi over final circulating pressure. Floats held. Note: low displacement rate and poor stand-off create channeling risk in the deviated Barail section.

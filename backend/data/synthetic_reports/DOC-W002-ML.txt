@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W002-ML | well=W002 | type=mud_log | date=2023-04-12 | pages=14
+### TITLE Mud Log OIL-AX-99
+### SUMMARY Mud log — lithology, gas and loss record for OIL-AX-99.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Lithology — Barail Group | DEPTH 2400-3300 ===
+Barail Group 2,395–3,300 m: interbedded fine- to medium-grained sandstone, grey shale and thin coal stringers. Sandstone porosity visually 16–22%. Natural fractures noted in cuttings (slickensided fragments) from 3,140 m. Drilling break at 3,146 m (ROP 9 → 18 m/hr) preceded the total losses at 3,150 m.
+=== PAGE 2 | SECTION Gas & Losses Record | DEPTH 3100-3250 ===
+Losses record: 3,150 m total loss of returns, 45 m³ OBM lost over 6 hours; ECD at onset 1.52 sg (PWD). Mud weight 1.42 sg. Background gas 30 units, no connection gas. After LCM treatment and MW reduction to 1.38 sg, full returns from 3,158 m. Pit volume totaliser and flow-out paddle both showed the event; flow-out dropped from 38% to 0% within 2 minutes.
+=== PAGE 3 | SECTION Lithology — Kopili & Sylhet | DEPTH 3300-3650 ===
+Kopili Shale 3,300–3,595 m: dark grey to black fissile shale, reactive, with splintery cavings above 3,440 m. Sylhet Limestone 3,595–3,650 m: nummulitic limestone, tight; background gas 60–90 units, no kicks recorded.

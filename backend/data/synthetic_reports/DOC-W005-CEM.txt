@@ -1,0 +1,12 @@
+### NWIS-DOC id=DOC-W005-CEM | well=W005 | type=cementing_report | date=2021-07-26 | pages=8
+### TITLE 7-in Liner Cementing Report OIL-AX-66
+### SUMMARY 7" liner cementing — good bond; centraliser and lightweight-slurry practice.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Job Summary | DEPTH 3280-3900 ===
+7" liner run and cemented 2,900–3,895 m. Job pumped as designed; full returns during displacement. CBL shows good bond across Kopili and Sylhet. Centralisation: one rigid centraliser per joint through the build section and the Kopili; spacer pumped at turbulent flow (1,400 l/min).
+=== PAGE 2 | SECTION Pre-job Well Conditions | DEPTH 3720-3760 ===
+Pre-job conditions: partial losses of 6–10 m³/hr had occurred in vuggy Sylhet limestone between 3,720 and 3,760 m on 12 July with 1.50 sg mud. LCM pills pumped and mud weight reduced from 1.50 to 1.48 sg; losses cured before the liner job (NPT 10 hrs). Lightweight lead slurry (1.55 sg) selected to limit ECD across the loss interval.
+=== PAGE 3 | SECTION Job Design & Execution | DEPTH 2900-3895 ===
+Slurry design: lead 1.55 sg lightweight, tail 1.90 sg Class G. Spacer 1.60 sg, 12 m³, turbulent flow. Displacement at 1,400 l/min; maximum ECD 1.54 sg (below the 1.58 sg loss threshold). Centralisers: 1 per joint. Liner hanger set and tested to 1,500 psi.
+=== PAGE 4 | SECTION Evaluation & Lessons | DEPTH 2900-3895 ===
+CBL/VDL: good bond from 2,950 m to 3,890 m. Lesson: full centralisation in deviated sections and lightweight lead slurry across loss zones delivered a competent liner cement job.

@@ -1,0 +1,10 @@
+### NWIS-DOC id=DOC-W002-DDR40 | well=W002 | type=DDR | date=2023-03-13 | pages=4
+### TITLE DDR OIL-AX-99 Day 40
+### SUMMARY Day 40 — seepage losses at 2,962 m treated with background LCM.
+### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
+=== PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 2935-3010 ===
+DAILY DRILLING REPORT — OIL-AX-99 | Report No. 40 | Date: 2023-03-13 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 2,935 m MD; depth 24:00 hrs 3,010 m MD; 24-hr progress 75 m. Hole size 8-1/2"; last casing 9-5/8" at 3,005 m. Formation at report depth: Barail Group. Mud system: OBM, mud weight 1.42 sg, ECD 1.47 sg. 24-hr summary: Drilled out 9-5/8" shoe track and 3 m new formation; FIT to 1.62 sg EMW. Drilled 8-1/2" hole to 3,010 m. Next 24-hr forecast: Continue drilling Barail Group; monitor for losses.
+=== PAGE 2 | SECTION Operations Summary | DEPTH 2960-2985 ===
+Seepage losses of 2–3 m³/hr observed at 2,962 m while drilling permeable Barail sand with 1.40 sg mud; total 6 m³ lost (2,960–2,985 m). Added 15 ppb fine CaCO₃ background LCM; losses stopped within 2 hours. NPT 2 hrs. Recommendation: carry background LCM from 2,900 m in the Barail.
+=== PAGE 3 | SECTION Mud Report | DEPTH 2935-3010 ===
+Mud report: OBM, MW 1.40 sg, oil/water ratio 75/25, electrical stability 780 V, PV 24 cP, YP 16 lb/100ft², HTHP fluid loss 3.8 ml. Background LCM 15 ppb CaCO₃ (F/M blend) added after seepage losses. Pit volume trend stable after treatment. Solids control: shakers dressed with 170 mesh screens.
