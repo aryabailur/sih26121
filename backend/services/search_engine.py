@@ -491,12 +491,27 @@ def search(db: Session, query: str, filters: dict, context: dict | None, top_k: 
     if q.intent == "risk_evidence":
         depth = ctx_depth if ctx_depth is not None else 3100.0
         res = risk_engine.evaluate(db, active_id, depth, persist=False, radius_km=(context or {}).get("radius_km") or 25.0)
-        cands = res["assessments"]
-        if q.families:
-            cands = [a for a in cands if a["risk_type"] in q.families] or cands
-        if not cands:
-            return _insufficient(q, understanding, context, "No active risk assessment at the current depth.")
-        a = cands[0]
+        fams = set(q.families)
+        sev_rank = {"low": 0, "medium": 1, "high": 2, "critical": 3}
+        live = [x for x in res["assessments"] if (not fams or x["risk_type"] in fams) and x["severity"] != "low"]
+        raised = [al for al in res["active_alerts"] if (not fams or al["risk_type"] in fams) and al["status"] != "dismissed"]
+        a, header = None, ""
+        # A named risk ("current stuck pipe alert") is answered from that alert's own trigger-time evidence;
+        # an unnamed one ("current risk") from the strongest live assessment at the bit.
+        if raised and (fams or not live):
+            al = max(raised, key=lambda x: (x["status"] == "active", sev_rank[x["severity"]], x["created_at"]))
+            a = al["assessment"]
+            header = (f"The {a['risk_label'].lower()} alert raised at {al['triggered_at_depth']:,.0f} m is {al['severity'].upper()} "
+                      f"(score {al['score']:.2f}, confidence {al['confidence'] * 100:.0f}%, status {al['status']}) for the "
+                      f"{a['affected_formation']} window {a['risk_window']['start']:,.0f}–{a['risk_window']['end']:,.0f} m.")
+        elif live:
+            a = live[0]
+            header = (f"{a['risk_label']} risk is {a['severity'].upper()} ({a['status']}) at {depth:,.0f} m (score {a['score']:.2f}, "
+                      f"confidence {a['confidence'] * 100:.0f}%) for the {a['affected_formation']} window "
+                      f"{a['risk_window']['start']:,.0f}–{a['risk_window']['end']:,.0f} m.")
+        if a is None:
+            what = ", ".join(RISK_LABELS[f].lower() for f in fams) if fams else "risk"
+            return _insufficient(q, understanding, context, f"No {what} alert or assessment near the current depth.")
         evidence = []
         idx = get_index(db)
         for ev in a["evidence"]:
@@ -504,13 +519,11 @@ def search(db: Session, query: str, filters: dict, context: dict | None, top_k: 
             if chunk:
                 evt = next((u.event for u in idx.units if u.kind == "event" and u.id == ev["event_id"]), None)
                 evidence.append(_evidence_card(chunk, 0.9, {}, q, linked=evt))
-        sentences = [dict(text=f"{a['risk_label']} risk is {a['severity'].upper()} at {depth:,.0f} m (score {a['score']:.2f}, "
-                                f"confidence {a['confidence'] * 100:.0f}%) for the {a['affected_formation']} window "
-                                f"{a['risk_window']['start']:,.0f}–{a['risk_window']['end']:,.0f} m.",
-                           citations=list(range(1, len(evidence) + 1)))]
+        sentences = [dict(text=header, citations=list(range(1, len(evidence) + 1)))]
         for i, ev in enumerate(evidence[:3], start=1):
-            sentences.append(dict(text=f"{ev['well_name']} ({_fmt_depth(ev['depth_start'], ev['depth_end'])}): "
-                                       f"{_first_sentence(ev['chunk_text'])}", citations=[i]))
+            ds, de = ev.get("event_depth_start") or ev["depth_start"], ev.get("event_depth_end") or ev["depth_end"]
+            sentences.append(dict(text=f"{ev['well_name']} ({_fmt_depth(ds, de)}): "
+                                       f"{ev.get('description') or _first_sentence(ev['chunk_text'])}", citations=[i]))
         sentences.append(dict(text=f"Recommended: {a['recommendation']}", citations=[1] if evidence else []))
         return _result(q, understanding, sentences, evidence, context, confidence=a["confidence"])
 

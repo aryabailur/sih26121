@@ -16,7 +16,8 @@ The frontend never talks to the backend cross-origin: Next.js rewrites `/api/*` 
 
 ```mermaid
 erDiagram
-  WELL ||--o{ FORMATION : has
+  WELL ||--o{ FORMATION : "has (porosity, pore pressure, frac gradient)"
+  WELL ||--o{ CASING_STRING : "casing programme"
   WELL ||--o{ SURVEY_POINT : trajectory
   WELL ||--o{ PARAMETER_SAMPLE : "eRTMAC / mud log"
   WELL ||--o{ DOCUMENT : reports

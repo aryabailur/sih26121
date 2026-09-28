@@ -108,10 +108,25 @@ def test_document_pipeline(client):
     decisions = [dict(candidate_id=e["candidate_id"], approved=e["approved"]) for e in ex["events"]]
     res = client.post(f"/api/documents/{doc_id}/commit", json=dict(decisions=decisions)).json()
     assert res["events_saved"] >= 1 and res["chunks_indexed"] >= 1
+    again = client.post(f"/api/documents/{doc_id}/commit", json=dict(decisions=decisions))
+    assert again.status_code == 400  # already saved — refused, not a 500
     hit = client.post("/api/search/evidence", json=dict(query="tight hole overpull at 3432 m OIL-AX-22")).json()
     assert any(e["document_id"] == doc_id for e in hit["evidence"])
     client.post("/api/simulation/reset")
     assert client.get(f"/api/documents/{doc_id}/status").status_code == 404
+
+
+def test_alert_evidence_matches_requested_family(client):
+    client.post("/api/simulation/reset")
+    for d in (3380, 3600):
+        client.post("/api/risk/evaluate", json=dict(well_id="W001", current_depth=d))
+    r = client.post("/api/search/evidence", json=dict(
+        query="Show evidence for the current stuck pipe risk alert.", context=dict(depth=3600, radius_km=25))).json()
+    assert not r["insufficient"]
+    assert "stuck pipe alert raised at 3,380" in r["answer"].lower()
+    assert "Kick" not in r["answer_sentences"][0]["text"]
+    assert client.post("/api/risk/alerts/clear").json()["cleared"] >= 1
+    client.post("/api/simulation/reset")
 
 
 def test_scenario_and_profile(client):

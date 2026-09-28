@@ -24,6 +24,9 @@ Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that tab
   and corrupt `–`, `·`, `≥`). Git-Bash needs `MSYS_NO_PATHCONV=1` when passing `/dashboard`-style args.
 - The risk scenario is tuned: changing weights, event depths or `seed/parameters.py` precursors can move alert
   depths — re-run `tests.scenario_sweep` and `pytest`.
+- Scenario runner (`lib/store.ts`): a fresh run clears alerts (`POST /api/risk/alerts/clear`) and restores the
+  default radius so it is reproducible; `scenarioRun` tokens stop superseded loops; alert toasts are announced
+  even for superseded evaluation responses (alerts are only reported as new once).
 
 ## Conventions
 

@@ -97,8 +97,17 @@ export function TopNav() {
               <Button variant="danger" size="sm" onClick={stopScenario}>
                 <Pause size={13} /> Pause scenario
               </Button>
+            ) : scenario && scenario.index < scenario.plan.steps.length - 1 ? (
+              <>
+                <Button variant="primary" size="sm" onClick={() => runScenario("full")} title="Continue from the paused depth">
+                  <Play size={13} /> Resume
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => runScenario("full", { fresh: true })} title="Clear alerts and start again at 3,100 m">
+                  Restart
+                </Button>
+              </>
             ) : (
-              <Button variant="primary" size="sm" onClick={() => runScenario("full")} title="Drill through the seeded Barail → Kopili → Sylhet risk windows">
+              <Button variant="primary" size="sm" onClick={() => runScenario("full", { fresh: true })} title="Drill through the seeded Barail → Kopili → Sylhet risk windows">
                 <Play size={13} /> <span className="2xl:hidden">Run scenario</span><span className="hidden 2xl:inline">Run historical risk scenario</span>
               </Button>
             )}

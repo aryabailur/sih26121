@@ -54,6 +54,12 @@ def acknowledge(req: AcknowledgeRequest, db: Session = Depends(get_db)):
     return {"success": True, "alert": risk_engine.alert_dict(a)}
 
 
+@router.post("/alerts/clear")
+def clear_alerts(well_id: str = ACTIVE_WELL_ID, db: Session = Depends(get_db)):
+    """Start a fresh scenario run without touching uploaded documents."""
+    return {"success": True, "cleared": risk_engine.clear_alerts(db, well_id)}
+
+
 @router.get("/alerts/{alert_id}/audit")
 def audit(alert_id: str, db: Session = Depends(get_db)):
     rows = db.scalars(select(AlertAudit).where(AlertAudit.alert_id == alert_id).order_by(AlertAudit.timestamp)).all()

@@ -18,12 +18,13 @@ confirm). Everything else is shown as a "watch" card — no silent black boxes.
 """
 from __future__ import annotations
 
+import threading
 import uuid
 from bisect import bisect_left
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from models import Alert, AlertAudit, Document, DrillingEvent, Formation, ParameterSample, RiskZone, SurveyPoint, Well
@@ -419,7 +420,26 @@ def assess(ctx: Context, depth: float, params: dict) -> list[dict]:
 
 
 # ------------------------------------------------------------------------------------ alerts
+_ALERT_LOCK = threading.Lock()
+
+
 def _record_alerts(db: Session, well_id: str, depth: float, assessments: list[dict]) -> list[Alert]:
+    # Serialised so two overlapping evaluations cannot both insert an alert for the same zone.
+    with _ALERT_LOCK:
+        return _record_alerts_locked(db, well_id, depth, assessments)
+
+
+def clear_alerts(db: Session, well_id: str) -> int:
+    with _ALERT_LOCK:
+        ids = [a.id for a in db.scalars(select(Alert).where(Alert.well_id == well_id)).all()]
+        if ids:
+            db.execute(delete(AlertAudit).where(AlertAudit.alert_id.in_(ids)))
+            db.execute(delete(Alert).where(Alert.id.in_(ids)))
+            db.commit()
+        return len(ids)
+
+
+def _record_alerts_locked(db: Session, well_id: str, depth: float, assessments: list[dict]) -> list[Alert]:
     existing = {a.zone_id: a for a in db.scalars(select(Alert).where(Alert.well_id == well_id)).all()}
     new_alerts = []
     now = datetime.utcnow()

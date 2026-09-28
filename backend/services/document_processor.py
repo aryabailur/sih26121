@@ -392,7 +392,10 @@ def run_pipeline(doc_id: str, path: Path) -> None:
                             _set(doc_id, "structuring", f"{e['candidate_id']} may duplicate existing event {x.id} ({x.title})")
                             break
             for e in events:
-                e["approved"] = not e.get("possible_duplicate_of") and e["confidence"] >= 0.6
+                if e["depth_start"] is None:
+                    e["needs_review"] = True  # an event without depth can't be placed — reviewer must add it
+                e["approved"] = (not e.get("possible_duplicate_of") and e["confidence"] >= 0.6
+                                 and e["depth_start"] is not None)
             entities = extract_entities(pages)
             dates = nlp.iso_dates(full)
             doc_date = dates[0] if dates else None
@@ -488,13 +491,15 @@ def commit_document(doc_id: str, decisions: list[dict], well_id: str | None) -> 
         d = db.get(Document, doc_id)
         if d is None:
             raise KeyError(doc_id)
+        if d.processing_status == "indexed":
+            raise ValueError("This document is already saved to the knowledge base.")
         ex = d.extraction or {}
         wid = well_id or ex.get("well_id") or d.well_id
         if not wid:
             raise ValueError("Assign a well before saving to the knowledge base.")
         d.well_id = wid
         by_id = {c["candidate_id"]: c for c in ex.get("events", [])}
-        saved_events = []
+        saved_events, skipped = [], []
         doc_date = d.date or date.today()
         for dec in decisions:
             c = by_id.get(dec.get("candidate_id"))
@@ -504,6 +509,7 @@ def commit_document(doc_id: str, decisions: list[dict], well_id: str | None) -> 
                 "event_type", "depth_start", "depth_end", "formation", "severity", "description", "root_cause",
                 "mitigation_action", "lessons_learned", "npt_hours") and v is not None}}
             if c["depth_start"] is None:
+                skipped.append(dict(candidate_id=c["candidate_id"], reason="no depth"))
                 continue
             ev_id = f"EV-{wid}-X{len(saved_events) + 1:02d}-{doc_id[-6:]}"
             db.add(DrillingEvent(
@@ -529,7 +535,8 @@ def commit_document(doc_id: str, decisions: list[dict], well_id: str | None) -> 
         d.summary = f"Uploaded and reviewed: {len(saved_events)} event(s) approved, {n_chunks} chunk(s) indexed."
         db.commit()
         _set(doc_id, "saved", f"Saved {len(saved_events)} event(s) and {n_chunks} chunk(s) to the knowledge base")
-        return dict(success=True, events_saved=len(saved_events), event_ids=saved_events, chunks_indexed=n_chunks)
+        return dict(success=True, events_saved=len(saved_events), event_ids=saved_events, chunks_indexed=n_chunks,
+                    skipped=skipped)
     finally:
         db.close()
 

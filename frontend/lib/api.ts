@@ -107,6 +107,7 @@ export const api = {
       body: JSON.stringify({ alert_id, status, notes, actor: "Drilling Engineer (demo)" }),
     }),
   audit: (alertId: string) => request<{ audit: AuditEntry[] }>(`/api/risk/alerts/${alertId}/audit`),
+  clearAlerts: (well_id = "W001") => request<{ success: boolean; cleared: number }>(`/api/risk/alerts/clear${qs({ well_id })}`, { method: "POST" }),
   profile: (radius_km: number, step = 10) =>
     request<{ profile: RiskProfilePoint[] }>(`/api/risk/profile${qs({ radius_km, step })}`),
   clusters: (radius_km: number) => request<{ clusters: EventCluster[] }>(`/api/risk/clusters${qs({ radius_km })}`),
@@ -131,7 +132,7 @@ export const api = {
   docStatus: (id: string) => request<ProcessingStatus>(`/api/documents/${id}/status`),
   extracted: (id: string) => request<ExtractionResult>(`/api/documents/${id}/extracted`),
   commit: (id: string, decisions: Record<string, unknown>[], well_id: string | null) =>
-    request<{ success: boolean; events_saved: number; event_ids: string[]; chunks_indexed: number }>(`/api/documents/${id}/commit`, {
+    request<{ success: boolean; events_saved: number; event_ids: string[]; chunks_indexed: number; skipped: { candidate_id: string; reason: string }[] }>(`/api/documents/${id}/commit`, {
       method: "POST",
       body: JSON.stringify({ decisions, well_id }),
     }),

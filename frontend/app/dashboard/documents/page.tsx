@@ -40,7 +40,7 @@ export default function DocumentsPage() {
   const [wellId, setWellId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState<{ events_saved: number; chunks_indexed: number } | null>(null);
+  const [saved, setSaved] = useState<{ events_saved: number; chunks_indexed: number; skipped?: { candidate_id: string; reason: string }[] } | null>(null);
   const [view, setView] = useState<"events" | "entities" | "text">("events");
   const [typeFilter, setTypeFilter] = useState("");
   const library = useAsync(() => api.documents(), [kbVersion, saved]);
@@ -272,7 +272,7 @@ export default function DocumentsPage() {
                   <>
                     <CheckCircle2 size={16} className="text-emerald-300" />
                     <span className="text-[12px] text-emerald-100">
-                      Saved {saved.events_saved} event{saved.events_saved === 1 ? "" : "s"} and indexed {saved.chunks_indexed} chunk{saved.chunks_indexed === 1 ? "" : "s"} — searchable and used by the risk engine now.
+                      Saved {saved.events_saved} event{saved.events_saved === 1 ? "" : "s"} and indexed {saved.chunks_indexed} chunk{saved.chunks_indexed === 1 ? "" : "s"} — searchable and used by the risk engine now.{saved.skipped?.length ? ` ${saved.skipped.length} approved candidate(s) skipped (no depth).` : ""}
                     </span>
                     <Link href={`/dashboard/search?q=${encodeURIComponent("tight hole overpull in Kopili near 3432 m")}`} className="ml-auto">
                       <Button size="xs" variant="primary"><Search size={12} /> Search it</Button>

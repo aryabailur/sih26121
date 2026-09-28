@@ -212,14 +212,21 @@ export default function ComparePage() {
                     return (
                       <td key={id} className="px-2 py-1.5 font-mono text-slate-300">
                         {w ? (
-                          <span className="flex flex-wrap items-center gap-1">
-                            {Math.round(w.top_md)}{w.prognosed && <span className="text-[9px] text-cockpit-dim">prog.</span>}
-                            {w.events.map((e) => (
-                              <span key={e.id} title={`${e.label} ${Math.round(e.depth_start)}–${Math.round(e.depth_end)} m`}>
-                                <SeverityGlyph severity={e.severity} color={e.severity === "critical" || e.severity === "high" ? undefined : FAMILY_META[familyOf(e.event_type)].color} size={8} />
+                          <>
+                            <span className="flex flex-wrap items-center gap-1">
+                              {Math.round(w.top_md)}{w.prognosed && <span className="text-[9px] text-cockpit-dim">prog.</span>}
+                              {w.events.map((e) => (
+                                <span key={e.id} title={`${e.label} ${Math.round(e.depth_start)}–${Math.round(e.depth_end)} m`}>
+                                  <SeverityGlyph severity={e.severity} color={e.severity === "critical" || e.severity === "high" ? undefined : FAMILY_META[familyOf(e.event_type)].color} size={8} />
+                                </span>
+                              ))}
+                            </span>
+                            {w.pore_pressure_sg != null && (
+                              <span className="block text-[9.5px] text-cockpit-dim" title="Porosity · pore pressure · fracture gradient (sg EMW)">
+                                φ {w.porosity_pct}% · PP {w.pore_pressure_sg?.toFixed(2)} · FG {w.frac_gradient_sg?.toFixed(2)}
                               </span>
-                            ))}
-                          </span>
+                            )}
+                          </>
                         ) : <span className="text-cockpit-dim">not penetrated</span>}
                       </td>
                     );

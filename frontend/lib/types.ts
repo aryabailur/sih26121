@@ -525,6 +525,9 @@ export interface FormationCorrelation {
     base_md: number;
     thickness: number;
     prognosed: boolean;
+    porosity_pct?: number | null;
+    pore_pressure_sg?: number | null;
+    frac_gradient_sg?: number | null;
     events: { id: string; event_type: string; label: string; depth_start: number; depth_end: number; severity: Severity }[];
   }[];
 }
