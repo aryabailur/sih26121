@@ -39,7 +39,8 @@ export default function WellIntelligencePage() {
   const compareIds = useNWIS((s) => s.compareIds);
   const kbVersion = useNWIS((s) => s.kbVersion);
   const [overlay, setOverlay] = useState(true);
-  const [section, setSection] = useState(true);
+  // The active well's recorded events are shallow, so it opens on the full well.
+  const [section, setSection] = useState(() => wellId !== "W001");
   const [families, setFamilies] = useState<RiskFamily[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<"events" | "lessons" | "docs">("events");

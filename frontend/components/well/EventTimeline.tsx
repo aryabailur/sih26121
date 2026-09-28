@@ -32,6 +32,7 @@ export function EventTimeline({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [lo, hi] = domain;
+  events = events.filter((e) => e.depth_end >= lo && e.depth_start <= hi);
   const y = (d: number) => `${((clamp(d, lo, hi) - lo) / (hi - lo)) * 100}%`;
   const h = (a: number, b: number) => `${((clamp(b, lo, hi) - clamp(a, lo, hi)) / (hi - lo)) * 100}%`;
   const ticks: number[] = [];

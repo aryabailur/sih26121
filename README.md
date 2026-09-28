@@ -74,7 +74,8 @@ offset wells with quotes, source citations that open the exact report page, reco
 the alert's audit trail. **Reset** returns to 3,100 m and clears alerts and uploads.
 
 The full judge script with clicks and talking points is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md);
-pitch text is in [docs/PITCH.md](docs/PITCH.md). A recorded backup walkthrough (map → offset profile →
+pitch text is in [docs/PITCH.md](docs/PITCH.md) and a 10-slide deck with speaker notes is
+[docs/NWIS_Pitch_Deck.pptx](docs/NWIS_Pitch_Deck.pptx). A recorded backup walkthrough (map → offset profile →
 source page → evidence search → scenario → Why? → acknowledge) is at
 [docs/nwis-demo-walkthrough.webm](docs/nwis-demo-walkthrough.webm) — plays in any browser.
 
