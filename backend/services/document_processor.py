@@ -136,6 +136,8 @@ MITIGATION_RE = re.compile(r"\b(mitigation|pumped|spotted|reduced|raised|increas
                            r"squeez\w*|freed|cured|controlled|changed|replaced|jarred|weighted up)\b", re.I)
 LESSON_RE = re.compile(r"\b(lesson|recommend\w*|in future|should)\b", re.I)
 TIME_ENTRY_RE = re.compile(r"^\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}")
+# Report furniture that ends an event narrative (forecasts, headers, property blocks).
+BOUNDARY_RE = re.compile(r"^(next 24|forecast|mud (system|properties)|hole size|depth 00|rig:|prepared by|recommendations?:)", re.I)
 OVERPULL_RE = re.compile(r"(\d{2,3})\s*kN\s*overpull|overpull (?:of )?(\d{2,3})\s*kN", re.I)
 CASING_RE = re.compile(r"\b\d{1,2}(?:-\d/\d)?\s?(?:in\b|\")")
 CHEMICALS = ["KCl", "LCM", "CaCO3", "calcium carbonate", "graphite", "barite", "glycol", "diesel", "detergent", "OBM", "WBM", "polymer"]
@@ -171,7 +173,8 @@ def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
         if fms and doc_formation is None:
             doc_formation = fms[0]
     for p in pages:
-        sents = nlp.sentences(p["text"])
+        # PDF text layers wrap mid-phrase ("bit\nballing"); collapse whitespace before matching.
+        sents = [" ".join(s.split()) for s in nlp.sentences(p["text"])]
         i = 0
         while i < len(sents):
             t = _event_type(sents[i])
@@ -182,7 +185,7 @@ def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
             j = i + 1
             while j < len(sents) and len(group) < 6:
                 s = sents[j]
-                if TIME_ENTRY_RE.match(s) or s.startswith("##"):
+                if TIME_ENTRY_RE.match(s) or s.startswith("##") or BOUNDARY_RE.match(s):
                     break
                 nt = _event_type(s)
                 if nt and nt not in (t, "NPT", "wellbore_instability") and not CAUSE_RE.search(s) and not MITIGATION_RE.search(s):
@@ -215,7 +218,30 @@ def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
                 evidence_text=text, confidence=conf, needs_review=conf < 0.75,
             ))
             i = j
-    return out
+    return _merge_within_document(out)
+
+
+def _merge_within_document(cands: list[dict]) -> list[dict]:
+    """A report often mentions one event twice (24-hr summary + time log). Keep the richer
+    candidate per risk family and overlapping depth window, and note where else it appeared."""
+    kept: list[dict] = []
+    for c in sorted(cands, key=lambda c: -c["confidence"]):
+        fam = EVENT_TO_FAMILY.get(c["event_type"])
+        dup = None
+        if c["depth_start"] is not None:
+            for k in kept:
+                if (k["depth_start"] is not None and EVENT_TO_FAMILY.get(k["event_type"]) == fam
+                        and k["depth_start"] - 30 <= c["depth_end"] and c["depth_start"] <= k["depth_end"] + 30):
+                    dup = k
+                    break
+        if dup:
+            dup.setdefault("also_mentioned_on", []).append(c["source_page"])
+            continue
+        kept.append(c)
+    kept.sort(key=lambda c: (c["source_page"], c["depth_start"] or 0))
+    for n, c in enumerate(kept, start=1):
+        c["candidate_id"] = f"C{n:02d}"
+    return kept
 
 
 def extract_entities(pages: list[dict]) -> list[dict]:

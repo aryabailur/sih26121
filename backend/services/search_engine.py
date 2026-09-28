@@ -456,8 +456,9 @@ def suggested_queries(context: dict | None) -> list[str]:
     ]
     if context and context.get("depth"):
         d = context["depth"]
-        fm = context.get("formation") or "this formation"
-        base.insert(0, f"What happened in the {fm} near {d:,.0f} m in nearby wells?")
+        fm = context.get("formation")
+        where = f"in the {fm} " if fm else ""
+        base.insert(0, f"What happened {where}near {d:,.0f} m in nearby wells?")
     return base
 
 

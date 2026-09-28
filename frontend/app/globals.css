@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ design tokens */
+@theme {
+  --color-cockpit-bg: #0a0e17;
+  --color-cockpit-surface: #111827;
+  --color-cockpit-elevated: #1e293b;
+  --color-cockpit-border: #1e3a5f;
+  --color-cockpit-line: #1a2740;
+  --color-cockpit-text: #f1f5f9;
+  --color-cockpit-muted: #94a3b8;
+  --color-cockpit-dim: #64748b;
+
+  --color-status-normal: #22d3ee;
+  --color-status-warning: #f59e0b;
+  --color-status-danger: #ef4444;
+  --color-status-success: #10b981;
+  --color-status-info: #3b82f6;
+
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", "Consolas", ui-monospace, "SFMono-Regular", monospace;
+
+  --animate-pulse-ring: pulse-ring 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  --animate-slide-in: slide-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-alert-glow: alert-glow 1.6s ease-in-out 3;
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  @keyframes slide-in {
+    from { transform: translateX(24px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes alert-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    50% { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.55), 0 0 28px rgba(239, 68, 68, 0.35); }
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-cockpit-bg);
+  color: var(--color-cockpit-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.05), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(59, 130, 246, 0.04), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* ------------------------------------------------------------------ utilities */
+@utility glass {
+  background: rgba(17, 24, 39, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(30, 58, 95, 0.55);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.28);
+}
+
+@utility glass-strong {
+  background: rgba(11, 17, 29, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(30, 58, 95, 0.7);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility hatched {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.09) 0 4px,
+    transparent 4px 9px
+  );
+}
+
+@utility label-caps {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-cockpit-dim);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e3a5f transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ------------------------------------------------------------------ highlight marks */
+mark.hl {
+  background: rgba(245, 158, 11, 0.22);
+  color: #fde68a;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* ------------------------------------------------------------------ range input */
+input[type="range"].nwis-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 18px;
+}
+input[type="range"].nwis-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #22d3ee var(--fill, 50%), #1e293b var(--fill, 50%));
+}
+input[type="range"].nwis-range::-moz-range-track {
+  height: 4px;
+  border-radius: 4px;
+  background: #1e293b;
+}
+input[type="range"].nwis-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 4px;
+  background: #22d3ee;
+}
+input[type="range"].nwis-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0a0e17;
+  border: 2px solid #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+  cursor: pointer;
+}
+input[type="range"].nwis-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0a0e17;
+  border: 2px solid #22d3ee;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ leaflet dark theme */
+.leaflet-container {
+  background: #070b13 !important;
+  font-family: var(--font-sans) !important;
+}
+.leaflet-container .leaflet-tile-pane {
+  filter: saturate(0.7) brightness(0.92);
+}
+.leaflet-control-attribution {
+  background: rgba(10, 14, 23, 0.75) !important;
+  color: #64748b !important;
+  font-size: 9px !important;
+}
+.leaflet-control-attribution a {
+  color: #94a3b8 !important;
+}
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: rgba(17, 24, 39, 0.9) !important;
+  color: #cbd5e1 !important;
+  border-bottom-color: #1e3a5f !important;
+}
+.leaflet-bar {
+  border: 1px solid #1e3a5f !important;
+  box-shadow: none !important;
+}
+.leaflet-tooltip.nwis-tip {
+  background: rgba(11, 17, 29, 0.94);
+  border: 1px solid #1e3a5f;
+  color: #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  padding: 6px 8px;
+  font-size: 11px;
+}
+.leaflet-tooltip.nwis-tip::before {
+  display: none;
+}
+.leaflet-tooltip.nwis-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #cbd5e1;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-shadow: 0 1px 3px #000, 0 0 6px #000;
+  padding: 0;
+}
+.leaflet-tooltip.nwis-label::before {
+  display: none;
+}
+.nwis-map-grid {
+  background-image:
+    linear-gradient(rgba(30, 58, 95, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 95, 0.25) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* well markers */
+.well-marker {
+  position: relative;
+}
+.well-marker .dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(10, 14, 23, 0.9);
+}
+.well-marker .ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  animation: pulse-ring 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+}
+.well-marker.active .dot {
+  background: #22d3ee;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
+}
