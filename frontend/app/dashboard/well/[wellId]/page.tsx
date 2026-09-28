@@ -135,6 +135,7 @@ export default function WellIntelligencePage() {
             onDepth={(d) => setDepth(d)}
             activeFormations={overlay && !isActive ? activeFormations : undefined}
             selectedEventId={selectedEvent?.id}
+            className="pb-1 pt-[72px]"
             onSelectEvent={(e) => {
               setSelected(e.id);
               setTab("events");

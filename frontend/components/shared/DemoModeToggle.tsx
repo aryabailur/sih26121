@@ -9,7 +9,7 @@ export function DemoModeToggle() {
   const setDemoMode = useNWIS((s) => s.setDemoMode);
   const setLiveFeed = useNWIS((s) => s.setLiveFeed);
   return (
-    <div className="flex items-center overflow-hidden rounded-md border border-cockpit-border text-[10px] font-bold uppercase tracking-wider">
+    <div className="flex shrink-0 items-center overflow-hidden whitespace-nowrap rounded-md border border-cockpit-border text-[10px] font-bold uppercase tracking-wider">
       <button
         onClick={() => setDemoMode(true)}
         className={cn("px-2 py-1", demoMode ? "bg-amber-500/20 text-amber-200" : "text-slate-500 hover:text-slate-300")}

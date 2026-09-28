@@ -43,7 +43,7 @@ export function TopNav() {
   const activeAlerts = evaluation?.active_alerts.filter((a) => a.status === "active").length ?? 0;
 
   return (
-    <header className="glass-strong relative z-[1000] flex h-14 shrink-0 items-center gap-4 border-x-0 border-t-0 px-4">
+    <header className="glass-strong relative z-[1000] flex h-14 shrink-0 items-center gap-4 whitespace-nowrap border-x-0 border-t-0 px-4">
       <div className="flex items-center gap-2.5">
         <div className="relative flex h-8 w-8 items-center justify-center rounded-md border border-cyan-400/50 bg-cyan-400/10">
           <svg viewBox="0 0 24 24" className="h-5 w-5 text-cyan-300" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -54,7 +54,7 @@ export function TopNav() {
         </div>
         <div className="leading-tight">
           <div className="text-[15px] font-bold tracking-[0.2em] text-cyan-200">NWIS</div>
-          <div className="text-[10px] text-cockpit-muted">Nearby Wells Intelligence System</div>
+          <div className="hidden text-[10px] text-cockpit-muted xl:block">Nearby Wells Intelligence System</div>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export function TopNav() {
           {formation ?? "—"}
         </div>
       </div>
-      <div className="hidden leading-tight lg:block">
+      <div className="hidden leading-tight 2xl:block">
         <div className="label-caps">Field</div>
         <div className="text-[12px] text-slate-300">{well?.field ?? "—"}</div>
       </div>
@@ -99,7 +99,7 @@ export function TopNav() {
               </Button>
             ) : (
               <Button variant="primary" size="sm" onClick={() => runScenario("full")} title="Drill through the seeded Barail → Kopili → Sylhet risk windows">
-                <Play size={13} /> Run historical risk scenario
+                <Play size={13} /> <span className="2xl:hidden">Run scenario</span><span className="hidden 2xl:inline">Run historical risk scenario</span>
               </Button>
             )}
             <Button
@@ -118,7 +118,7 @@ export function TopNav() {
         )}
         <DemoModeToggle />
         <Freshness />
-        <div className="hidden items-center gap-1.5 rounded-md border border-cockpit-border px-2 py-1 text-[11px] text-slate-300 xl:flex" title="Demo role">
+        <div className="hidden items-center gap-1.5 rounded-md border border-cockpit-border px-2 py-1 text-[11px] text-slate-300 2xl:flex" title="Demo role">
           <UserRound size={13} className="text-cyan-300" /> Drilling Engineer
         </div>
       </div>

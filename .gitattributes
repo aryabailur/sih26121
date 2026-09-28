@@ -4,4 +4,6 @@
 *.jpg binary
 *.ico binary
 *.db binary
+*.webm binary
+*.pptx binary
 *.ps1 text eol=crlf

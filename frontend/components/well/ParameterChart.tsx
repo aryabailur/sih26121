@@ -42,9 +42,10 @@ export function ParameterChart({
         <span className="text-[11px] font-semibold text-slate-200">{title}</span>
         <span className="text-[10px] text-cockpit-dim">{unit}</span>
       </div>
-      {series.length > 1 && (
-        <div className="mb-1 flex flex-wrap gap-x-2 px-1 text-[9.5px] text-cockpit-muted">
-          {series.map((s) => (
+      {/* Legend row height is always reserved so every depth chart shares the same plot top. */}
+      <div className="mb-1 flex h-[14px] flex-wrap gap-x-2 overflow-hidden px-1 text-[9.5px] leading-[14px] text-cockpit-muted">
+        {series.length > 1 &&
+          series.map((s) => (
             <span key={s.key} className="flex items-center gap-1">
               <svg width="14" height="4" aria-hidden>
                 <line x1="0" y1="2" x2="14" y2="2" stroke={s.color} strokeWidth="2" strokeDasharray={s.dashed ? "3 2" : undefined} />
@@ -52,8 +53,7 @@ export function ParameterChart({
               {s.label}
             </span>
           ))}
-        </div>
-      )}
+      </div>
       <div className="min-h-0 flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={rows} layout="vertical" margin={{ top: 4, right: 6, bottom: 4, left: 0 }}>
