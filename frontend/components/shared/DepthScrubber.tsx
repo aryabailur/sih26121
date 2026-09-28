@@ -110,7 +110,7 @@ export function DepthScrubber({ compact = false, className }: { compact?: boolea
           {nxt && (
             <span className="hidden text-[11px] text-cockpit-muted xl:inline">
               Next window: <span style={{ color: FAMILY_META[nxt.type].color }}>{nxt.label}</span> at {fmtDepth(nxt.depth)} ·{" "}
-              <span className="font-mono text-slate-200">{Math.round(nxt.distance)} m</span> ahead
+              <span className="font-mono text-slate-200">{Math.round(nxt.distance)}</span> m ahead
             </span>
           )}
           <div className="ml-auto flex items-center gap-1">

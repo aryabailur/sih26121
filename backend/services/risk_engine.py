@@ -394,6 +394,7 @@ def assess_zone(ctx: Context, zone: RiskZone, depth: float, params: dict) -> dic
                                 explanation=explain[k]))
 
     return dict(
+        evaluated_at_depth=depth,
         zone_id=zone.id, zone_source=zone.source, risk_type=family, risk_label=label,
         score=round(score, 3), confidence=round(confidence, 3), confidence_note=confidence_note,
         severity=severity, historical_severity=zone.severity, alert_eligible=alert_eligible,

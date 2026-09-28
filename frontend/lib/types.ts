@@ -227,6 +227,7 @@ export interface SupportingWell {
 }
 
 export interface RiskAssessment {
+  evaluated_at_depth: number;
   zone_id: string;
   zone_source: "curated" | "derived";
   risk_type: RiskFamily;

@@ -1,0 +1,116 @@
+# NWIS architecture
+
+## 1. Components
+
+| Layer | Technology | Responsibility |
+|---|---|---|
+| UI | Next.js 16 (App Router), React 19, Tailwind 4, Leaflet, Recharts 3, Zustand | Cockpit screens; one global store holds bit depth, radius, latest evaluation, alerts, scenario state |
+| API | FastAPI, Pydantic v2 | REST contract (`/api/wells`, `/events`, `/formations`, `/risk`, `/search`, `/documents`, `/simulation`) — OpenAPI at `/docs` |
+| Persistence | SQLAlchemy 2 → SQLite (demo) / PostgreSQL | Knowledge schema (below); list fields use portable JSON columns |
+| Intelligence | Pure-Python services | Risk engine, hybrid retrieval, document pipeline, similarity, drilling NLP |
+| Optional | Anthropic SDK, Tesseract | Grounded LLM answer synthesis; OCR of scanned pages |
+
+The frontend never talks to the backend cross-origin: Next.js rewrites `/api/*` to the FastAPI server.
+
+## 2. Knowledge schema
+
+```mermaid
+erDiagram
+  WELL ||--o{ FORMATION : has
+  WELL ||--o{ SURVEY_POINT : trajectory
+  WELL ||--o{ PARAMETER_SAMPLE : "eRTMAC / mud log"
+  WELL ||--o{ DOCUMENT : reports
+  DOCUMENT ||--o{ DOCUMENT_CHUNK : pages
+  WELL ||--o{ DRILLING_EVENT : experienced
+  DOCUMENT ||--o{ DRILLING_EVENT : "source (page, section)"
+  RISK_ZONE }o--o{ DRILLING_EVENT : "evidence (family + depth window)"
+  WELL ||--o{ ALERT : raised
+  ALERT ||--o{ ALERT_AUDIT : "raised / escalated / ack / review / dismiss"
+  WELL ||--o{ WELL_SIMILARITY : "vs active well"
+```
+
+Every `DrillingEvent` carries `source_document_id`, `source_page`, `source_section`, depth interval, formation
+and date — the provenance the UI shows on every card. `event_params` stores numeric context recorded at the
+event (e.g. loss-onset ECD, post-kick mud weight) which the risk engine uses as **offset-referenced limits**.
+`Well.mud_program` stores the planned mud weight per formation (baseline for MW/ECD deviation).
+
+## 3. Risk engine (`backend/services/risk_engine.py`)
+
+For each risk zone with offset evidence inside the radius:
+
+1. **Supporting events** = offset events of the zone's risk family overlapping the zone ±30 m.
+2. **Factors** (all in [0, 1]):
+   - *proximity* — 1.0 inside the offset event window; approaching: `0.5·(1 − gap/150 m)`; passed: `0.5·(1 − gap/100 m)`.
+   - *frequency* — distinct supporting wells ÷ 5.
+   - *similarity* — mean well-similarity of those wells to the active well.
+   - *formation* — 1.0 in the zone formation, 0.5 within 50 m above its prognosed top.
+   - *parameter* — share of the family's live signals flagged. Signals: MW/ECD vs the mud programme
+     (absolute gates 0.015 / 0.02 sg) and vs offset limits (loss-onset ECD − 0.03; post-kick MW − 0.02);
+     torque, hook load, SPP, ROP, RPM vs a detrended rolling baseline (window d−250…d−60 m, ratio gate + |z| ≥ 2).
+   - *trajectory* — `1 − |Δinclination|/20°` at each event depth.
+3. **Score** `= 0.30·prox + 0.20·freq + 0.10·sim + 0.10·form + 0.25·param + 0.05·traj`.
+4. **Severity** by thresholds 0.35 / 0.55 / 0.75. **Alert policy**: zones with high/critical history alert at
+   ≥ 0.55; medium/low history only at ≥ 0.75 (needs live confirmation) — an alarm-rationalisation choice so
+   the engineer is not flooded.
+5. **Alerts** are persisted once per zone, escalated (with an audit entry) when severity rises, and keep a
+   full snapshot of the assessment at trigger time for the "Why?" view.
+6. **Confidence** `= 0.35 + 0.30·min(1, wells/3) + 0.10·min(1, docs/3) + 0.15·similarity + 0.10·[live params]`, capped 0.95.
+
+`GET /api/risk/profile` scores every 10 m of the planned path (drives the scrubber's risk ribbon and the Risk
+Explorer chart); `GET /api/risk/clusters` groups recurring offset events and lists what worked.
+
+Specification deviation (documented in [ASSUMPTIONS.md](ASSUMPTIONS.md)): the spec's default weights and
+zone-centre proximity could not separate "approaching" from "inside" for the seeded scenario, so proximity is
+measured to the offset *event* window and live parameters carry more weight (0.25 vs 0.10).
+
+## 4. Evidence search (`backend/services/search_engine.py`)
+
+- **Units**: report pages (chunks) and structured events. An event hit is displayed as its source page with the
+  event attached, so the excerpt is always verbatim report text.
+- **Query understanding** (`services/nlp.py`): depth ranges ("near 3400", "3,150–3,220 m"), formations, risk
+  families via a drilling synonym lexicon ("lost returns" ≈ mud loss), well names, intent (summary / cause /
+  mitigation / list / compare / risk-evidence) and references to the active context ("here", "this formation").
+- **Ranking**: `0.40·BM25/ max(BM25, 9) + 0.35·cosine(concept-hash embedding) + 0.25·metadata` (+0.04 for
+  structured events). Queries without any drilling cue must also clear cosine ≥ 0.20; results below 0.28
+  relevance are dropped.
+- **Answering**: sentences are composed only from the retrieved evidence (event descriptions, causes,
+  mitigations, lessons), ordered by severity, each with `[n]` citations. Special intents: parameter comparison
+  (reads the parameter database for each named well at the depth) and "evidence for the current risk" (runs the
+  risk engine at the context depth). No evidence → an explicit insufficient-evidence answer.
+- **Optional LLM** (`services/llm.py`): when enabled, Claude receives only the numbered evidence and must cite it;
+  outputs without valid citations are discarded and the extractive answer is kept.
+
+## 5. Document pipeline (`backend/services/document_processor.py`)
+
+`upload → text layer (pypdf) or OCR adapter → chunking (≤220 words, 40 overlap) + tagging (depth, formation,
+concepts) → sentence-level event extraction → structuring (well, date, type, entities, duplicate check) →
+human review → commit`.
+
+- Event patterns per type (losses, sticking, kicks/overpressure, torque, instability, cementing, fishing, NPT);
+  a candidate groups the trigger sentence with following cause / mitigation / NPT sentences until a new time-log
+  entry or report boundary.
+- Severity rules (e.g. SIDPP / pit gain → critical; stuck / twist-off / overpull ≥300 kN → high).
+- Confidence from evidence completeness; < 0.75 is flagged for human review.
+- Within-document merge (summary + time log describe one event) and cross-KB duplicate detection (same well,
+  family, overlapping depth).
+- Nothing is written to the knowledge base until the reviewer saves; the index and risk cache rebuild on commit.
+
+## 6. Frontend state flow
+
+`DepthScrubber / scenario / live ticker → store.setDepth → debounced POST /api/risk/evaluate → store.evaluation`
+→ KPI strip, map highlights, Risk Watch, timeline context and toasts all render from the same evaluation, so
+every panel is always consistent with one depth. The scenario runner lives in the store, so it keeps running
+while you switch screens.
+
+## 7. Production integration points
+
+| Demo component | Production replacement |
+|---|---|
+| `seed/parameters.py` samples + `/api/simulation/ertmac` | eRTMAC / WITSML stream writing `ParameterSample` rows (same schema) |
+| Synthetic report corpus | OIL DDR/WCR archive through `/api/documents/upload` (batch ingest) |
+| SQLite | PostgreSQL (`NWIS_DATABASE_URL`), pgvector for embeddings |
+| `ConceptHashEmbedder` | Sentence-embedding model behind `EmbeddingProvider` |
+| Extractive answers | `NWIS_LLM_PROVIDER=anthropic` (grounded, citation-validated) |
+| OCR adapter (reports scanned pages) | Tesseract / cloud OCR via `OCRAdapter` |
+| Hand-set weights | Weights fitted on labelled OIL NPT history (same factors, same explanations) |
+| Demo role label | SSO + role-based views (field engineer / office analyst / manager) |

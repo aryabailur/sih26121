@@ -69,7 +69,12 @@ function WhyBody({ target }: { target: WhyTarget }) {
       }
       subtitle={
         <span>
-          {live ? `Evaluated at ${fmtDepth(depth)}` : `Snapshot from ${fmtDepth(alertForZone?.triggered_at_depth)}`} · risk window{" "}
+          {live
+            ? `Evaluated at ${fmtDepth(depth)}`
+            : alertForZone && a.evaluated_at_depth !== alertForZone.triggered_at_depth
+              ? `Raised at ${fmtDepth(alertForZone.triggered_at_depth)} · escalated at ${fmtDepth(a.evaluated_at_depth)}`
+              : `Raised at ${fmtDepth(alertForZone?.triggered_at_depth ?? a.evaluated_at_depth)}`}{" "}
+          · risk window{" "}
           {fmtRange(a.risk_window.start, a.risk_window.end)} · {a.affected_formation} · zone {a.zone_id} ({a.zone_source})
         </span>
       }
