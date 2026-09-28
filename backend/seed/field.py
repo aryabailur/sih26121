@@ -95,6 +95,41 @@ FORMATION_TOPS = {
 
 SYLHET_BASE = 3950.0
 
+# Prognosed reservoir / geomechanics properties per formation:
+# (porosity %, pore pressure sg EMW, fracture gradient sg EMW). The Barail fracture gradient
+# sits close to drilling ECD (the loss mechanism); the Sylhet is overpressured below the Kopili seal
+# but was prognosed at 1.38 sg — the gap that caused the OIL-AX-33 kick.
+FORMATION_PROPS = {
+    "Girujan Shale": (32.0, 1.04, 1.58),
+    "Tipam Sandstone": (24.0, 1.07, 1.64),
+    "Namsang Formation": (20.0, 1.20, 1.70),
+    "Barail Group": (18.0, 1.26, 1.56),
+    "Kopili Shale": (6.0, 1.36, 1.76),
+    "Sylhet Limestone": (11.0, 1.38, 1.62),
+}
+
+
+def formation_props(well_id: str, name: str) -> tuple[float, float, float]:
+    """Per-well variation of the field properties (deterministic, ±2% porosity, ±0.01 sg)."""
+    por, pp, fg = FORMATION_PROPS[name]
+    k = (sum(ord(c) for c in well_id + name) % 5) - 2
+    return round(por + k * 0.8, 1), round(pp + k * 0.005, 3), round(fg + k * 0.005, 3)
+
+
+# Casing programmes (size, top MD, shoe MD). Active well: 7" liner is planned.
+def casing_program(well_id: str, td: float) -> list[tuple[str, str, float, float, bool]]:
+    tops = FORMATION_TOPS[well_id]
+    inter_shoe = {"W001": 3020, "W002": 3005, "W003": 3020, "W004": 3040, "W005": 2995, "W006": 3010,
+                  "W007": 3010, "W008": 3015, "W009": 3030, "W010": 3000, "W011": 2990}.get(well_id, 3000)
+    out = [
+        ("conductor", '20"', 0.0, 50.0 if well_id in ("W001", "W011") else 60.0, False),
+        ("surface", '13-3/8"', 0.0, float(round(tops[0])), False),
+        ("intermediate", '9-5/8"', 0.0, float(inter_shoe), False),
+    ]
+    if td > inter_shoe + 100:
+        out.append(("production liner", '7"', float(inter_shoe - 100), float(td - 5), well_id == "W001"))
+    return out
+
 
 def formation_intervals(well_id: str, td: float) -> list[tuple[str, float, float, str, list[str]]]:
     tops = [0.0] + [float(t) for t in FORMATION_TOPS[well_id]]

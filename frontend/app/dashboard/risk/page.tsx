@@ -1,8 +1,9 @@
 "use client";
 
-import { Boxes, Gauge, History, ScrollText, ShieldAlert } from "lucide-react";
+import { Boxes, Gauge, History, Layers, ScrollText, ShieldAlert } from "lucide-react";
 import { useMemo } from "react";
 import { useRiskStack } from "@/components/dashboard/RiskWatch";
+import { PressureWindowChart } from "@/components/risk/PressureWindowChart";
 import { RiskCard } from "@/components/risk/RiskCard";
 import { RiskProfileChart } from "@/components/risk/RiskProfileChart";
 import { DepthScrubber } from "@/components/shared/DepthScrubber";
@@ -89,6 +90,10 @@ export default function RiskExplorerPage() {
               ))}
             </ul>
           )}
+        </Panel>
+
+        <Panel title="Mud-weight window — OIL-AX-102" icon={<Layers size={14} />} subtitle="Prognosis vs offset-calibrated pore & fracture gradients" className="h-[560px] shrink-0" bodyClassName="p-2">
+          <PressureWindowChart />
         </Panel>
 
         <Panel title="How the score works" icon={<ScrollText size={14} />} subtitle={model.data?.name} className="shrink-0" bodyClassName="space-y-3 p-3">

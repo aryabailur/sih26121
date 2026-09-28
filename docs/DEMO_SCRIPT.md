@@ -87,5 +87,9 @@ Point at: **OIL-AX-102 · bit 3,100 m · Barail Group**, the KPI strip, and the 
 - **Nearby Wells → radius** 25 → 1.5 km (fewer offsets, risk engine re-scores) → 50 km (4 regional wells appear).
 - **Risk Explorer**: predicted risk along the whole well path; click the chart to jump the bit; model card with
   weights, alert policy and limitations.
+- **Risk Explorer → Mud-weight window**: the prognosis (dashed) vs the offset-calibrated window (solid). The
+  fracture gradient notches down where OIL-AX-99/55 lost returns; pore pressure steps up where OIL-AX-33/66 took
+  gas — and the planned 1.44 sg in the Sylhet is flagged as below it. Run the scenario and watch the live ECD
+  touch the Barail notch at ~3,160 m. "This is the physics behind the alerts."
 - **Live (sim)** toggle: the bit advances 2 m every 2 s like a live feed.
 - Be explicit: all data is synthetic; weights are transparent, not trained; decision support only.

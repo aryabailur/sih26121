@@ -57,6 +57,9 @@ export interface Formation {
   lithology: string;
   risk_tags: string[];
   is_prognosed: number;
+  porosity_pct?: number | null;
+  pore_pressure_sg?: number | null;
+  frac_gradient_sg?: number | null;
 }
 
 export interface SurveyPoint {
@@ -524,6 +527,27 @@ export interface FormationCorrelation {
     prognosed: boolean;
     events: { id: string; event_type: string; label: string; depth_start: number; depth_end: number; severity: Severity }[];
   }[];
+}
+
+export interface PressureRow {
+  md: number;
+  formation: string | null;
+  pore_prognosed: number | null;
+  frac_prognosed: number | null;
+  pore_calibrated: number | null;
+  frac_calibrated: number | null;
+  mw_plan: number | null;
+  mw: number | null;
+  ecd: number | null;
+}
+
+export interface PressureWindow {
+  well_id: string;
+  radius_km: number;
+  rows: PressureRow[];
+  calibrations: { kind: "frac_cap" | "pore_floor"; start: number; end: number; value: number; event_id: string; well: string; note: string }[];
+  casing: { name: string; size: string; top_md: number; shoe_md: number; planned: boolean }[];
+  breaches: { kind: "kick" | "losses"; start: number; end: number; message: string }[];
 }
 
 export interface SimState {

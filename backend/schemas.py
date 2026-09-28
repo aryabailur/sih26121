@@ -46,6 +46,18 @@ class FormationOut(ORM):
     lithology: str
     risk_tags: list[str]
     is_prognosed: int
+    porosity_pct: float | None = None
+    pore_pressure_sg: float | None = None
+    frac_gradient_sg: float | None = None
+
+
+class CasingOut(ORM):
+    id: str
+    name: str
+    size_in: str
+    top_md: float
+    shoe_md: float
+    planned: int
 
 
 class SurveyOut(ORM):

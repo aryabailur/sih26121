@@ -36,6 +36,7 @@ def correlate(well_ids: str, db: Session = Depends(get_db)):
             per_well.append(dict(
                 well_id=wid, well_name=wells[wid].name, top_md=f.top_md, base_md=f.base_md,
                 thickness=round(f.base_md - f.top_md, 1), prognosed=bool(f.is_prognosed),
+                porosity_pct=f.porosity_pct, pore_pressure_sg=f.pore_pressure_sg, frac_gradient_sg=f.frac_gradient_sg,
                 events=[dict(id=e.id, event_type=e.event_type, label=EVENT_LABELS.get(e.event_type, e.event_type),
                              depth_start=e.depth_start, depth_end=e.depth_end, severity=e.severity) for e in evs],
             ))

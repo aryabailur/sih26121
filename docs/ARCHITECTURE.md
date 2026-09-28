@@ -63,6 +63,15 @@ Specification deviation (documented in [ASSUMPTIONS.md](ASSUMPTIONS.md)): the sp
 zone-centre proximity could not separate "approaching" from "inside" for the seeded scenario, so proximity is
 measured to the offset *event* window and live parameters carry more weight (0.25 vs 0.10).
 
+### Mud-weight window (`backend/services/pressure.py`)
+
+`GET /api/wells/{id}/pressure-window` returns, every 10 m, the prognosed pore pressure and fracture gradient (from
+`Formation.pore_pressure_sg / frac_gradient_sg`), the same lines **calibrated by offset events** — loss events cap the
+fracture gradient at their recorded loss-onset ECD, kick/overpressure events raise pore pressure to 0.02 sg below
+the mud weight that controlled them (25 m tapers) — plus the planned mud weight, the live ECD, casing shoes, and
+"breaches" where the plan leaves the calibrated window (e.g. planned 1.44 sg in the Sylhet vs ~1.50 sg calibrated
+pore pressure). Every calibration lists its source well and event.
+
 ## 4. Evidence search (`backend/services/search_engine.py`)
 
 - **Units**: report pages (chunks) and structured events. An event hit is displayed as its source page with the

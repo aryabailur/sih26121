@@ -8,9 +8,9 @@ from sqlalchemy.orm import Session
 
 from config import ACTIVE_WELL_ID, DEFAULT_START_DEPTH
 from database import get_db
-from models import Document, DrillingEvent, Formation, ParameterSample, SurveyPoint, Well
-from schemas import DocumentOut, EventOut, FormationOut, SimilarityOut, SurveyOut, WellDetail, WellSummary
-from services import risk_engine, similarity
+from models import CasingString, Document, DrillingEvent, Formation, ParameterSample, SurveyPoint, Well
+from schemas import CasingOut, DocumentOut, EventOut, FormationOut, SimilarityOut, SurveyOut, WellDetail, WellSummary
+from services import pressure, risk_engine, similarity
 from services.geo import bearing_deg, compass, haversine_km
 from services.taxonomy import EVENT_TO_FAMILY, SEVERITY_ORDER
 
@@ -105,7 +105,9 @@ def well_profile(well_id: str, db: Session = Depends(get_db)):
     docs = db.scalars(select(Document).where(Document.well_id == well_id).order_by(Document.date)).all()
     anchor = db.get(Well, ACTIVE_WELL_ID)
     sim = similarity.similarity_map(db, ACTIVE_WELL_ID).get(well_id)
+    casing = db.scalars(select(CasingString).where(CasingString.well_id == well_id).order_by(CasingString.shoe_md)).all()
     return {
+        "casing": [CasingOut.model_validate(c).model_dump(mode="json") for c in casing],
         "well": WellDetail.model_validate(w).model_dump(mode="json"),
         "formations": [FormationOut.model_validate(f).model_dump(mode="json") for f in forms],
         "events": [EventOut.model_validate(e).model_dump(mode="json") for e in events],
@@ -124,6 +126,14 @@ def well_similarity(well_id: str, db: Session = Depends(get_db)):
     rows = sorted(sims.values(), key=lambda s: -s.score)
     return {"similarities": [SimilarityOut.model_validate(s).model_dump(mode="json") for s in rows],
             "weights": similarity.WEIGHTS}
+
+
+@router.get("/{well_id}/pressure-window")
+def well_pressure_window(well_id: str, radius_km: float = 25.0, step: float = Query(10, ge=5), db: Session = Depends(get_db)):
+    try:
+        return pressure.pressure_window(db, well_id, radius_km, step)
+    except KeyError:
+        raise HTTPException(404, f"Well {well_id} not found")
 
 
 @router.get("/{well_id}/parameters")

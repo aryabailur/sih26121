@@ -11,6 +11,7 @@ import type {
   FormationCorrelation,
   ModelCard,
   Parameters,
+  PressureWindow,
   ProcessingStatus,
   RiskProfilePoint,
   RiskZone,
@@ -84,6 +85,8 @@ export const api = {
   wellParameters: (id: string, step = 10) =>
     request<{ well_id: string; samples: (Parameters & { md: number })[] }>(`/api/wells/${id}/parameters${qs({ step })}`),
   trajectories: () => request<{ trajectories: Record<string, Trajectory[]> }>("/api/wells/trajectories"),
+  pressureWindow: (id: string, radius_km: number) =>
+    request<PressureWindow>(`/api/wells/${id}/pressure-window${qs({ radius_km, step: 10 })}`),
   similarity: (id: string) => request<{ similarities: Similarity[]; weights: Record<string, number> }>(`/api/wells/${id}/similarity`),
 
   events: (p: { well_id?: string; event_type?: string; formation?: string; radius_km?: number; depth_min?: number; depth_max?: number } = {}) =>

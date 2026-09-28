@@ -17,12 +17,13 @@ from config import REPORTS_DIR, UPLOAD_DIR  # noqa: E402
 from database import Base, SessionLocal, engine  # noqa: E402
 import models  # noqa: E402,F401
 from models import (  # noqa: E402
-    Document, DocumentChunk, DrillingEvent, Formation, ParameterSample, Recommendation, RiskZone,
+    CasingString, Document, DocumentChunk, DrillingEvent, Formation, ParameterSample, Recommendation, RiskZone,
     SurveyPoint, Well,
 )
 from seed.corpus import build_corpus  # noqa: E402
 from seed.field import (  # noqa: E402
-    BASIN, EVENTS, RECOMMENDATIONS, RISK_ZONES, WELLS, build_trajectory, formation_at, formation_intervals,
+    BASIN, EVENTS, RECOMMENDATIONS, RISK_ZONES, WELLS, build_trajectory, casing_program, formation_at,
+    formation_intervals, formation_props,
 )
 from seed.parameters import mud_program, parameters_at, sample_depths, timestamp_at  # noqa: E402
 from seed.sample_docs import generate_samples  # noqa: E402
@@ -51,11 +52,16 @@ def seed() -> dict:
                 mud_program=mud_program(w["id"]),
             ))
             for name, top, base, lith, tags in formation_intervals(w["id"], w["td"]):
+                por, pp, fg = formation_props(w["id"], name)
                 db.add(Formation(
                     id=f"FM-{w['id']}-{name.split()[0][:4].upper()}", well_id=w["id"], name=name, top_md=top,
                     base_md=base, lithology=lith, risk_tags=tags,
                     is_prognosed=int(w["role"] == "active" and top > w["cur"]),
+                    porosity_pct=por, pore_pressure_sg=pp, frac_gradient_sg=fg,
                 ))
+            for i, (cname, size, ctop, shoe, planned) in enumerate(casing_program(w["id"], w["td"])):
+                db.add(CasingString(id=f"CS-{w['id']}-{i}", well_id=w["id"], name=cname, size_in=size,
+                                    top_md=ctop, shoe_md=shoe, planned=int(planned)))
             for i, p in enumerate(traj):
                 db.add(SurveyPoint(id=f"SV-{w['id']}-{i:04d}", well_id=w["id"],
                                    is_planned=int(w["role"] == "active" and p["md"] > w["cur"]), **p))

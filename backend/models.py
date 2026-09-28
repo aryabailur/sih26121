@@ -70,8 +70,24 @@ class Formation(Base):
     lithology: Mapped[str] = mapped_column(String(60))
     risk_tags: Mapped[list[str]] = mapped_column(JSON, default=list)
     is_prognosed: Mapped[int] = mapped_column(Integer, default=0)
+    # Reservoir / geomechanics characteristics (prognosed for the active well).
+    porosity_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    pore_pressure_sg: Mapped[float | None] = mapped_column(Float, nullable=True)
+    frac_gradient_sg: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     well: Mapped[Well] = relationship(back_populates="formations")
+
+
+class CasingString(Base):
+    __tablename__ = "casing_strings"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    well_id: Mapped[str] = mapped_column(ForeignKey("wells.id"), index=True)
+    name: Mapped[str] = mapped_column(String(40))  # conductor | surface | intermediate | production liner
+    size_in: Mapped[str] = mapped_column(String(12))  # e.g. 9-5/8"
+    top_md: Mapped[float] = mapped_column(Float)
+    shoe_md: Mapped[float] = mapped_column(Float)
+    planned: Mapped[int] = mapped_column(Integer, default=0)
 
 
 class Document(Base):

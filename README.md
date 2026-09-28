@@ -87,7 +87,7 @@ source page → evidence search → scenario → Why? → acknowledge) is at
 |---|---|---|
 | **P1 / S2** nearby wells on a map, user radius | Field map (Command Center, Nearby Wells): active well, offsets, well paths, bit position, radius 0.5–50 km | Nearby Wells → drag the radius from 25 km to 1.5 km, then 50 km |
 | **P2 / S3** instant access to historical experience | Well profile drawer, Well Intelligence, knowledge-base library, source viewer | Click OIL-AX-99 on the map |
-| **P3 / S4** correlate across wells by depth & formation | Depth scrubber, Well Intelligence overlay, Correlate & Compare (formation-top correlation + multi-well parameter chart) | Correlate & Compare |
+| **P3 / S4** correlate across wells by depth & formation | Depth scrubber, Well Intelligence overlay, Correlate & Compare (formation-top correlation + multi-well parameter chart), casing strings, formation porosity / pore pressure / fracture gradient, and an offset-calibrated mud-weight window | Correlate & Compare · Risk Explorer → Mud-weight window |
 | **P4 / S6** proactive alerts near risky depths | Depth-aware risk engine, alert toasts, Risk Watch, acknowledge / review / dismiss, audit trail | Run historical risk scenario |
 | **S1** AI/NLP/OCR extraction from reports | Document Intelligence: PDF text layer → OCR adapter → chunking → rule-based event/entity extraction → duplicate check → human review → knowledge base | Document Intelligence → Process sample report |
 | **S5** predictive risk for losses, stuck pipe, overpressure, torque, cementing | Explainable hybrid risk score over 7 risk families, risk profile along the well path | Risk Explorer |
