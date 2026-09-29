@@ -319,9 +319,11 @@ function announceNewAlerts(ev: Evaluation) {
   const fresh: Toast[] = ev.new_alert_ids
     .map((id) => ev.active_alerts.find((a) => a.id === id))
     .filter((a): a is Alert => Boolean(a))
-    .map((a) => ({ id: a.id, alert: a, kind: prevAlerts.some((p) => p.id === a.id) ? "escalated" : "raised", at: now }));
+    // Keyed by risk zone, not alert id: one toast per risk window even if the alert was re-raised
+    // (e.g. another tab cleared alerts on the shared backend).
+    .map((a) => ({ id: a.zone_id ?? a.id, alert: a, kind: prevAlerts.some((p) => p.id === a.id) ? "escalated" : "raised", at: now }));
   useNWIS.setState({
-    // One toast per alert — an escalation replaces the earlier toast.
+    // One toast per risk window — an escalation replaces the earlier toast.
     toasts: [...toasts.filter((t) => !fresh.some((n) => n.id === t.id)), ...fresh].slice(-4),
     flashAlertIds: [...flashAlertIds, ...ev.new_alert_ids],
   });

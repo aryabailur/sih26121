@@ -4,7 +4,8 @@
 
 - Start with `.\start.ps1` (or `./start.sh`) at least a minute early; open `http://localhost:3000/dashboard`.
 - Press **Reset** in the top bar (bit back to 3,100 m, alerts and uploads cleared).
-- Browser at 1600×900 or larger, zoom 100%. Close other tabs.
+- Browser at 1600×900 or larger, zoom 100%. Keep **one** NWIS tab open: alerts live on the shared backend, so
+  Run / Reset in a second tab (or on a teammate's laptop pointed at the same server) clears the first tab's alerts.
 - Backup: `docs/screenshots/01…12` walk the same flow if anything fails.
 
 ---
