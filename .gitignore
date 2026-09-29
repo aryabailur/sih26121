@@ -25,3 +25,8 @@ Thumbs.db
 *.log
 .env
 .env.local
+
+# tools/ (dev tooling)
+tools/node_modules/
+tools/.video-tmp/
+tools/.why-crop.png

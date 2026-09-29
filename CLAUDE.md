@@ -1,5 +1,8 @@
 # NWIS — notes for Claude / contributors
 
+**New session? Read `HANDOFF.md` first** — current status, run/verify commands, the tuned demo scenario, repo map,
+API list, gotchas and open items.
+
 SIH26121 prototype: FastAPI backend (`backend/`) + Next.js 16 cockpit (`frontend/`). Spec: `SIH26121_MASTER_BUILD.md`.
 Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that table current when you change behaviour.
 

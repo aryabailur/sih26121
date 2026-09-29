@@ -213,7 +213,9 @@ frontend/
   app/dashboard/          6 screens + Correlate & Compare
   components/             map · dashboard · risk · search · well · documents · shared · ui
   lib/                    api client · Zustand store · types (API contract) · utils
-docs/                     architecture · demo script · pitch · assumptions · screenshots
+docs/                     architecture · demo script · pitch · assumptions · screenshots · deck · video
+tools/                    dev tooling: screenshots, demo video, E2E scenario check, deck build
+HANDOFF.md                project status & handoff notes (start here when resuming work)
 SIH26121_MASTER_BUILD.md  the build specification
 ```
 

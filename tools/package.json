@@ -1,0 +1,20 @@
+{
+  "name": "nwis-tools",
+  "private": true,
+  "description": "Dev tooling for NWIS: screenshots, demo video, end-to-end scenario check, pitch deck build",
+  "scripts": {
+    "shots": "node docs_shots.mjs",
+    "video": "node record_video.mjs",
+    "verify": "node verify_scenario.mjs",
+    "deck": "node build_deck.js",
+    "browsers": "playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.60.0",
+    "pptxgenjs": "^4.0.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
+    "sharp": "^0.34.0"
+  }
+}
