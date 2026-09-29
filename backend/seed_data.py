@@ -48,7 +48,7 @@ def seed() -> dict:
                 latitude=w["lat"], longitude=w["lon"], spud_date=w["spud"], completion_date=w["comp"],
                 total_depth_md=w["td"], current_depth_md=w["cur"], total_depth_tvd=round(tvd_td, 1),
                 well_type=w["well_type"], formation_target=w["target"], rig=w["rig"],
-                operator_note="Synthetic demo well" if w["role"] == "offset" else "Active well — simulated eRTMAC feed",
+                operator_note="Offset well — completed" if w["role"] == "offset" else "Active well — simulated eRTMAC feed",
                 mud_program=mud_program(w["id"]),
             ))
             for name, top, base, lith, tags in formation_intervals(w["id"], w["td"]):

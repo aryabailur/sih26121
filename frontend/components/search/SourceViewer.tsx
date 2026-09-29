@@ -1,6 +1,7 @@
 "use client";
 
 import { Download, FileText } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { FamilyChip, SeverityBadge } from "@/components/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +15,8 @@ import { cn, DOC_TYPE_LABEL, fmtDate, fmtRange, highlightSegments } from "@/lib/
 /** "Click source to open the relevant report excerpt" — every citation lands here. */
 export function SourceViewer() {
   const source = useNWIS((s) => s.source);
-  if (!source) return null;
   // Keyed so each citation opens with fresh state on its own page.
-  return <SourceViewerBody key={`${source.documentId}:${source.page ?? ""}`} source={source} />;
+  return <AnimatePresence>{source && <SourceViewerBody key={`${source.documentId}:${source.page ?? ""}`} source={source} />}</AnimatePresence>;
 }
 
 function SourceViewerBody({ source }: { source: SourceTarget }) {
@@ -34,21 +34,28 @@ function SourceViewerBody({ source }: { source: SourceTarget }) {
     <Dialog
       open
       onClose={() => close(null)}
-      className="max-w-4xl"
+      className="max-w-[980px]"
+      icon={
+        <span className="flex h-10 w-10 items-center justify-center rounded-[3px] bg-brand-soft text-brand-ink">
+          <FileText size={19} />
+        </span>
+      }
       title={
-        <span className="flex items-center gap-2">
-          <FileText size={15} className="text-cyan-300" /> {doc?.title ?? "Source document"}
-          {doc && <Badge tone="cyan">{DOC_TYPE_LABEL[doc.doc_type] ?? doc.doc_type}</Badge>}
-          {doc && <Badge tone={doc.source_status === "uploaded" ? "green" : "amber"}>{doc.source_status === "uploaded" ? "uploaded" : "synthetic demo"}</Badge>}
+        <span className="flex flex-wrap items-center gap-2">
+          {doc?.title ?? "Source document"}
+          {doc && <Badge tone="brand">{DOC_TYPE_LABEL[doc.doc_type] ?? doc.doc_type}</Badge>}
+          {doc?.source_status === "uploaded" && <Badge tone="green">Uploaded</Badge>}
         </span>
       }
       subtitle={doc ? `${doc.well_name} · ${fmtDate(doc.date)} · ${doc.page_count} pages · ${doc.summary}` : undefined}
       footer={
         doc && (
-          <div className="flex items-center justify-between text-[11px] text-cockpit-dim">
-            <span>Provenance: document {doc.id} · page {current?.page ?? "—"} · section “{current?.section}”</span>
-            <a href={`/api/documents/${doc.id}/file`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-cyan-300 hover:underline">
-              <Download size={12} /> Original file
+          <div className="flex items-center justify-between gap-3 text-[12.5px] text-ink-3">
+            <span>
+              Provenance: document <b className="font-mono text-ink-2">{doc.id}</b> · page {current?.page ?? "—"} · section “{current?.section}”
+            </span>
+            <a href={`/api/documents/${doc.id}/file`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand-soft px-3 py-1 font-bold text-brand-ink hover:brightness-95">
+              <Download size={13} /> Original file
             </a>
           </div>
         )
@@ -57,49 +64,58 @@ function SourceViewerBody({ source }: { source: SourceTarget }) {
       {loading && <Loading label="Opening report…" />}
       {error && <ErrorState message={error} onRetry={reload} />}
       {doc && (
-        <div className="grid gap-4 md:grid-cols-[150px_1fr]">
-          <nav className="space-y-1">
-            <div className="label-caps mb-1">Indexed pages</div>
+        <div className="grid gap-5 md:grid-cols-[160px_1fr]">
+          <nav className="space-y-1.5">
+            <div className="label mb-1">Indexed pages</div>
             {chunks.map((c) => (
               <button
                 key={c.id}
                 onClick={() => setPage(c.page)}
                 className={cn(
-                  "block w-full rounded border px-2 py-1 text-left text-[11px]",
-                  c.page === current?.page ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-100" : "border-cockpit-line text-slate-400 hover:text-slate-200",
+                  "block w-full rounded-[3px] border px-3 py-2 text-left text-[12.5px] transition-all",
+                  c.page === current?.page ? "border-brand bg-brand-soft text-brand-ink shadow-sm" : "border-line text-ink-2 hover:border-line-2 hover:bg-surface-2",
                 )}
               >
-                <div className="font-mono">p.{c.page}</div>
-                <div className="truncate text-[10px] opacity-80">{c.section}</div>
+                <div className="font-extrabold">Page {c.page}</div>
+                <div className="truncate text-[12px] opacity-80">{c.section}</div>
               </button>
             ))}
           </nav>
           <article>
             {current && (
               <>
-                <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] text-cockpit-muted">
-                  <span className="font-mono text-slate-200">Page {current.page}</span>
-                  <span>· {current.section}</span>
-                  {current.depth_start !== null && <span>· {fmtRange(current.depth_start, current.depth_end)}</span>}
-                  {current.formation && <span>· {current.formation}</span>}
-                </div>
-                <div className="rounded-lg border border-cockpit-line bg-[#0c1322] p-4 font-mono text-[12.5px] leading-relaxed text-slate-200">
-                  {highlightSegments(current.text, terms).map((s, i) => (s.hl ? <mark key={i} className="hl">{s.t}</mark> : <span key={i}>{s.t}</span>))}
-                </div>
-                {pageEvents.length > 0 && (
-                  <div className="mt-3 space-y-1.5">
-                    <div className="label-caps">Structured events extracted from this page</div>
-                    {pageEvents.map((e) => (
-                      <div key={e.id} className="flex flex-wrap items-center gap-2 rounded border border-cockpit-line bg-black/20 px-2 py-1.5 text-[11px]">
-                        <FamilyChip eventType={e.event_type} />
-                        <SeverityBadge severity={e.severity} />
-                        <span className="font-mono text-slate-200">{fmtRange(e.depth_start, e.depth_end)}</span>
-                        <span className="text-slate-300">{e.title}</span>
-                        <span className="ml-auto font-mono text-cockpit-dim">{e.id}</span>
-                      </div>
-                    ))}
+                <motion.div key={current.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+                  <div className="mb-2 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-3">
+                    <span className="font-bold text-ink">Page {current.page}</span>
+                    <span>· {current.section}</span>
+                    {current.depth_start !== null && <span>· {fmtRange(current.depth_start, current.depth_end)}</span>}
+                    {current.formation && <span>· {current.formation}</span>}
                   </div>
-                )}
+                  {/* the report page — printed-paper treatment */}
+                  <div className="relative rounded-[2px] border border-[var(--paper-line)] bg-[var(--paper)] px-8 py-7 shadow-[0_18px_40px_-18px_rgb(0_0_0/0.35)]">
+                    <div className="mb-4 flex items-center justify-between border-b border-[var(--paper-line)] pb-2 font-mono text-[11.5px] uppercase tracking-[0.14em] text-ink-3">
+                      <span>{doc.well_name} · {DOC_TYPE_LABEL[doc.doc_type] ?? doc.doc_type}</span>
+                      <span>p. {current.page}</span>
+                    </div>
+                    <p className="whitespace-pre-wrap font-mono text-[13px] leading-[1.75] text-ink-2">
+                      {highlightSegments(current.text, terms).map((s, i) => (s.hl ? <mark key={i} className="hl">{s.t}</mark> : <span key={i}>{s.t}</span>))}
+                    </p>
+                  </div>
+                  {pageEvents.length > 0 && (
+                    <div className="mt-4 space-y-2">
+                      <div className="label">Structured events extracted from this page</div>
+                      {pageEvents.map((e) => (
+                        <div key={e.id} className="flex flex-wrap items-center gap-2 rounded-[3px] border border-line bg-surface-2 px-3 py-2 text-[12.5px]">
+                          <FamilyChip eventType={e.event_type} />
+                          <SeverityBadge severity={e.severity} />
+                          <span className="font-bold text-ink">{fmtRange(e.depth_start, e.depth_end)}</span>
+                          <span className="text-ink-2">{e.title}</span>
+                          <span className="ml-auto font-mono text-[12px] text-ink-4">{e.id}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
               </>
             )}
           </article>

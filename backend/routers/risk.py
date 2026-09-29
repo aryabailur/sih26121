@@ -10,7 +10,7 @@ from config import ACTIVE_WELL_ID
 from database import get_db
 from models import Alert, AlertAudit, RiskZone
 from schemas import AcknowledgeRequest, RiskEvaluateRequest, RiskZoneOut
-from services import risk_engine
+from services import risk_engine, risk_model
 from services.taxonomy import RISK_LABELS
 
 router = APIRouter(prefix="/api/risk", tags=["risk"])
@@ -96,8 +96,9 @@ def model_card():
         "alert_policy": "High/critical-history zones alert at ≥0.55; medium/low-history zones alert only at ≥0.75 "
                         "(live signal confirmation). Below that, the assessment is shown as a watch card.",
         "limitations": [
-            "Rule-weighted, not statistically calibrated — scores rank risk, they are not probabilities.",
+            "Rule-weighted — scores rank risk, they are not probabilities. The learned model below is a cross-check, not the alert driver.",
             "Demo data is synthetic; weights must be tuned on authorised OIL history before operational use.",
             "Decision support only — the engineer remains the decision maker.",
         ],
+        "learned": risk_model.card(),
     }

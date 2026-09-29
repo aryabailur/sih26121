@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W006-ML | well=W006 | type=mud_log | date=2022-06-02 | pages=11
 ### TITLE Mud Log OIL-AX-55
 ### SUMMARY Mud log — Girujan clay balling, differential sticking, partial losses at 3,172 m.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Lithology & Hole Condition | DEPTH 0-900 ===
 Girujan clays 0–810 m: soft, sticky, reactive. Hole enlargement and clay balling at 450–520 m; tight hole on trip out (NPT 3 hrs). Reamed; added 3% KCl and glycol to the mud system.
 === PAGE 2 | SECTION Drilling Events Log | DEPTH 2880-2890 ===

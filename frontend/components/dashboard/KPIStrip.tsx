@@ -1,30 +1,31 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
+import { motion } from "motion/react";
 import { useMemo } from "react";
 import { Sparkline } from "@/components/charts/Sparkline";
+import { AnimatedNumber } from "@/components/ui/animated";
 import { useNWIS } from "@/lib/store";
 import type { Parameters } from "@/lib/types";
-import { cn, fmtDepth, formationColor } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type Key = "rop" | "wob" | "torque" | "ecd" | "standpipe_pressure" | "mud_weight";
 
-const KPIS: { key: Key; label: string; unit: string; digits: number; color: string }[] = [
-  { key: "rop", label: "ROP", unit: "m/hr", digits: 1, color: "#38bdf8" },
-  { key: "wob", label: "WOB", unit: "kN", digits: 0, color: "#38bdf8" },
-  { key: "torque", label: "Torque", unit: "kN·m", digits: 1, color: "#38bdf8" },
-  { key: "ecd", label: "ECD", unit: "sg", digits: 3, color: "#38bdf8" },
-  { key: "standpipe_pressure", label: "SPP", unit: "psi", digits: 0, color: "#38bdf8" },
-  { key: "mud_weight", label: "Mud weight", unit: "sg", digits: 3, color: "#38bdf8" },
+const KPIS: { key: Key; label: string; unit: string; digits: number; hint: string }[] = [
+  { key: "rop", label: "ROP", unit: "m/hr", digits: 1, hint: "Rate of penetration" },
+  { key: "wob", label: "WOB", unit: "kN", digits: 0, hint: "Weight on bit" },
+  { key: "torque", label: "Torque", unit: "kN·m", digits: 1, hint: "Surface torque" },
+  { key: "ecd", label: "ECD", unit: "sg", digits: 3, hint: "Equivalent circulating density" },
+  { key: "standpipe_pressure", label: "SPP", unit: "psi", digits: 0, hint: "Standpipe pressure" },
+  { key: "mud_weight", label: "MW", unit: "sg", digits: 3, hint: "Mud weight in" },
 ];
 
+/** Live eRTMAC parameters (simulated). A tile turns orange when any in-horizon assessment flags its signal. */
 export function KPIStrip() {
   const evaluation = useNWIS((s) => s.evaluation);
-  const depth = useNWIS((s) => s.depth);
   const p = evaluation?.parameters;
   const trend = evaluation?.trend ?? [];
 
-  // A KPI is flagged when any in-horizon assessment marks its signal anomalous.
   const flags = useMemo(() => {
     const m = new Map<string, string>();
     for (const a of evaluation?.assessments ?? []) {
@@ -34,54 +35,44 @@ export function KPIStrip() {
   }, [evaluation]);
 
   return (
-    <div className="grid shrink-0 grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-8">
-      <div className="glass rounded-lg px-3 py-2">
-        <div className="label-caps">Bit depth (MD)</div>
-        <div className="font-mono text-xl font-semibold tabular text-slate-50">{fmtDepth(depth, false)}<span className="ml-1 text-xs text-cockpit-muted">m</span></div>
-        <div className="text-[10px] text-cockpit-dim">TD plan {fmtDepth(3800)}</div>
-      </div>
-      <div className="glass rounded-lg px-3 py-2">
-        <div className="label-caps">Formation</div>
-        <div className="mt-0.5 flex items-center gap-1.5 text-[13px] font-semibold text-slate-50">
-          <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: formationColor(evaluation?.current_formation) }} />
-          <span className="truncate">{evaluation?.current_formation ?? "—"}</span>
-        </div>
-        <div className="truncate text-[10px] text-cockpit-dim">
-          {evaluation?.next_risk_zone ? `next window ${Math.round(evaluation.next_risk_zone.distance)} m` : "no window ahead"}
-        </div>
-      </div>
-      {KPIS.map((k) => {
+    <div className="grid shrink-0 grid-cols-3 gap-2.5 xl:grid-cols-6">
+      {KPIS.map((k, i) => {
         const v = p?.[k.key as keyof Parameters] as number | undefined;
         const flag = flags.get(k.key);
         return (
-          <div
+          <motion.div
             key={k.key}
-            className={cn("glass relative rounded-lg px-3 py-2", flag && "border-amber-500/60 bg-amber-500/[0.06]")}
-            title={flag ?? `${k.label} — last 20 readings (simulated eRTMAC)`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.04 * i, type: "spring", stiffness: 260, damping: 24 }}
+            className={cn("card relative min-w-0 overflow-hidden px-3 pb-2 pt-2.5 transition-colors", flag && "border-high/60")}
+            style={flag ? { background: "color-mix(in oklab, var(--high) 7%, var(--surface))" } : undefined}
+            title={flag ?? `${k.hint} — last ${trend.length} readings (simulated eRTMAC)`}
           >
-            <div className="flex items-center justify-between">
-              <span className="label-caps">{k.label}</span>
+            <div className="flex items-center justify-between gap-1">
+              <span className="truncate text-[12.5px] font-bold text-ink-3">{k.label}</span>
               {flag && (
-                <span className="flex items-center gap-0.5 text-[9px] font-bold uppercase text-amber-300">
-                  <AlertTriangle size={10} /> anomaly
+                <span className="flex h-5 w-5 shrink-0 animate-breathe items-center justify-center rounded-full bg-high text-white" aria-label="Anomaly">
+                  <TriangleAlert size={11} />
                 </span>
               )}
             </div>
-            <div className="flex items-end justify-between gap-2">
-              <div className="font-mono text-lg font-semibold leading-tight tabular text-slate-50">
-                {v === undefined ? "—" : v.toLocaleString("en-IN", { minimumFractionDigits: k.digits, maximumFractionDigits: k.digits })}
-                <span className="ml-1 text-[10px] font-normal text-cockpit-muted">{k.unit}</span>
-              </div>
-              <Sparkline
-                values={trend.map((t) => t[k.key as keyof Parameters] as number)}
-                depths={trend.map((t) => t.md ?? 0)}
-                color={flag ? "#f59e0b" : k.color}
-                width={64}
-                height={24}
-                format={(x) => x.toFixed(k.digits)}
-              />
+            <div className="mt-0.5 flex items-baseline gap-1 whitespace-nowrap">
+              <span className="text-[20px] font-extrabold leading-tight tracking-[-0.02em] text-ink">
+                {v === undefined ? "—" : <AnimatedNumber value={v} format={(x) => x.toLocaleString("en-IN", { minimumFractionDigits: k.digits, maximumFractionDigits: k.digits })} />}
+              </span>
+              <span className={cn("text-[12px] font-bold", flag ? "text-high-ink" : "text-ink-3")}>{k.unit}</span>
             </div>
-          </div>
+            <Sparkline
+              values={trend.map((t) => t[k.key as keyof Parameters] as number)}
+              depths={trend.map((t) => t.md ?? 0)}
+              color={flag ? "var(--high)" : "var(--brand)"}
+              fluid
+              height={26}
+              className="mt-1"
+              format={(x) => x.toFixed(k.digits)}
+            />
+          </motion.div>
         );
       })}
     </div>

@@ -1,16 +1,20 @@
 "use client";
 
-import { FileUp, Sparkles } from "lucide-react";
+import { Download, FileUp, ScanLine, Sparkles } from "lucide-react";
+import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function UploadZone({ onFile, onSample, busy }: { onFile: (f: File) => void; onSample: () => void; busy: boolean }) {
+export const TEXT_SAMPLE = "DDR_OIL-AX-22_Day45_SAMPLE.pdf";
+export const SCANNED_SAMPLE = "DDR_OIL-AX-44_Day38_SCANNED.pdf";
+
+export function UploadZone({ onFile, onSample, busy }: { onFile: (f: File) => void; onSample: (name: string) => void; busy: boolean }) {
   const input = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
   return (
-    <div className="space-y-2">
-      <div
+    <div className="space-y-3">
+      <motion.div
         onDragOver={(e) => {
           e.preventDefault();
           setOver(true);
@@ -23,18 +27,21 @@ export function UploadZone({ onFile, onSample, busy }: { onFile: (f: File) => vo
           if (f) onFile(f);
         }}
         onClick={() => input.current?.click()}
+        animate={{ scale: over ? 1.02 : 1 }}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-7 text-center transition-colors",
-          over ? "border-cyan-300 bg-cyan-400/10" : "border-cockpit-border hover:border-cyan-400/50 hover:bg-white/[0.02]",
+          "relative flex cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-[4px] border-2 border-dashed px-4 py-7 text-center transition-colors",
+          over ? "border-brand bg-brand-soft" : "border-line-2 bg-surface-2 hover:border-brand/50 hover:bg-brand-soft/50",
           busy && "pointer-events-none opacity-50",
         )}
         role="button"
         tabIndex={0}
         aria-label="Upload a drilling report"
       >
-        <FileUp size={26} className="text-cyan-300" />
-        <div className="text-[13px] font-medium text-slate-100">Drop a DDR / WCR / mud log here</div>
-        <div className="text-[11px] text-cockpit-muted">PDF (text layer or scanned → OCR adapter), TXT, PNG/JPG · max 15 MB</div>
+        <motion.span className="aurora flex h-14 w-14 items-center justify-center rounded-[4px] text-white shadow-brand" animate={{ y: over ? -6 : [0, -5, 0] }} transition={over ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+          <FileUp size={26} />
+        </motion.span>
+        <div className="mt-1 text-[14px] font-extrabold text-ink">Drop a DDR, WCR or mud log</div>
+        <div className="text-[12.5px] text-ink-3">PDF with a text layer or scanned (OCR), TXT, PNG/JPG · max 15 MB</div>
         <input
           ref={input}
           type="file"
@@ -46,13 +53,24 @@ export function UploadZone({ onFile, onSample, busy }: { onFile: (f: File) => vo
             e.target.value = "";
           }}
         />
-      </div>
-      <Button variant="primary" className="w-full" onClick={onSample} disabled={busy}>
-        <Sparkles size={13} /> Process sample report (DDR OIL-AX-22 Day 45)
+      </motion.div>
+      <Button variant="aurora" size="md" className="w-full" onClick={() => onSample(TEXT_SAMPLE)} disabled={busy}>
+        <Sparkles size={15} /> Process sample report (DDR OIL-AX-22 Day 45)
       </Button>
-      <a href="/api/documents/samples/DDR_OIL-AX-22_Day45_SAMPLE.pdf" className="block text-center text-[11px] text-cyan-300/90 hover:underline" download>
-        Download the sample PDF to try the drag-and-drop path
-      </a>
+      <Button variant="secondary" size="md" className="w-full" onClick={() => onSample(SCANNED_SAMPLE)} disabled={busy} title="An image-only PDF — no text layer, so every word comes from OCR">
+        <ScanLine size={15} /> Process scanned report · OCR (OIL-AX-44 Day 38)
+      </Button>
+      <div className="flex items-center justify-center gap-3 text-[12.5px] font-semibold text-brand-ink">
+        <Download size={12} />
+        <a href={`/api/documents/samples/${TEXT_SAMPLE}`} className="hover:underline" download>
+          Text PDF
+        </a>
+        <span className="text-ink-4">·</span>
+        <a href={`/api/documents/samples/${SCANNED_SAMPLE}`} className="hover:underline" download>
+          Scanned PDF
+        </a>
+        <span className="font-medium text-ink-3">to try drag-and-drop</span>
+      </div>
     </div>
   );
 }

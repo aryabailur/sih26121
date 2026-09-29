@@ -260,6 +260,48 @@ export interface RiskAssessment {
   recommended_checks: string[];
   offset_practice: string[];
   evidence_ids: string[];
+  /** Learned cross-check (logistic model backtested on offset wells); absent until the model has trained. */
+  ml?: LearnedOpinion;
+}
+
+export interface LearnedOpinion {
+  probability: number;
+  base_rate: number;
+  lift: number;
+  elevated: boolean;
+  verdict: "agrees" | "more_concerned" | "less_sure";
+  horizon_m: number;
+}
+
+export interface LearnedModel {
+  method: string;
+  target: string;
+  validation: string;
+  caveat: string;
+  status: "ready" | "training" | "unavailable";
+  error: string | null;
+  intercept?: number;
+  coefficients?: Record<string, number>;
+  learned_weights?: Record<string, number>;
+  hand_weights?: Record<string, number>;
+  rows?: number;
+  positives?: number;
+  wells?: number;
+  base_rate?: number;
+  auc_model?: number | null;
+  auc_rule?: number | null;
+  per_family?: Record<string, { rows: number; positives: number; auc_model: number | null; auc_rule: number | null }>;
+  horizon_m?: number;
+  seconds?: number;
+}
+
+export interface CasingString {
+  id: string;
+  name: string;
+  size_in: string;
+  top_md: number;
+  shoe_md: number;
+  planned: number;
 }
 
 export interface Alert {
@@ -449,6 +491,7 @@ export interface ModelCard {
   factors: Record<string, string>;
   alert_policy: string;
   limitations: string[];
+  learned: LearnedModel;
 }
 
 export interface Trajectory {
@@ -508,7 +551,7 @@ export interface ExtractionResult {
   events: CandidateEvent[];
   entities: ExtractedEntity[];
   chunks: { page: number; index: number; text: string; section: string; depth_start: number | null; depth_end: number | null; formation: string | null; tags: string[] }[];
-  pages: { page: number; method: string; text: string }[];
+  pages: { page: number; method: string; text: string; ocr_confidence?: number | null }[];
   detected: { well_id: string | null; date: string | null; doc_type: string | null };
   wells: { id: string; name: string }[];
 }

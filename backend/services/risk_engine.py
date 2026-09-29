@@ -508,6 +508,9 @@ def evaluate(db: Session, well_id: str, depth: float, params: dict | None = None
     live = simulated_parameters(ctx, depth)
     merged = {**live, **{k: v for k, v in (params or {}).items() if v is not None}}
     assessments = assess(ctx, depth, merged)
+    from services import risk_model  # local import: risk_model builds on this module
+
+    risk_model.annotate(assessments)  # learned cross-check only — scores and alert policy are unchanged
     new_alerts = _record_alerts(db, well_id, depth, assessments) if persist else []
     all_alerts = db.scalars(select(Alert).where(Alert.well_id == well_id).order_by(Alert.created_at)).all()
 

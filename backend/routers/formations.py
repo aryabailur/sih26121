@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from config import ACTIVE_WELL_ID
 from database import get_db
-from models import DrillingEvent, Formation, Well
-from schemas import FormationOut
+from models import CasingString, DrillingEvent, Formation, Well
+from schemas import CasingOut, FormationOut
 from services.taxonomy import EVENT_LABELS, FORMATIONS
 
 router = APIRouter(prefix="/api/formations", tags=["formations"])
@@ -45,4 +45,11 @@ def correlate(well_ids: str, db: Session = Depends(get_db)):
             correlation.append(dict(formation=name, wells=per_well, top_spread_m=round(max(tops) - min(tops), 1),
                                     risk_tags=next((f.risk_tags for f in forms if f.name == name), []),
                                     event_count=sum(len(p["events"]) for p in per_well)))
-    return {"correlation": correlation, "well_ids": ids}
+    # Casing programmes and mud-weight programmes per well, so they can be compared on one depth axis.
+    casing = db.scalars(select(CasingString).where(CasingString.well_id.in_(ids)).order_by(CasingString.shoe_md)).all()
+    return {
+        "correlation": correlation,
+        "well_ids": ids,
+        "casing": {wid: [CasingOut.model_validate(c).model_dump(mode="json") for c in casing if c.well_id == wid] for wid in ids},
+        "mud_program": {wid: dict(wells[wid].mud_program or {}) for wid in ids if wid in wells},
+    }

@@ -1,10 +1,15 @@
 """Sample report for the Document Intelligence demo (a DDR not yet in the knowledge base)."""
 from __future__ import annotations
 
+import shutil
+from pathlib import Path
+
 from config import SAMPLE_DIR
 from services.pdf_writer import write_pdf
 
 SAMPLE_PDF_NAME = "DDR_OIL-AX-22_Day45_SAMPLE.pdf"
+# Image-only PDF (no text layer) for the OCR path — rendered by seed/make_scanned_sample.py.
+SCANNED_SAMPLE = Path(__file__).parent / "assets" / "DDR_OIL-AX-44_Day38_SCANNED.pdf"
 
 SAMPLE_PAGES = [
     [
@@ -37,7 +42,7 @@ SAMPLE_PAGES = [
         "Mud properties at 3,478 m: MW 1.46 sg, PV 21 cP, YP 17 lb/100ft2, API fluid loss 4.4 ml, KCl 6.0%, MBT 11 kg/m3.",
         "Recommendations: maintain KCl at 7% for the remaining Kopili interval; limit open-hole exposure before trips; "
         "ream every stand through 3,420-3,440 m on the next trip.",
-        "Prepared by: Night drilling supervisor (synthetic).",
+        "Prepared by: Night drilling supervisor.",
     ],
 ]
 
@@ -45,4 +50,8 @@ SAMPLE_PAGES = [
 def generate_samples() -> list[str]:
     path = SAMPLE_DIR / SAMPLE_PDF_NAME
     write_pdf(path, SAMPLE_PAGES, title="OIL-AX-22")
-    return [path.name]
+    names = [path.name]
+    if SCANNED_SAMPLE.exists():
+        shutil.copyfile(SCANNED_SAMPLE, SAMPLE_DIR / SCANNED_SAMPLE.name)
+        names.append(SCANNED_SAMPLE.name)
+    return names

@@ -19,7 +19,7 @@ available at the moment it matters.
 > Engineers don't lack data — they lack the link between *this depth, right now* and *what happened at this
 > depth before*. NWIS is that link.
 
-## Demo-field numbers (synthetic — say so)
+## Demo-field numbers (realistic synthetic data — say so once, clearly)
 
 - 10 offset wells within 25 km; 36 recorded drilling events; 26 reports indexed into 84 searchable pages.
 - In the three windows OIL-AX-102 is about to drill (Barail losses, Kopili stuck pipe, Sylhet kick), offsets
@@ -45,19 +45,23 @@ available at the moment it matters.
 
 1. **Not another dashboard** — it connects current context with historical institutional memory.
 2. **Not another RAG chatbot** — answers are tied to well + depth + formation + evidence.
-3. **Not a black-box model** — risk is explainable and operationally contextual.
+3. **Not a black-box model** — risk is explainable, and a learned model backtested on the offsets checks it.
 4. **Not just GIS** — map, depth correlation, documents and risk are synchronised on one depth.
 5. **Not just document search** — unstructured reports become structured events and lessons.
 6. **A standalone intelligence layer** that sits beside eRTMAC rather than replacing it.
 
 ## Anticipated judge questions
 
-- *Is this real OIL data?* No — a coherent synthetic field; the schema and ingestion path are built for authorised data.
-- *How accurate is the prediction?* The prototype ranks risk transparently; it is not a calibrated probability.
-  Calibration on labelled OIL NPT history is the first production step (weights stay explainable).
+- *Is this real OIL data?* No — realistic synthetic wells on real Upper Assam stratigraphy, shaped like OIL's WCRs,
+  DDRs and eRTMAC stream. Swap in the archive and the same pipeline runs (the live upload demo proves ingestion).
+- *How accurate is the prediction?* Alerts use a transparent score. A logistic model backtested leave-one-well-out
+  on the offset wells ranks risk better (AUC ≈ 0.86 vs 0.76) and learned that live parameter anomalies matter most.
+  On synthetic data that proves the method; recalibrating on OIL's NPT history is the first production step.
+- *Where is the ML?* The learned cross-check (Risk Explorer → How the score works; ML chip on every risk card), the
+  semantic retrieval, and the NLP/OCR extraction pipeline.
 - *Why not an LLM for everything?* Deterministic, offline, auditable answers for the demo; an optional Claude
   adapter synthesises answers over the same cited evidence and is rejected if it cites nothing.
 - *Won't it spam alerts?* Alarm-rationalisation policy: medium-history windows need live confirmation; alerts
   are deduplicated per zone and escalate instead of repeating.
-- *What about scanned reports?* The OCR adapter uses Tesseract when installed and otherwise flags scanned pages
-  for OCR instead of silently dropping them.
+- *What about scanned reports?* Tesseract OCR reads image-only PDFs and photos (demo: the scanned OIL-AX-44 report,
+  ~93 % word confidence); every extracted fact still goes through engineer review.

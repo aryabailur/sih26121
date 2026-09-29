@@ -1,8 +1,5 @@
 # Optional production integrations — NOT needed for the offline demo.
 # LLM answer synthesis over cited evidence (enable with NWIS_DEMO_MODE=0 NWIS_LLM_PROVIDER=anthropic)
 anthropic>=0.60
-# OCR for scanned PDFs / images (also requires the Tesseract binary on PATH)
-pytesseract>=0.3
-pillow>=10.0
 # PostgreSQL (set NWIS_DATABASE_URL=postgresql+psycopg://user:pass@host/nwis)
 psycopg[binary]>=3.1

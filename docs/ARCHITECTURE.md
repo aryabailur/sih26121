@@ -4,7 +4,7 @@
 
 | Layer | Technology | Responsibility |
 |---|---|---|
-| UI | Next.js 16 (App Router), React 19, Tailwind 4, Leaflet, Recharts 3, Zustand | Cockpit screens; one global store holds bit depth, radius, latest evaluation, alerts, scenario state |
+| UI | Next.js 16 (App Router), React 19, Tailwind 4, MapLibre GL 6, Motion, Recharts 3, Zustand | Welcome + six workspaces in two themes; one global store holds bit depth, radius, latest evaluation, alerts, scenario state |
 | API | FastAPI, Pydantic v2 | REST contract (`/api/wells`, `/events`, `/formations`, `/risk`, `/search`, `/documents`, `/simulation`) — OpenAPI at `/docs` |
 | Persistence | SQLAlchemy 2 → SQLite (demo) / PostgreSQL | Knowledge schema (below); list fields use portable JSON columns |
 | Intelligence | Pure-Python services | Risk engine, hybrid retrieval, document pipeline, similarity, drilling NLP |
@@ -57,7 +57,7 @@ For each risk zone with offset evidence inside the radius:
    full snapshot of the assessment at trigger time for the "Why?" view.
 6. **Confidence** `= 0.35 + 0.30·min(1, wells/3) + 0.10·min(1, docs/3) + 0.15·similarity + 0.10·[live params]`, capped 0.95.
 
-`GET /api/risk/profile` scores every 10 m of the planned path (drives the scrubber's risk ribbon and the Risk
+`GET /api/risk/profile` scores every 10 m of the planned path (drives the wellbore / depth-ruler risk ribbon and the Risk
 Explorer chart); `GET /api/risk/clusters` groups recurring offset events and lists what worked.
 
 Specification deviation (documented in [ASSUMPTIONS.md](ASSUMPTIONS.md)): the spec's default weights and
@@ -72,6 +72,26 @@ fracture gradient at their recorded loss-onset ECD, kick/overpressure events rai
 the mud weight that controlled them (25 m tapers) — plus the planned mud weight, the live ECD, casing shoes, and
 "breaches" where the plan leaves the calibrated window (e.g. planned 1.44 sg in the Sylhet vs ~1.50 sg calibrated
 pore pressure). Every calibration lists its source well and event.
+
+### Learned cross-check (`backend/services/risk_model.py`)
+
+The hand-set score drives alerts; a learned model checks it against history:
+
+1. **Backtest dataset** — every completed offset well is replayed as if it were being drilled. At every 20 m from
+   2,000 m to TD the engine assesses it exactly as it assesses the active well (evidence = the *other* wells only,
+   the well's own recorded parameters as the live feed). Label = 1 if that well itself recorded the risk family
+   within the next 50 m (or at the bit). ≈1,600 rows from 12 wells, ≈4 % positive.
+2. **Model** — L2-regularised logistic regression on the same six factors, fitted by Newton/IRLS in pure Python
+   (no numpy/scikit-learn; trains in ~2 s at API start-up, retrains in the background after the knowledge base
+   changes).
+3. **Validation** — leave-one-well-out: each well is scored by a model that never saw it. On the demo field the
+   learned model reaches AUC ≈ 0.86 vs ≈ 0.76 for the hand-set score, and learns that live parameter anomalies
+   and the formation matter more (≈55 % / 25 %) than the hand-set weights assume.
+4. **Use** — every assessment carries `ml = {probability, base_rate, lift, verdict}`; the UI shows it as a chip on
+   risk cards, a cross-check section in *Why?*, and learned-vs-hand-set weights on the Risk Explorer model card.
+   It never changes scores or alert decisions (`tests.scenario_sweep` is unaffected). `GET /api/risk/model →
+   learned` returns the coefficients, AUCs and per-family results. On synthetic data it proves the method; the same
+   pipeline recalibrates on authorised OIL history.
 
 ## 4. Evidence search (`backend/services/search_engine.py`)
 
@@ -104,10 +124,15 @@ human review → commit`.
 - Within-document merge (summary + time log describe one event) and cross-KB duplicate detection (same well,
   family, overlapping depth).
 - Nothing is written to the knowledge base until the reviewer saves; the index and risk cache rebuild on commit.
+- **OCR** — pages with no text layer are OCR'd: the raster images embedded in a scanned PDF page (pypdf, no
+  Poppler) or an uploaded image go through Tesseract (`pytesseract`); each page records the engine and mean word
+  confidence. The binary is found on PATH, via `NWIS_TESSERACT_CMD`, or in its default install folders. Without it,
+  scanned pages are flagged for OCR rather than dropped. Sample: `DDR_OIL-AX-44_Day38_SCANNED.pdf` (image-only,
+  rendered by `seed/make_scanned_sample.py`) — OCR ≈ 93 % word confidence, differential sticking at 2,655 m extracted.
 
 ## 6. Frontend state flow
 
-`DepthScrubber / scenario / live ticker → store.setDepth → debounced POST /api/risk/evaluate → store.evaluation`
+`WellboreNavigator / DepthScrubber / scenario / live ticker → store.setDepth → debounced POST /api/risk/evaluate → store.evaluation`
 → KPI strip, map highlights, Risk Watch, timeline context and toasts all render from the same evaluation, so
 every panel is always consistent with one depth. The scenario runner lives in the store, so it keeps running
 while you switch screens.

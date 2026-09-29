@@ -34,11 +34,12 @@ def _ensure_seeded() -> None:
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     _ensure_seeded()
-    from services import search_engine
+    from services import risk_model, search_engine
 
     db = SessionLocal()
     try:
         search_engine.rebuild_index(db)
+        risk_model.ensure_trained(db)  # ~2 s: backtests the offset wells to fit the learned cross-check
     finally:
         db.close()
     yield

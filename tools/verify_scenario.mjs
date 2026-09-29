@@ -9,7 +9,8 @@ await fetch(`${API}/api/simulation/reset`, { method: "POST" });
 // Pre-raise the mud-loss alert as a presenter exploring would.
 await fetch(`${API}/api/risk/evaluate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ well_id: "W001", current_depth: 3160, radius_km: 50 }) });
 
-const browser = await chromium.launch();
+// Hardware GL: the 3D map (MapLibre + terrain) is far too slow on the software rasteriser.
+const browser = await chromium.launch({ args: ["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));

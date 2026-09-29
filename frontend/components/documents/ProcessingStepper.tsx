@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, UserCheck } from "lucide-react";
+import { motion } from "motion/react";
 import type { ProcessingStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -17,33 +18,38 @@ const LABELS: Record<string, string> = {
 export function ProcessingStepper({ status }: { status: ProcessingStatus | null }) {
   const stages = status?.stages ?? Object.keys(LABELS).map((key) => ({ key, label: LABELS[key] }));
   const idx = status?.stage_index ?? -1;
+  const saved = status?.status === "saved";
+  const progress = saved ? 1 : idx < 0 ? 0 : idx / Math.max(1, stages.length - 1);
   return (
-    <ol className="flex items-start">
-      {stages.map((s, i) => {
-        const done = i < idx || status?.status === "saved";
-        const current = i === idx && status?.status !== "saved";
-        const waiting = current && s.key === "review";
-        return (
-          <li key={s.key} className="flex flex-1 flex-col items-center text-center">
-            <div className="flex w-full items-center">
-              <div className={cn("h-0.5 flex-1", i === 0 ? "bg-transparent" : done || current ? "bg-cyan-400/70" : "bg-cockpit-line")} />
-              <div
+    <div className="relative">
+      <div className="absolute left-[calc(100%/14)] right-[calc(100%/14)] top-[17px] h-1 rounded-[1px] bg-surface-3">
+        <motion.div className="aurora h-full rounded-[1px]" initial={false} animate={{ width: `${progress * 100}%` }} transition={{ type: "spring", stiffness: 80, damping: 20 }} />
+      </div>
+      <ol className="relative flex items-start">
+        {stages.map((s, i) => {
+          const done = i < idx || saved;
+          const current = i === idx && !saved;
+          const waiting = current && s.key === "review";
+          return (
+            <li key={s.key} className="flex flex-1 flex-col items-center text-center">
+              <motion.div
+                animate={current && !waiting ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+                transition={current && !waiting ? { duration: 1.1, repeat: Infinity } : undefined}
                 className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-bold",
-                  done && "border-cyan-400 bg-cyan-400/20 text-cyan-100",
-                  current && !waiting && "border-cyan-300 bg-cockpit-bg text-cyan-200 shadow-[0_0_14px_rgba(34,211,238,0.5)]",
-                  waiting && "border-amber-400 bg-amber-500/15 text-amber-200",
-                  !done && !current && "border-cockpit-border bg-cockpit-bg text-slate-500",
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[3px] text-[12.5px] font-extrabold transition-colors",
+                  done && "border-brand bg-brand text-white",
+                  current && !waiting && "border-brand bg-surface text-brand-ink shadow-brand",
+                  waiting && "border-med bg-med-soft text-med-ink",
+                  !done && !current && "border-line-2 bg-surface text-ink-4",
                 )}
               >
-                {done ? <Check size={13} /> : current && !waiting ? <Loader2 size={13} className="animate-spin" /> : i + 1}
-              </div>
-              <div className={cn("h-0.5 flex-1", i === stages.length - 1 ? "bg-transparent" : done ? "bg-cyan-400/70" : "bg-cockpit-line")} />
-            </div>
-            <div className={cn("mt-1.5 px-1 text-[10.5px] leading-tight", done || current ? "text-slate-200" : "text-slate-500")}>{LABELS[s.key] ?? s.label}</div>
-          </li>
-        );
-      })}
-    </ol>
+                {done ? <Check size={15} strokeWidth={3} /> : waiting ? <UserCheck size={15} /> : current ? <Loader2 size={15} className="animate-spin" /> : i + 1}
+              </motion.div>
+              <div className={cn("mt-2 px-1 text-[12.5px] font-semibold leading-tight", done || current ? "text-ink" : "text-ink-4")}>{LABELS[s.key] ?? s.label}</div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }

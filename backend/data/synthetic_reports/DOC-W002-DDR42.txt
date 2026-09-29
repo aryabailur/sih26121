@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W002-DDR42 | well=W002 | type=DDR | date=2023-03-15 | pages=6
 ### TITLE DDR OIL-AX-99 Day 42
 ### SUMMARY Day 42 — total losses at 3,150 m in Barail sandstone; 45 m³ OBM lost; cured with LCM and MW reduction.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3122-3220 ===
 DAILY DRILLING REPORT — OIL-AX-99 | Report No. 42 | Date: 2023-03-15 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,122 m MD; depth 24:00 hrs 3,220 m MD; 24-hr progress 98 m. Hole size 8-1/2"; last casing 9-5/8" at 3,005 m. Formation at report depth: Barail Group. Mud system: OBM, mud weight 1.42 sg, ECD 1.53 sg. 24-hr summary: Drilled 8-1/2" hole in Barail Group from 3,122 m to 3,150 m. Total loss of circulation at 3,150 m. Pumped LCM pills, reduced mud weight, cured losses; resumed drilling to 3,220 m with controlled parameters. Next 24-hr forecast: Drill ahead to the Kopili Shale top (~3,300 m); maintain ECD below 1.48 sg; keep LCM on standby.
 === PAGE 2 | SECTION Drilling Parameters & Mud Properties | DEPTH 3122-3150 ===

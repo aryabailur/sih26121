@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W008-WCR | well=W008 | type=WCR | date=2023-09-10 | pages=26
 ### TITLE Well Completion Report OIL-AX-33
 ### SUMMARY Completion report — Sylhet overpressure review and Kopili KCl practice.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3750 ===
 WELL COMPLETION REPORT — OIL-AX-33 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2023-06-16, rig released 2023-08-28. Total depth 3,750 m MD. Target: Sylhet Limestone. Maximum inclination 22° (azimuth 10°). Casing: 20" at 60 m, 13-3/8" at 800 m, 9-5/8" at 3,015 m, 7" liner to 3,745 m. Formation tops (MD): Girujan surface; Tipam 798 m; Namsang 1,598 m; Barail 2,388 m; Kopili 3,292 m; Sylhet 3,578 m. Total NPT 18 hrs: kick at Sylhet top (12 hrs), induced losses (4 hrs), Kopili tight hole (2 hrs).
 === PAGE 7 | SECTION Drilling Problems Summary | DEPTH 3410-3425 ===

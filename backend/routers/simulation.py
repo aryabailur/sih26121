@@ -7,11 +7,11 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from config import ACTIVE_WELL_ID, DATA_DISCLAIMER, DEFAULT_RADIUS_KM, DEFAULT_START_DEPTH, DEMO_MODE, LLM_PROVIDER
-from database import get_db
+from database import SessionLocal, get_db
 from models import Alert, AlertAudit, Document, DocumentChunk, DrillingEvent, Well
 from schemas import ScenarioRequest
 from services import document_processor as dp
-from services import risk_engine, search_engine
+from services import risk_engine, risk_model, search_engine
 
 router = APIRouter(prefix="/api/simulation", tags=["simulation"])
 
@@ -78,6 +78,8 @@ def reset(db: Session = Depends(get_db)):
     db.commit()
     search_engine.rebuild_index(db)
     risk_engine.invalidate_cache()
+    if uploaded:
+        risk_model.retrain_in_background(SessionLocal)
     return {"success": True, "depth": DEFAULT_START_DEPTH, "removed_uploads": len(uploaded)}
 
 

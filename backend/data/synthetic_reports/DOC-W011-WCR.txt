@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W011-WCR | well=W011 | type=WCR | date=2021-01-30 | pages=20
 ### TITLE Well Completion Report OIL-AX-05
 ### SUMMARY Completion report — bit cone fishing, seepage losses, Kopili cavings.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3550 ===
 WELL COMPLETION REPORT — OIL-AX-05 (exploration well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2020-11-05, rig released 2021-01-18. Total depth 3,550 m MD. Target: Kopili Shale. Maximum inclination 2° (azimuth 0°). Casing: 20" at 50 m, 13-3/8" at 780 m, 9-5/8" at 2,990 m. Formation tops (MD): Girujan surface; Tipam 780 m; Namsang 1,585 m; Barail 2,370 m; Kopili 3,280 m. Vertical exploration well; TD 3,550 m in Kopili. Total NPT 18 hrs.
 === PAGE 4 | SECTION Drilling Problems | DEPTH 1420-1425 ===

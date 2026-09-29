@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W003-DDR53 | well=W003 | type=DDR | date=2022-11-06 | pages=6
 ### TITLE DDR OIL-AX-88 Day 53
 ### SUMMARY Day 53 — Kopili cavings and erratic torque at 3,352–3,370 m.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3318-3372 ===
 DAILY DRILLING REPORT — OIL-AX-88 | Report No. 53 | Date: 2022-11-06 | Rig: Rig DR-07 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,318 m MD; depth 24:00 hrs 3,372 m MD; 24-hr progress 54 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.43 sg, ECD 1.48 sg. 24-hr summary: Drilled from Barail into Kopili Shale (top 3,310 m). Cavings and erratic torque from 3,352 m; raised MW. Next 24-hr forecast: Continue drilling Kopili with sweeps every stand.
 === PAGE 4 | SECTION Hole Condition | DEPTH 3350-3370 ===

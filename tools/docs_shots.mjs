@@ -8,8 +8,16 @@ const OUT = path.join(ROOT, "docs/screenshots");
 const BASE = "http://localhost:3000";
 await fetch("http://127.0.0.1:8000/api/simulation/reset", { method: "POST" });
 
-const browser = await chromium.launch();
+// Hardware GL (ANGLE/D3D11): the 3D map is far too slow on the software rasteriser (~3 fps).
+const browser = await chromium.launch({ args: ["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+// Daylight theme; the orbit fly-in is captured separately (00-welcome), so skip it on the dashboard.
+await page.addInitScript(() => {
+  try {
+    localStorage.setItem("nwis-theme", "light");
+    sessionStorage.setItem("nwis-intro", "1");
+  } catch {}
+});
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const shot = async (name) => {
@@ -21,6 +29,10 @@ const nav = async (href, wait = 3500) => {
   await page.click(`a[href="${href}"]`);
   await page.waitForTimeout(wait);
 };
+
+await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(6000);
+await shot("00-welcome");
 
 await page.goto(BASE + "/dashboard", { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(8000);
@@ -67,6 +79,32 @@ await shot("11-document-review");
 await page.click("text=Save to knowledge base");
 await page.waitForTimeout(2500);
 await shot("12-document-saved");
+
+// Scanned (image-only) report: every word comes from Tesseract OCR.
+await page.click("button:has-text('Process scanned report')");
+await page.waitForTimeout(9000);
+await page.click("[role=tab]:has-text('Text')");
+await page.waitForTimeout(1200);
+await shot("15-scanned-report-ocr");
+
+// Learned cross-check on the Risk explorer.
+await nav("/dashboard/risk", 5000);
+await page.evaluate(() =>
+  [...document.querySelectorAll("div")].find((d) => d.textContent.trim().startsWith("Learned from offset-well history") && d.children.length < 4)?.scrollIntoView({ block: "center" }),
+);
+await page.waitForTimeout(1200);
+await shot("16-learned-model");
+
+// Night-shift theme on the command center.
+await page.evaluate(() => localStorage.setItem("nwis-theme", "dark"));
+await page.addInitScript(() => {
+  try {
+    localStorage.setItem("nwis-theme", "dark");
+  } catch {}
+});
+await page.goto(BASE + "/dashboard", { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(8000);
+await shot("14-night-shift-theme");
 
 await fetch("http://127.0.0.1:8000/api/simulation/reset", { method: "POST" });
 if (errors.length) console.log("PAGE ERRORS:\n" + errors.join("\n"));

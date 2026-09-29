@@ -10,10 +10,11 @@ const ROOT = path.resolve(__dirname, "..");
 const SHOT = (n) => path.join(ROOT, "docs/screenshots", n);
 const OUT = path.join(ROOT, "docs/NWIS_Pitch_Deck.pptx");
 
+// Mirrors the app's night-shift tokens (frontend/app/globals.css); `cyan` is the brand accent slot (indigo).
 const C = {
-  bg: "0A0E17", surface: "111827", elevated: "1E293B", border: "1E3A5F", line: "1A2740",
-  text: "F1F5F9", muted: "94A3B8", dim: "64748B", cyan: "22D3EE", cyanDeep: "0FA3C2",
-  amber: "F59E0B", orange: "F97316", red: "EF4444", green: "10B981", violet: "A78BFA", sky: "38BDF8",
+  bg: "09090E", surface: "121219", elevated: "1F1F29", border: "32323E", line: "25252F",
+  text: "F5F5F8", muted: "C4C6D2", dim: "8C8FA1", cyan: "A79DFF", cyanDeep: "5B4BFF",
+  amber: "F2A60C", orange: "F76B15", red: "E5383B", green: "12A679", violet: "D946EF", sky: "0EA5E9",
 };
 const FONT = "Calibri";
 const MONO = "Consolas";
@@ -27,8 +28,16 @@ async function icon(Comp, color, size = 256) {
 const WHY_CROP = path.join(__dirname, ".why-crop.png");
 
 (async () => {
+  // Learned-model headline numbers straight from the running API (fallback: last recorded run).
+  let ML = { wells: 12, auc_model: "0.86", auc_rule: "0.76" };
+  try {
+    const m = await (await fetch("http://127.0.0.1:8000/api/risk/model")).json();
+    if (m.learned?.status === "ready") ML = { wells: m.learned.wells, auc_model: m.learned.auc_model.toFixed(2), auc_rule: m.learned.auc_rule.toFixed(2) };
+  } catch {
+    /* backend not running — keep the fallback */
+  }
   // The Why? screenshot is cropped to the dialog so it reads at slide size.
-  await sharp(SHOT("04-why-explainer.png")).extract({ left: 288, top: 55, width: 1024, height: 791 }).toFile(WHY_CROP);
+  await sharp(SHOT("04-why-explainer.png")).extract({ left: 240, top: 45, width: 1120, height: 810 }).toFile(WHY_CROP);
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE";
   pres.author = "NWIS team — SIH26121";
@@ -49,7 +58,7 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
   const bg = (s) => { s.background = { color: C.bg }; };
   const text = (s, t, o) => s.addText(t, { isTextBox: true, fontFace: FONT, color: C.text, margin: 0, valign: "top", ...o });
   const card = (s, x, y, w, h, fill = C.surface) =>
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.12, fill: { color: fill }, line: { color: C.border, width: 1 } });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.03, fill: { color: fill }, line: { color: C.border, width: 1 } });
   const badge = (s, key, x, y, d = 0.62, ring = C.border) => {
     s.addShape(pres.shapes.OVAL, { x, y, w: d, h: d, fill: { color: C.elevated }, line: { color: ring, width: 1.25 } });
     s.addImage({ data: ic[key], x: x + d * 0.22, y: y + d * 0.22, w: d * 0.56, h: d * 0.56 });
@@ -59,12 +68,12 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, title, { x: 0.6, y: 0.72, w: 12.1, h: 0.8, fontSize: 32, bold: true, color: C.text });
   };
   const footer = (s, n) => {
-    text(s, "NWIS · SIH26121 · synthetic demo data", { x: 0.6, y: H - 0.42, w: 6, h: 0.25, fontSize: 9, color: C.dim });
+    text(s, "NWIS · SIH26121", { x: 0.6, y: H - 0.42, w: 6, h: 0.25, fontSize: 9, color: C.dim });
     text(s, String(n), { x: W - 1.1, y: H - 0.42, w: 0.5, h: 0.25, fontSize: 9, color: C.dim, align: "right" });
   };
   const shot = (s, file, x, y, w, frame = true) => {
     const h = w * 900 / 1600;
-    if (frame) s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x - 0.06, y: y - 0.06, w: w + 0.12, h: h + 0.12, rectRadius: 0.1, fill: { color: C.surface }, line: { color: C.border, width: 1 } });
+    if (frame) s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x - 0.06, y: y - 0.06, w: w + 0.12, h: h + 0.12, rectRadius: 0.03, fill: { color: C.surface }, line: { color: C.border, width: 1 } });
     s.addImage({ path: SHOT(file), x, y, w, h });
     return h;
   };
@@ -75,13 +84,13 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     const s = pres.addSlide(); bg(s);
     s.addImage({ path: SHOT("03-scenario-complete.png"), x: 5.9, y: 0, w: 13.333 - 5.9 + 3.2, h: (13.333 - 5.9 + 3.2) * 900 / 1600, transparency: 55 });
     s.addShape(pres.shapes.RECTANGLE, { x: 0, y: 0, w: 6.6, h: H, fill: { color: C.bg } });
-    badge(s, "target", 0.8, 1.35, 0.9, C.cyan);
-    text(s, "NWIS", { x: 0.8, y: 2.45, w: 5.6, h: 1.2, fontSize: 72, bold: true, color: C.cyan, charSpacing: 8 });
+    s.addImage({ path: path.join(ROOT, "docs/nwis-logo.png"), x: 0.8, y: 1.3, w: 1.0, h: 1.0 });
+    text(s, "NWIS", { x: 0.8, y: 2.45, w: 5.6, h: 1.2, fontSize: 72, bold: true, color: C.text, charSpacing: 8 });
     text(s, "Nearby Wells Intelligence System", { x: 0.8, y: 3.65, w: 5.6, h: 0.55, fontSize: 26, bold: true });
     text(s, "Institutional memory beside the active well — what nearby wells experienced at this depth, why, and what to check next.",
       { x: 0.8, y: 4.35, w: 5.4, h: 1.0, fontSize: 15, color: C.muted });
     text(s, "SIH 2026  ·  Problem statement SIH26121  ·  Oil India Limited", { x: 0.8, y: 6.2, w: 5.6, h: 0.3, fontSize: 12, color: C.dim });
-    text(s, "Working prototype · synthetic demo data (not OIL operational records)", { x: 0.8, y: 6.5, w: 5.6, h: 0.3, fontSize: 10, color: C.amber });
+    text(s, "Working prototype · realistic synthetic data on real Upper Assam stratigraphy (not OIL records)", { x: 0.8, y: 6.5, w: 5.6, h: 0.3, fontSize: 10, color: C.amber });
     s.addNotes("Open with the operational problem, not technology. NWIS gives every drilling engineer institutional memory — connecting the active well's current depth to what nearby and historical wells experienced, why it happened, and what to check next.");
   }
 
@@ -105,7 +114,7 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, "110 h", { x: 0.95, y: 5.18, w: 2.4, h: 1.0, fontSize: 54, bold: true, color: C.amber, fontFace: MONO });
     text(s, "of NPT in 8 offset events inside the three windows our active well is about to drill — Barail losses, Kopili stuck pipe, Sylhet kick.",
       { x: 3.45, y: 5.28, w: 8.9, h: 0.75, fontSize: 17 });
-    text(s, "Demo field (synthetic) — the pattern NWIS is built to break.", { x: 3.45, y: 6.05, w: 8.9, h: 0.3, fontSize: 11, color: C.dim });
+    text(s, "Demo field — the pattern NWIS is built to break.", { x: 3.45, y: 6.05, w: 8.9, h: 0.3, fontSize: 11, color: C.dim });
     footer(s, 2);
     s.addNotes("Critical knowledge is distributed across completion reports, daily reports, databases and individual experience. In our synthetic demo field, the next 500 m of the active well cross three windows where offsets lost 110 hours of NPT.");
   }
@@ -195,13 +204,14 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, [
       { text: "Thresholds 0.35 · 0.55 · 0.75 (medium · high · critical)", options: { bullet: true, breakLine: true } },
       { text: "Medium-history zones need live confirmation to alert", options: { bullet: true, breakLine: true } },
-      { text: "Confidence from supporting wells, sources and similarity", options: { bullet: true } },
-    ], { x: 0.9, y: 5.3, w: 4.75, h: 1.2, fontSize: 12, color: C.muted, paraSpaceAfter: 4 });
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.94, y: 1.74, w: 5.72, h: 4.44, rectRadius: 0.1, fill: { color: C.surface }, line: { color: C.border, width: 1 } });
-    s.addImage({ path: WHY_CROP, x: 7.0, y: 1.8, w: 5.6, h: 5.6 * 791 / 1024 });
+      { text: "Confidence from supporting wells, sources and similarity", options: { bullet: true, breakLine: true } },
+      { text: `Learned cross-check: logistic model backtested on ${ML.wells} offset wells — AUC ${ML.auc_model} vs ${ML.auc_rule} hand-set`, options: { bullet: true } },
+    ], { x: 0.9, y: 5.25, w: 4.75, h: 1.35, fontSize: 11.5, color: C.muted, paraSpaceAfter: 3 });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.94, y: 1.74, w: 5.72, h: 4.44, rectRadius: 0.03, fill: { color: C.surface }, line: { color: C.border, width: 1 } });
+    s.addImage({ path: WHY_CROP, x: 7.0, y: 1.8, w: 5.6, h: 5.6 * 810 / 1120 });
     text(s, "WHAT · WHERE · WHEN · WHY · WHICH wells · WHAT evidence · WHAT to check · HOW confident", { x: 6.94, y: 6.3, w: 5.8, h: 0.5, fontSize: 11.5, bold: true, color: C.cyan });
     footer(s, 6);
-    s.addNotes("Never a mysterious 'AI says high risk'. The Why? view lists numbered reasons, the weighted factor breakdown, live signals versus baseline, the supporting offset wells with quotes and page citations, recommended checks, and the audit trail. Scores rank risk; they are not calibrated probabilities.");
+    s.addNotes("Never a mysterious 'AI says high risk'. The Why? view lists numbered reasons, the weighted factor breakdown, live signals versus baseline, the supporting offset wells with quotes and page citations, recommended checks, and the audit trail. Scores rank risk; they are not calibrated probabilities. A logistic model on the same six factors, backtested leave-one-well-out on the offset wells, cross-checks every score (the ML chip) — and learned that live parameter anomalies matter more than our hand-set weights assumed.");
   }
 
   // =====================================================================================
@@ -239,14 +249,14 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     });
     shot(s, "11-document-review.png", 0.66, 3.2, 6.1);
     text(s, [
-      { text: "PDF text layer, TXT, or images via the OCR adapter (Tesseract)", options: { bullet: true, breakLine: true } },
+      { text: "Text-layer PDFs, plus scanned PDFs and images read by Tesseract OCR (per-page word confidence)", options: { bullet: true, breakLine: true } },
       { text: "Rule-based NLP finds losses, sticking, kicks, torque, cementing, NPT with depth, formation, cause, mitigation", options: { bullet: true, breakLine: true } },
       { text: "Confidence scoring; < 75% flagged for human review", options: { bullet: true, breakLine: true } },
       { text: "Duplicate check against the knowledge base — the sample report's torque rise matches an existing record", options: { bullet: true, breakLine: true } },
       { text: "Nothing is saved until an engineer approves it — then it is searchable and used by the risk engine", options: { bullet: true } },
     ], { x: 7.2, y: 3.25, w: 5.45, h: 3.2, fontSize: 13.5, paraSpaceAfter: 6 });
     footer(s, 8);
-    s.addNotes("Process the sample daily drilling report for OIL-AX-22: three candidate events, one flagged as a possible duplicate, entities extracted, provenance kept. Save, then search for it.");
+    s.addNotes("Process the sample daily drilling report for OIL-AX-22: three candidate events, one flagged as a possible duplicate, entities extracted, provenance kept. Save, then search for it. Then process the scanned OIL-AX-44 report: no text layer at all — Tesseract reads it at ~93% word confidence and the same extraction finds the differential sticking at 2,655 m.");
   }
 
   // =====================================================================================
@@ -302,7 +312,7 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, "NWIS doesn’t replace the drilling engineer — it shortens the path from a signal to the evidence.",
       { x: 0.9, y: 6.1, w: 11.6, h: 0.5, fontSize: 16, bold: true, color: C.cyan, valign: "middle" });
     footer(s, 10);
-    s.addNotes("Close: decision support — the engineer decides. Be explicit that all data shown is synthetic and that the risk weights are transparent, not trained.");
+    s.addNotes("Close: decision support — the engineer decides. Be explicit that the data is realistic synthetic data on real Assam stratigraphy, and that the hand-set weights drive alerts while a learned model cross-checks them.");
   }
 
   await pres.writeFile({ fileName: OUT });

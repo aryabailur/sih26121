@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W002-ML | well=W002 | type=mud_log | date=2023-04-12 | pages=14
 ### TITLE Mud Log OIL-AX-99
 ### SUMMARY Mud log — lithology, gas and loss record for OIL-AX-99.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Lithology — Barail Group | DEPTH 2400-3300 ===
 Barail Group 2,395–3,300 m: interbedded fine- to medium-grained sandstone, grey shale and thin coal stringers. Sandstone porosity visually 16–22%. Natural fractures noted in cuttings (slickensided fragments) from 3,140 m. Drilling break at 3,146 m (ROP 9 → 18 m/hr) preceded the total losses at 3,150 m.
 === PAGE 2 | SECTION Gas & Losses Record | DEPTH 3100-3250 ===

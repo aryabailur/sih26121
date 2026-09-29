@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W003-DDR55 | well=W003 | type=DDR | date=2022-11-08 | pages=9
 ### TITLE DDR OIL-AX-88 Day 55
 ### SUMMARY Day 55 — stuck pipe at 3,400 m in Kopili; 36 hrs NPT; KCl raised to 7%.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3372-3400 ===
 DAILY DRILLING REPORT — OIL-AX-88 | Report No. 55 | Date: 2022-11-08 | Rig: Rig DR-07 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,372 m MD; depth 24:00 hrs 3,400 m MD; 24-hr progress 28 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.43 sg, ECD 1.48 sg. 24-hr summary: Drilled Kopili Shale 3,372–3,400 m. Changed BHA (MWD). Pipe stuck at 3,400 m on connection; worked pipe, spotted diesel-based fluid; pipe freed after 12 hours of working. Next 24-hr forecast: Circulate and condition mud, raise KCl to 7%, wiper trip, resume drilling.
 === PAGE 3 | SECTION Mud Report | DEPTH 3372-3400 ===

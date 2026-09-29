@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W005-DDR48 | well=W005 | type=DDR | date=2021-06-22 | pages=7
 ### TITLE DDR OIL-AX-66 Day 48
 ### SUMMARY Day 48 — key-seat mechanical sticking at 3,410 m; torque 12 → 28 kN·m.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3395-3430 ===
 DAILY DRILLING REPORT — OIL-AX-66 | Report No. 48 | Date: 2021-06-22 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,395 m MD; depth 24:00 hrs 3,430 m MD; 24-hr progress 35 m. Hole size 8-1/2"; last casing 9-5/8" at 2,995 m. Formation at report depth: Kopili Shale. Mud system: KCl-polymer WBM, mud weight 1.44 sg, ECD 1.49 sg. 24-hr summary: Tripping out for bit change from 3,430 m; mechanical sticking at 3,410 m in dogleg; back-reamed and freed pipe with under-reamer run. Next 24-hr forecast: Revise tripping procedure (ream every stand), run back to bottom, drill ahead.
 === PAGE 2 | SECTION Survey & Dogleg | DEPTH 3370-3430 ===

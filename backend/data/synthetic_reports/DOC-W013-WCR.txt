@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W013-WCR | well=W013 | type=WCR | date=2018-04-05 | pages=18
 ### TITLE Well Completion Report OIL-MR-15
 ### SUMMARY Regional completion report — OIL-MR-15.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3480 ===
 WELL COMPLETION REPORT — OIL-MR-15 (exploration well), Namdang Block (regional), Upper Assam Shelf. Spud 2018-01-20, rig released 2018-03-28. Total depth 3,480 m MD. Target: Kopili Shale. Maximum inclination 2° (azimuth 0°). Casing: 13-3/8" at 760 m, 9-5/8" at 2,980 m. Formation tops (MD): Girujan surface; Tipam 760 m; Namsang 1,540 m; Barail 2,330 m; Kopili 3,250 m. Regional exploration well, Namdang Block (regional).
 === PAGE 3 | SECTION Drilling Problems | DEPTH 3410-3420 ===

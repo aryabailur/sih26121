@@ -6,11 +6,11 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from config import DATA_DIR, SAMPLE_DIR
-from database import get_db
+from database import SessionLocal, get_db
 from models import Document, DocumentChunk, DrillingEvent, Well
 from schemas import ChunkOut, CommitRequest, DocumentOut, EventOut
 from services import document_processor as dp
-from services import risk_engine, search_engine
+from services import risk_engine, risk_model, search_engine
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
@@ -90,7 +90,8 @@ def extracted(doc_id: str, db: Session = Depends(get_db)):
         "document": DocumentOut.model_validate(d).model_dump(mode="json"),
         "events": ex.get("events", []), "entities": ex.get("entities", []),
         "chunks": ex.get("chunks", []),
-        "pages": [dict(page=p["page"], method=p["method"], text=p["text"][:4000]) for p in ex.get("pages", [])],
+        "pages": [dict(page=p["page"], method=p["method"], text=p["text"][:4000], ocr_confidence=p.get("ocr_confidence"))
+                  for p in ex.get("pages", [])],
         "detected": dict(well_id=ex.get("well_id"), date=ex.get("date"), doc_type=ex.get("doc_type")),
         "wells": wells,
     }
@@ -106,6 +107,7 @@ def commit(doc_id: str, req: CommitRequest, db: Session = Depends(get_db)):
         raise HTTPException(400, str(exc))
     search_engine.rebuild_index(db)
     risk_engine.invalidate_cache()
+    risk_model.retrain_in_background(SessionLocal)
     return result
 
 
@@ -115,6 +117,7 @@ def delete(doc_id: str, db: Session = Depends(get_db)):
         raise HTTPException(400, "Only uploaded documents can be removed")
     search_engine.rebuild_index(db)
     risk_engine.invalidate_cache()
+    risk_model.retrain_in_background(SessionLocal)
     return {"success": True}
 
 

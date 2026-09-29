@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W003-WCR | well=W003 | type=WCR | date=2022-12-15 | pages=24
 ### TITLE Well Completion Report OIL-AX-88
 ### SUMMARY Completion report — Kopili stuck pipe, fishing, MWD failure, KCl lessons.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3720 ===
 WELL COMPLETION REPORT — OIL-AX-88 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2022-09-15, rig released 2022-12-02. Total depth 3,720 m MD. Target: Sylhet Limestone. Maximum inclination 30° (azimuth 220°). Casing: 20" at 60 m, 13-3/8" at 800 m, 9-5/8" at 3,020 m, 7" liner to 3,715 m. Formation tops (MD): Girujan surface; Tipam 795 m; Namsang 1,600 m; Barail 2,410 m; Kopili 3,310 m; Sylhet 3,605 m. Total NPT 74 hrs: stuck pipe in Kopili (36 hrs), logging tool fishing (22 hrs), MWD failure (11 hrs), cavings (5 hrs).
 === PAGE 5 | SECTION NPT Summary | DEPTH 2600-3420 ===

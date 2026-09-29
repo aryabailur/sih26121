@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W008-DDR51 | well=W008 | type=DDR | date=2023-08-05 | pages=11
 ### TITLE DDR OIL-AX-33 Day 51
 ### SUMMARY Day 51 — gas kick at 3,590 m (pit gain 3.2 m³, SIDPP 450 psi); killed at 1.55 sg.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3561-3610 ===
 DAILY DRILLING REPORT — OIL-AX-33 | Report No. 51 | Date: 2023-08-05 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,561 m MD; depth 24:00 hrs 3,610 m MD; 24-hr progress 49 m. Hole size 8-1/2"; last casing 9-5/8" at 3,015 m. Formation at report depth: Sylhet Limestone. Mud system: KCl-polymer WBM, mud weight 1.52 sg, ECD 1.63 sg. 24-hr summary: Drilled Kopili into Sylhet top. Gas kick at 3,590 m; shut in; killed with 1.55 sg mud (Driller's Method); induced losses during kill; stabilised at 1.52 sg. Next 24-hr forecast: Circulate, condition, flow check; drill Sylhet at 1.52 sg.
 === PAGE 2 | SECTION Drilling Parameters & Mud Properties | DEPTH 3561-3590 ===

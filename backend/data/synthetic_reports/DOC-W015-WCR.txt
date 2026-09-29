@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W015-WCR | well=W015 | type=WCR | date=2016-05-28 | pages=18
 ### TITLE Well Completion Report OIL-TK-11
 ### SUMMARY Regional completion report — OIL-TK-11.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3300 ===
 WELL COMPLETION REPORT — OIL-TK-11 (exploration well), Burhi Dihing Block (regional), Upper Assam Shelf. Spud 2016-03-15, rig released 2016-05-20. Total depth 3,300 m MD. Target: Barail Group. Maximum inclination 1° (azimuth 0°). Casing: 13-3/8" at 870 m, 9-5/8" at 3,000 m. Formation tops (MD): Girujan surface; Tipam 870 m; Namsang 1,690 m; Barail 2,470 m. Regional exploration well, Burhi Dihing Block (regional).
 === PAGE 3 | SECTION Cement Evaluation | DEPTH 2810-2840 ===

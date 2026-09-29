@@ -1,27 +1,24 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-type Tone = "neutral" | "cyan" | "amber" | "red" | "orange" | "green" | "blue" | "violet";
+type Tone = "neutral" | "brand" | "amber" | "red" | "orange" | "green" | "blue" | "violet" | "solid";
 
 const TONES: Record<Tone, string> = {
-  neutral: "bg-slate-500/10 text-slate-300 border-slate-500/30",
-  cyan: "bg-cyan-400/10 text-cyan-200 border-cyan-400/40",
-  amber: "bg-amber-500/10 text-amber-200 border-amber-500/40",
-  red: "bg-red-500/15 text-red-200 border-red-500/50",
-  orange: "bg-orange-500/12 text-orange-200 border-orange-500/45",
-  green: "bg-emerald-500/10 text-emerald-200 border-emerald-500/40",
-  blue: "bg-blue-500/10 text-blue-200 border-blue-500/40",
-  violet: "bg-violet-500/10 text-violet-200 border-violet-500/40",
+  neutral: "bg-surface-3 text-ink-2",
+  brand: "bg-brand-soft text-brand-ink",
+  amber: "bg-med-soft text-med-ink",
+  red: "bg-crit-soft text-crit-ink",
+  orange: "bg-high-soft text-high-ink",
+  green: "bg-low-soft text-low-ink",
+  blue: "bg-[color-mix(in_oklab,#0ea5e9_14%,transparent)] text-[#0369a1] dark:text-[#7dd3fc]",
+  violet: "bg-[color-mix(in_oklab,#d946ef_14%,transparent)] text-[#a21caf] dark:text-[#f0abfc]",
+  solid: "bg-ink text-surface",
 };
 
 export function Badge({ tone = "neutral", className, ...props }: HTMLAttributes<HTMLSpanElement> & { tone?: Tone }) {
   return (
     <span
-      className={cn(
-        "inline-flex items-center gap-1 whitespace-nowrap rounded border px-1.5 py-px text-[10px] font-semibold uppercase tracking-wider",
-        TONES[tone],
-        className,
-      )}
+      className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-[2px] px-2 py-0.5 text-[12px] font-semibold leading-4", TONES[tone], className)}
       {...props}
     />
   );

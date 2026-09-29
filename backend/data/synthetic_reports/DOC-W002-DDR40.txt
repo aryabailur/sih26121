@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W002-DDR40 | well=W002 | type=DDR | date=2023-03-13 | pages=4
 ### TITLE DDR OIL-AX-99 Day 40
 ### SUMMARY Day 40 — seepage losses at 2,962 m treated with background LCM.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 2935-3010 ===
 DAILY DRILLING REPORT — OIL-AX-99 | Report No. 40 | Date: 2023-03-13 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 2,935 m MD; depth 24:00 hrs 3,010 m MD; 24-hr progress 75 m. Hole size 8-1/2"; last casing 9-5/8" at 3,005 m. Formation at report depth: Barail Group. Mud system: OBM, mud weight 1.42 sg, ECD 1.47 sg. 24-hr summary: Drilled out 9-5/8" shoe track and 3 m new formation; FIT to 1.62 sg EMW. Drilled 8-1/2" hole to 3,010 m. Next 24-hr forecast: Continue drilling Barail Group; monitor for losses.
 === PAGE 2 | SECTION Operations Summary | DEPTH 2960-2985 ===

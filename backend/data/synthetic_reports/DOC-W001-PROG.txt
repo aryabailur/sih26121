@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W001-PROG | well=W001 | type=casing_report | date=2026-07-10 | pages=12
 ### TITLE Casing & Mud Programme OIL-AX-102
 ### SUMMARY Active-well programme — casing, mud weights by formation, cementing.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Casing Programme | DEPTH 0-3800 ===
 Casing programme OIL-AX-102: 20" conductor 50 m; 13-3/8" surface casing 790 m (Girujan base); 9-5/8" intermediate 3,020 m (Barail); 7" liner 2,920–3,800 m (TD in Sylhet). J-profile: KOP 1,500 m, build 2°/30 m to 28°, azimuth 40°.
 === PAGE 2 | SECTION Mud Programme | DEPTH 0-3800 ===

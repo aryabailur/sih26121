@@ -10,6 +10,7 @@ engineer approves it in the review step.
 """
 from __future__ import annotations
 
+import os
 import re
 import shutil
 import threading
@@ -44,16 +45,34 @@ _LOCK = threading.Lock()
 
 
 # ------------------------------------------------------------------------------ OCR adapter
+_TESSERACT_CANDIDATES = [
+    os.environ.get("NWIS_TESSERACT_CMD", ""),
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Tesseract-OCR", "tesseract.exe"),
+    "/opt/homebrew/bin/tesseract",
+    "/usr/local/bin/tesseract",
+    "/usr/bin/tesseract",
+]
+
+
 class OCRAdapter:
-    """Pluggable OCR. Uses Tesseract (pytesseract) when installed; otherwise reports that
-    scanned pages need OCR rather than silently dropping them."""
+    """Pluggable OCR. Uses Tesseract (pytesseract + the tesseract binary) when installed; otherwise
+    reports that scanned pages need OCR rather than silently dropping them.
+
+    The binary is found on PATH, via NWIS_TESSERACT_CMD, or in its default install folders
+    (the Windows installer does not add itself to PATH)."""
 
     def __init__(self) -> None:
         self.engine = None
+        self.version = ""
         try:
             import pytesseract  # type: ignore
 
-            pytesseract.get_tesseract_version()
+            cmd = shutil.which("tesseract") or next((c for c in _TESSERACT_CANDIDATES if c and Path(c).exists()), None)
+            if cmd:
+                pytesseract.pytesseract.tesseract_cmd = cmd
+            self.version = ".".join(str(pytesseract.get_tesseract_version()).split()[0].split(".")[:2])
             self.engine = pytesseract
         except Exception:
             self.engine = None
@@ -64,20 +83,56 @@ class OCRAdapter:
 
     @property
     def name(self) -> str:
-        return "Tesseract OCR" if self.available else "OCR engine not installed"
+        return f"Tesseract OCR {self.version}".strip() if self.available else "OCR engine not installed"
 
-    def image_to_text(self, path: Path) -> str | None:
+    def read(self, image) -> tuple[str, float | None]:
+        """OCR a PIL image → (text, mean word confidence 0–1)."""
+        img = image.convert("L")
+        text = self.engine.image_to_string(img)
+        conf = None
+        try:
+            data = self.engine.image_to_data(img, output_type=self.engine.Output.DICT)
+            vals = [float(c) for c, w in zip(data["conf"], data["text"]) if w.strip() and float(c) >= 0]
+            conf = sum(vals) / len(vals) / 100 if vals else None
+        except Exception:
+            pass
+        return text, conf
+
+    def image_to_text(self, path: Path) -> tuple[str | None, float | None]:
         if not self.available:
-            return None
+            return None, None
         try:
             from PIL import Image  # type: ignore
 
-            return self.engine.image_to_string(Image.open(path))
+            return self.read(Image.open(path))
         except Exception:
-            return None
+            return None, None
+
+    def pdf_page_to_text(self, page) -> tuple[str | None, float | None]:
+        """Scanned PDF page: OCR the raster image(s) embedded in it (no Poppler needed)."""
+        if not self.available:
+            return None, None
+        texts, confs = [], []
+        try:
+            for img in page.images:
+                t, c = self.read(img.image)
+                if t and t.strip():
+                    texts.append(t)
+                    if c is not None:
+                        confs.append(c)
+        except Exception:
+            return None, None
+        return ("\n".join(texts) or None), (sum(confs) / len(confs) if confs else None)
 
 
 OCR = OCRAdapter()
+
+
+def _clean_ocr(text: str) -> str:
+    """Light clean-up of typical OCR artefacts before NLP (ligatures, stray pipes, broken hyphenation)."""
+    text = text.replace("\ufb01", "fi").replace("\ufb02", "fl").replace("|", " ").replace("\u2014", "-")
+    text = re.sub(r"(\w)-\n(\w)", r"\1\2", text)
+    return re.sub(r"[ \t]+", " ", text).strip()
 
 
 def extract_pages(path: Path) -> tuple[list[dict], list[str]]:
@@ -96,9 +151,16 @@ def extract_pages(path: Path) -> tuple[list[dict], list[str]]:
                 pages.append(dict(page=i, text=text, method="text-layer"))
                 log.append(f"Page {i}: {len(text):,} characters from text layer")
             else:
-                log.append(f"Page {i}: no text layer — scanned page; {OCR.name}"
-                           + ("" if OCR.available else " (install Tesseract to OCR scanned pages)"))
-                pages.append(dict(page=i, text="", method="ocr-unavailable"))
+                ocr_text, conf = OCR.pdf_page_to_text(pg)
+                if ocr_text:
+                    ocr_text = _clean_ocr(ocr_text)
+                    pages.append(dict(page=i, text=ocr_text, method="ocr", ocr_confidence=round(conf, 3) if conf else None))
+                    log.append(f"Page {i}: scanned page — {OCR.name} read {len(ocr_text):,} characters"
+                               + (f" (mean word confidence {conf * 100:.0f}%)" if conf else ""))
+                else:
+                    log.append(f"Page {i}: no text layer — scanned page; {OCR.name}"
+                               + ("" if OCR.available else " (install Tesseract to OCR scanned pages)"))
+                    pages.append(dict(page=i, text="", method="ocr-unavailable"))
     elif suffix in (".txt", ".md"):
         raw = path.read_text(encoding="utf-8", errors="replace")
         parts = re.split(r"\f|\n={3,}.*?={3,}\n", raw)
@@ -106,10 +168,12 @@ def extract_pages(path: Path) -> tuple[list[dict], list[str]]:
             pages.append(dict(page=i, text=part.strip(), method="plain-text"))
         log.append(f"Plain text: {len(pages)} page(s)")
     elif suffix in (".png", ".jpg", ".jpeg", ".tif", ".tiff"):
-        text = OCR.image_to_text(path)
+        text, conf = OCR.image_to_text(path)
         if text:
-            pages.append(dict(page=1, text=text, method="ocr"))
-            log.append(f"Image OCR: {len(text):,} characters ({OCR.name})")
+            text = _clean_ocr(text)
+            pages.append(dict(page=1, text=text, method="ocr", ocr_confidence=round(conf, 3) if conf else None))
+            log.append(f"Image OCR: {len(text):,} characters ({OCR.name}"
+                       + (f", mean word confidence {conf * 100:.0f}%)" if conf else ")"))
         else:
             pages.append(dict(page=1, text="", method="ocr-unavailable"))
             log.append(f"Image received; {OCR.name} — page queued for OCR")
@@ -422,7 +486,8 @@ def _save_extraction(doc_id, pages, chunks, events, entities, well_id, doc_date,
         d = db.get(Document, doc_id)
         if not d:
             return
-        d.extraction = dict(pages=[dict(page=p["page"], method=p["method"], text=p["text"]) for p in pages],
+        d.extraction = dict(pages=[dict(page=p["page"], method=p["method"], text=p["text"], ocr_confidence=p.get("ocr_confidence"))
+                                   for p in pages],
                             chunks=chunks, events=events, entities=entities, well_id=well_id,
                             date=doc_date, doc_type=doc_type)
         if well_id:

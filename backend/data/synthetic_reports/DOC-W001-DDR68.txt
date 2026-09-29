@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W001-DDR68 | well=W001 | type=DDR | date=2026-09-28 | pages=5
 ### TITLE DDR OIL-AX-102 Day 68
 ### SUMMARY Active well Day 68 — drilling Barail at 3,100 m; no losses.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3062-3100 ===
 DAILY DRILLING REPORT — OIL-AX-102 | Report No. 68 | Date: 2026-09-28 | Rig: Rig DR-07 (2000 HP) | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,062 m MD; depth 24:00 hrs 3,100 m MD; 24-hr progress 38 m. Hole size 8-1/2"; last casing 9-5/8" at 3,020 m. Formation at report depth: Barail Group. Mud system: KCl-polymer WBM, mud weight 1.40 sg, ECD 1.45 sg. 24-hr summary: Drilled 8-1/2" hole in Barail Group from 3,062 m to 3,100 m. Parameters steady, no losses. Next 24-hr forecast: Drill ahead in Barail towards the Kopili Shale (prognosed top 3,290 m).
 === PAGE 2 | SECTION Drilling Parameters & Mud Properties | DEPTH 3062-3100 ===

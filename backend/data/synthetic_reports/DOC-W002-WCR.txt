@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W002-WCR | well=W002 | type=WCR | date=2023-04-20 | pages=28
 ### TITLE Well Completion Report OIL-AX-99
 ### SUMMARY Completion report — losses, Kopili tight hole, liner cement shortfall and lessons.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3650 ===
 WELL COMPLETION REPORT — OIL-AX-99 (development well), Dikhow East (Demo Field), Upper Assam Shelf. Spud 2023-02-02, rig released 2023-04-10. Total depth 3,650 m MD. Target: Sylhet Limestone. Maximum inclination 26° (azimuth 55°). Casing: 20" at 60 m, 13-3/8" at 805 m, 9-5/8" at 3,005 m, 7" liner 2,900–3,645 m. Formation tops (MD): Girujan surface; Tipam 805 m; Namsang 1,610 m; Barail 2,395 m; Kopili 3,300 m; Sylhet 3,595 m. Principal drilling problems: total losses in Barail at 3,150–3,220 m (18 hrs NPT), tight hole in Kopili, 7" liner cement shortfall. Total NPT 38 hrs.
 === PAGE 6 | SECTION Drilling Problems Summary | DEPTH 3440-3455 ===

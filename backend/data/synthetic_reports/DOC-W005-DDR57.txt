@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W005-DDR57 | well=W005 | type=DDR | date=2021-07-01 | pages=5
 ### TITLE DDR OIL-AX-66 Day 57
 ### SUMMARY Day 57 — overpressure indications at Sylhet top; MW 1.44 → 1.50 sg.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Report Header & 24-hr Summary | DEPTH 3572-3612 ===
 DAILY DRILLING REPORT — OIL-AX-66 | Report No. 57 | Date: 2021-07-01 | Rig: Rig DR-04 | Field: Dikhow East (Demo Field) | Basin: Upper Assam Shelf. Depth 00:00 hrs 3,572 m MD; depth 24:00 hrs 3,612 m MD; 24-hr progress 40 m. Hole size 8-1/2"; last casing 9-5/8" at 2,995 m. Formation at report depth: Sylhet Limestone. Mud system: KCl-polymer WBM, mud weight 1.50 sg, ECD 1.55 sg. 24-hr summary: Drilled through Kopili–Sylhet boundary (3,590 m). High background and connection gas; weighted up to 1.50 sg. Next 24-hr forecast: Drill Sylhet at controlled ROP with flow checks every drilling break.
 === PAGE 3 | SECTION Gas & Pressure Evaluation | DEPTH 3595-3610 ===

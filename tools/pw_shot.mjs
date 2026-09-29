@@ -4,8 +4,15 @@ import path from "node:path";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const API = "http://127.0.0.1:8000";
 await fetch(`${API}/api/simulation/reset`, { method: "POST" });
-const browser = await chromium.launch();
+// Hardware GL (ANGLE/D3D11): the 3D map is far too slow on the software rasteriser (~3 fps).
+const browser = await chromium.launch({ args: ["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+await page.addInitScript(() => {
+  try {
+    localStorage.setItem("nwis-theme", "light");
+    sessionStorage.setItem("nwis-intro", "1");
+  } catch {}
+});
 await page.goto("http://localhost:3000/dashboard", { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(7000);
 await page.click("button:has-text('Run historical risk scenario')");

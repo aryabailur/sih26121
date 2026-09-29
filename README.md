@@ -11,14 +11,15 @@ with every insight traceable to a source document, page, well and depth.
 > generated for the prototype and are **not** Oil India Limited operational data. The data model is
 > built so authorised OIL data can replace the demo set.
 
-![Command Center](docs/screenshots/03-scenario-complete.png)
+![Command Center](docs/screenshots/02-mud-loss-alert.png)
 
 ---
 
 ## Quick start
 
 Prerequisites: **Python 3.11+** and **Node.js 20+**. No API keys, no internet needed for the core demo
-(only the map basemap tiles are fetched online; wells, paths and events still render offline).
+(only the map imagery / terrain tiles are fetched online; wells, paths, towers and events still render offline).
+Use a Chromium-based browser with hardware acceleration on — the 3D map is WebGL.
 
 **Windows (PowerShell)**
 
@@ -58,8 +59,10 @@ Run the backend tests: `cd backend && python -m pytest -q` (10 end-to-end API te
 
 ## The 3-minute demo
 
-Click **Run historical risk scenario** in the top bar. The bit drills 3,100 → 3,600 m in 20 steps
-(1.5 s each) and the whole cockpit re-evaluates at every step:
+Open `http://localhost:3000` — the welcome globe spins; pick a role and NWIS dives from orbit into the field.
+Then click **Run historical risk scenario** in the top bar. The bit drills 3,100 → 3,600 m in 20 steps
+(1.5 s each) and the whole cockpit re-evaluates at every step — alerts arrive as a colour-graded toast with a
+screen-edge flash, and the 3D map flies to frame the offset wells behind each alert:
 
 | Depth | What happens | Why (from the engine) |
 |---|---|---|
@@ -85,13 +88,13 @@ source page → evidence search → scenario → Why? → acknowledge) is at
 
 | PS requirement | Where in NWIS | Try it |
 |---|---|---|
-| **P1 / S2** nearby wells on a map, user radius | Field map (Command Center, Nearby Wells): active well, offsets, well paths, bit position, radius 0.5–50 km | Nearby Wells → drag the radius from 25 km to 1.5 km, then 50 km |
+| **P1 / S2** nearby wells on a map, user radius | 3D field map (Command Center, Nearby Wells): satellite imagery + terrain, active well, offsets, well paths, bit position, history towers, radius 0.5–50 km | Nearby Wells → drag the radius from 25 km to 1.5 km, then 50 km |
 | **P2 / S3** instant access to historical experience | Well profile drawer, Well Intelligence, knowledge-base library, source viewer | Click OIL-AX-99 on the map |
-| **P3 / S4** correlate across wells by depth & formation | Depth scrubber, Well Intelligence overlay, Correlate & Compare (formation-top correlation + multi-well parameter chart), casing strings, formation porosity / pore pressure / fracture gradient, and an offset-calibrated mud-weight window | Correlate & Compare · Risk Explorer → Mud-weight window |
+| **P3 / S4** correlate across wells by depth & formation | Wellbore navigator, Well Intelligence overlay, Correlate & Compare (geological cross-section with every well's **casing strings and shoes**, multi-well parameter chart, correlation table with porosity / pore pressure / fracture gradient, **mud-weight programme** and casing programme per well), and an offset-calibrated mud-weight window | Correlate & Compare · Risk Explorer → Mud-weight window |
 | **P4 / S6** proactive alerts near risky depths | Depth-aware risk engine, alert toasts, Risk Watch, acknowledge / review / dismiss, audit trail | Run historical risk scenario |
-| **S1** AI/NLP/OCR extraction from reports | Document Intelligence: PDF text layer → OCR adapter → chunking → rule-based event/entity extraction → duplicate check → human review → knowledge base | Document Intelligence → Process sample report |
-| **S5** predictive risk for losses, stuck pipe, overpressure, torque, cementing | Explainable hybrid risk score over 7 risk families, risk profile along the well path | Risk Explorer |
-| **S7** dashboard for field & office | Six-screen dark operations cockpit | — |
+| **S1** AI/NLP/OCR extraction from reports | Document Intelligence: text-layer PDFs and **scanned PDFs / images via Tesseract OCR** → chunking → rule-based event/entity extraction → duplicate check → human review → knowledge base | Document Intelligence → Process sample report · Process scanned report (OCR) |
+| **S5** predictive risk for losses, stuck pipe, overpressure, torque, cementing | Explainable hybrid risk score over 7 risk families, risk profile along the well path, and a **learned cross-check** (logistic model backtested leave-one-well-out on the offsets) | Risk Explorer → How the score works · ML chip on every risk card |
+| **S7** dashboard for field & office | Welcome + role select, six workspaces, daylight and night-shift themes, 3D satellite field map | Welcome → pick *Drilling engineer*, *Office analyst* or *Drilling manager* |
 
 ---
 
@@ -112,7 +115,7 @@ flowchart LR
     SIM[Similarity service]
   end
   subgraph UI["Next.js cockpit"]
-    CC[Command Center<br/>map · KPIs · Risk Watch · depth scrubber]
+    CC[Command Center<br/>3D map · wellbore navigator · KPIs · risk radar]
     WI[Well Intelligence & Compare]
     SR[Evidence Search]
     RX[Risk Explorer]
@@ -143,6 +146,12 @@ alert policy: high/critical-history zones alert at ≥0.55; medium/low-history z
 Every factor, weight and contribution is shown in the **Why?** view and on the Risk Explorer model card.
 Scores rank risk; they are not calibrated probabilities.
 
+**Learned cross-check.** Each completed offset well is replayed as if it were being drilled, and a logistic model
+learns which of the six factors actually preceded its events (≈1,600 backtest points from 12 wells). Scored
+leave-one-well-out it ranks risk better than the hand-set weights (AUC ≈ 0.86 vs 0.76) and shows that live
+parameter anomalies matter most. It is shown beside every score (ML chip, *Why?*, Risk Explorer) but never drives
+alerts — on synthetic data it demonstrates the calibration method.
+
 ### Evidence search
 
 Hybrid retrieval over report pages and structured events (`0.40 keyword + 0.35 semantic + 0.25 metadata`),
@@ -153,15 +162,38 @@ synthesise the answer over the same cited evidence when demo mode is off (see be
 
 ---
 
+## Design
+
+The cockpit is built as a product, not a dashboard template: one depth spine, colour only where it means
+something, and motion that explains what changed.
+
+- **Two themes** — *Daylight* (default; projects well in bright rooms) and *Night shift* (dark control-room
+  palette). Toggle with the sun/moon in the left rail; the choice is remembered per browser.
+- **Vertical wellbore navigator** — depth reads top-to-bottom like a well log: strata column, flowing mud in the
+  drill string, a spinning bit you drag down, offset-event pins at their depths and a predicted-risk heat ribbon.
+- **Real 3D map** — MapLibre GL with Esri World Imagery, reference labels and AWS terrain (no keys); globe fly-in on
+  first visit, radar sweep around the active well, extruded history towers (height = NPT + events, colour = worst
+  event), animated evidence links to the offsets that saw this depth, 2D/3D, satellite/street and orbit modes.
+- **Alerts that land** — severity-graded toasts, a screen-edge flash, the camera framing the supporting wells, and a
+  *Why?* view whose score bar builds factor by factor.
+- **Engineered geometry** — near-square corners (4 px panels, 3 px controls, 2 px tags), flat brand colour instead
+  of gradients, no glow; circles only where something is a point (status dots, map pins, gauges).
+- **Logo** — an "N" drawn from wells: offset well, deviated path and the active well, whose amber bit sits in the
+  Kopili risk band (`frontend/app/icon.svg`, `docs/nwis-logo.png`).
+- Typeface *Plus Jakarta Sans* (tabular numerals) + *JetBrains Mono* for IDs; palette tokens in
+  `frontend/app/globals.css`; animations with Motion; charts with Recharts on themed CSS variables.
+
 ## Screens
 
 | | |
 |---|---|
+| ![](docs/screenshots/00-welcome.png) **Welcome** — role select over a live satellite globe | ![](docs/screenshots/14-night-shift-theme.png) **Night shift** theme |
 | ![](docs/screenshots/02-mud-loss-alert.png) **Proactive alert** at 3,150 m with map highlights | ![](docs/screenshots/04-why-explainer.png) **Why?** — factors, signals, offsets, evidence |
 | ![](docs/screenshots/05-nearby-wells.png) **Nearby Wells** — radius, filters, similarity | ![](docs/screenshots/06-well-intelligence.png) **Well Intelligence** — depth-aligned events & parameters |
 | ![](docs/screenshots/07-correlate-compare.png) **Correlate & Compare** — formation tops across wells | ![](docs/screenshots/08-evidence-search.png) **Evidence Search** — cited answer + evidence cards |
 | ![](docs/screenshots/10-risk-explorer.png) **Risk Explorer** — profile, alert log, model card | ![](docs/screenshots/11-document-review.png) **Document Intelligence** — extraction & human review |
 | ![](docs/screenshots/13-mud-weight-window.png) **Mud-weight window** — live ECD meets the offset-calibrated Barail fracture gradient | ![](docs/screenshots/09-source-viewer.png) **Source viewer** — every citation opens the report page |
+| ![](docs/screenshots/15-scanned-report-ocr.png) **Scanned report** — an image-only PDF read by Tesseract OCR | ![](docs/screenshots/16-learned-model.png) **Learned cross-check** — backtested weights vs hand-set |
 
 ---
 
@@ -191,6 +223,7 @@ Regenerate everything with `python backend/seed_data.py`. Report text files are 
 | `NWIS_LLM_MODEL` | `claude-opus-5` | Model for the optional adapter |
 | `NWIS_DOC_STAGE_DELAY` | `0.7` | Seconds per document-pipeline stage (pacing for the live stepper) |
 | `NWIS_BACKEND_URL` (frontend) | `http://127.0.0.1:8000` | Where the Next.js proxy sends `/api/*` |
+| `NWIS_TESSERACT_CMD` | auto-detected | Path to `tesseract` if it is not on PATH or in its default install folder |
 
 Optional integrations (`backend/requirements-optional.txt`): `anthropic` (LLM answers), `pytesseract` +
 Tesseract binary (OCR for scanned pages — without it the pipeline reports scanned pages instead of
@@ -223,12 +256,12 @@ SIH26121_MASTER_BUILD.md  the build specification
 
 ## Known limitations
 
-- Risk weights are hand-set and explainable, not trained; they must be calibrated on authorised OIL history.
+- Alerts use hand-set, explainable weights; the learned cross-check is trained on the synthetic demo field — both must be recalibrated on authorised OIL history.
 - The "semantic" embedding is an offline concept-hash model with domain synonyms — swap in a sentence-embedding
   model behind `EmbeddingProvider` for production.
 - Event extraction is rule-based NLP tuned to drilling-report language; unusual phrasing lands in human review.
-- OCR requires Tesseract; without it scanned pages are reported, not read.
-- Single active well; no authentication or roles beyond a demo label.
+- OCR needs the Tesseract binary (`winget install UB-Mannheim.TesseractOCR` · `brew install tesseract` · `apt install tesseract-ocr`); without it scanned pages are flagged, not read.
+- Single active well; no authentication — the role only picks the landing screen and label.
 
 ## Next three improvements
 

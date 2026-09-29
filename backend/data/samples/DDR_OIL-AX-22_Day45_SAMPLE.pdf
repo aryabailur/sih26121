@@ -13,7 +13,7 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 5 0 obj
-<< /Length 944 >>
+<< /Length 920 >>
 stream
 BT
 50 800 Td
@@ -39,7 +39,7 @@ BT
 /F1 9.5 Tf
 (Next 24-hr forecast: Drill ahead to planned TD 3,500 m with sweeps every stand.) Tj T*
 /F1 8 Tf
-(Page 1 of 3  -  SYNTHETIC DEMO DOCUMENT OIL-AX-22) Tj
+(Page 1 of 3  -  OIL-AX-22) Tj
 ET
 endstream
 endobj
@@ -47,7 +47,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
 endobj
 7 0 obj
-<< /Length 1217 >>
+<< /Length 1193 >>
 stream
 BT
 50 800 Td
@@ -77,7 +77,7 @@ BT
 /F1 9.5 Tf
 (ROP enhancer in the Kopili.) Tj T*
 /F1 8 Tf
-(Page 2 of 3  -  SYNTHETIC DEMO DOCUMENT OIL-AX-22) Tj
+(Page 2 of 3  -  OIL-AX-22) Tj
 ET
 endstream
 endobj
@@ -85,7 +85,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
 endobj
 9 0 obj
-<< /Length 740 >>
+<< /Length 702 >>
 stream
 BT
 50 800 Td
@@ -105,9 +105,9 @@ BT
 /F1 9.5 Tf
 (exposure before trips; ream every stand through 3,420-3,440 m on the next trip.) Tj T*
 /F1 9.5 Tf
-(Prepared by: Night drilling supervisor \(synthetic\).) Tj T*
+(Prepared by: Night drilling supervisor.) Tj T*
 /F1 8 Tf
-(Page 3 of 3  -  SYNTHETIC DEMO DOCUMENT OIL-AX-22) Tj
+(Page 3 of 3  -  OIL-AX-22) Tj
 ET
 endstream
 endobj
@@ -122,13 +122,13 @@ xref
 0000000134 00000 n 
 0000000231 00000 n 
 0000000333 00000 n 
-0000001328 00000 n 
-0000001464 00000 n 
-0000002733 00000 n 
-0000002869 00000 n 
-0000003660 00000 n 
+0000001304 00000 n 
+0000001440 00000 n 
+0000002685 00000 n 
+0000002821 00000 n 
+0000003574 00000 n 
 trailer
 << /Size 11 /Root 1 0 R >>
 startxref
-3797
+3711
 %%EOF

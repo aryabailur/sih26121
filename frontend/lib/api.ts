@@ -1,6 +1,7 @@
 import type {
   Alert,
   AuditEntry,
+  CasingString,
   DocumentChunk,
   DocumentMeta,
   DrillingEvent,
@@ -95,7 +96,9 @@ export const api = {
     request<{ event: DrillingEvent; document: DocumentMeta | null; source_chunk: DocumentChunk | null }>(`/api/events/${id}`),
 
   correlate: (ids: string[]) =>
-    request<{ correlation: FormationCorrelation[]; well_ids: string[] }>(`/api/formations/correlate${qs({ well_ids: ids.join(",") })}`),
+    request<{ correlation: FormationCorrelation[]; well_ids: string[]; casing: Record<string, CasingString[]>; mud_program: Record<string, Record<string, number>> }>(
+      `/api/formations/correlate${qs({ well_ids: ids.join(",") })}`,
+    ),
 
   evaluate: (body: { well_id: string; current_depth: number; radius_km: number; persist?: boolean; parameters?: Partial<Parameters> }) =>
     request<Evaluation>("/api/risk/evaluate", { method: "POST", body: JSON.stringify(body) }),
@@ -127,7 +130,8 @@ export const api = {
     fd.append("file", file);
     return request<{ document_id: string; status: string }>("/api/documents/upload", { method: "POST", body: fd });
   },
-  uploadSample: () => request<{ document_id: string; status: string; file: string }>("/api/documents/upload-sample", { method: "POST" }),
+  uploadSample: (name?: string) =>
+    request<{ document_id: string; status: string; file: string }>(`/api/documents/upload-sample${qs({ name })}`, { method: "POST" }),
   samples: () => request<{ samples: { name: string; size_kb: number; url: string }[] }>("/api/documents/samples/list"),
   docStatus: (id: string) => request<ProcessingStatus>(`/api/documents/${id}/status`),
   extracted: (id: string) => request<ExtractionResult>(`/api/documents/${id}/extracted`),

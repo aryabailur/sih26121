@@ -9,13 +9,14 @@ echo "== NWIS backend =="
 cd "$ROOT/backend"
 [ -d .venv ] || python3 -m venv .venv
 .venv/bin/python -m pip install -q -r requirements.txt
+command -v tesseract >/dev/null 2>&1 || echo "Tesseract OCR not found - scanned reports will be flagged, not read. Install: brew install tesseract | apt install tesseract-ocr"
 [ "${1:-}" = "--no-seed" ] || .venv/bin/python seed_data.py
 .venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000 &
 BACK=$!
 
 echo "== NWIS frontend =="
 cd "$ROOT/frontend"
-[ -d node_modules ] || npm install
+npm install --no-audit --no-fund  # always sync so older checkouts pick up new packages
 npm run dev -- --port 3000 &
 FRONT=$!
 

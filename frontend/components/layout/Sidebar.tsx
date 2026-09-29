@@ -1,20 +1,45 @@
 "use client";
 
-import { Activity, Database, FileSearch, FileStack, GitCompare, LayoutDashboard, MapPinned, ShieldAlert } from "lucide-react";
+import { Activity, FileStack, GitCompare, LayoutDashboard, MapPinned, Moon, ShieldAlert, Sparkles, Sun, type LucideIcon } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { setTheme, useTheme } from "@/lib/prefs";
 import { useNWIS } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { LogoMark } from "./Logo";
 
-const NAV = [
-  { href: "/dashboard", label: "Command Center", icon: LayoutDashboard, exact: true },
-  { href: "/dashboard/nearby", label: "Nearby Wells", icon: MapPinned },
-  { href: "/dashboard/well/W002", match: "/dashboard/well", label: "Well Intelligence", icon: Activity },
-  { href: "/dashboard/compare", label: "Correlate & Compare", icon: GitCompare },
-  { href: "/dashboard/search", label: "Evidence Search", icon: FileSearch },
-  { href: "/dashboard/risk", label: "Risk Explorer", icon: ShieldAlert },
-  { href: "/dashboard/documents", label: "Document Intelligence", icon: FileStack },
+export const NAV: { href: string; match?: string; label: string; title: string; icon: LucideIcon; exact?: boolean }[] = [
+  { href: "/dashboard", label: "Command", title: "Command center", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/nearby", label: "Nearby", title: "Nearby wells", icon: MapPinned },
+  { href: "/dashboard/well/W002", match: "/dashboard/well", label: "Well intel", title: "Well intelligence", icon: Activity },
+  { href: "/dashboard/compare", label: "Compare", title: "Correlate & compare", icon: GitCompare },
+  { href: "/dashboard/search", label: "Ask", title: "Evidence search", icon: Sparkles },
+  { href: "/dashboard/risk", label: "Risk", title: "Risk explorer", icon: ShieldAlert },
+  { href: "/dashboard/documents", label: "Docs", title: "Document intelligence", icon: FileStack },
 ];
+
+export function pageTitle(path: string) {
+  const n = NAV.find((x) => (x.exact ? path === x.href : path.startsWith(x.match ?? x.href)));
+  return n?.title ?? "NWIS";
+}
+
+function ThemeToggle() {
+  const theme = useTheme();
+  const dark = theme === "dark";
+  return (
+    <button
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      className="group relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-[3px] text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
+      title={dark ? "Switch to daylight theme" : "Switch to night-shift theme"}
+      aria-label="Toggle theme"
+    >
+      <motion.span key={theme} initial={{ rotate: -90, scale: 0.4, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
+        {dark ? <Moon size={19} /> : <Sun size={19} />}
+      </motion.span>
+    </button>
+  );
+}
 
 export function Sidebar() {
   const path = usePathname();
@@ -22,46 +47,69 @@ export function Sidebar() {
   const alerts = useNWIS((s) => s.evaluation?.active_alerts.filter((a) => a.status === "active").length ?? 0);
   const compare = useNWIS((s) => s.compareIds.length);
   return (
-    <nav className="glass-strong group/side z-[900] flex w-[60px] shrink-0 flex-col border-y-0 border-l-0 py-3 transition-[width] duration-200 hover:w-[216px]">
-      <ul className="flex flex-col gap-1 px-2">
+    <nav className="relative z-[900] flex w-[84px] shrink-0 flex-col items-center border-r border-line bg-surface/80 py-3 backdrop-blur-xl" aria-label="Main">
+      <Link href="/" title="NWIS home" className="mb-3">
+        <LogoMark size={44} />
+      </Link>
+      <ul className="flex w-full flex-1 flex-col items-center gap-1 px-2">
         {NAV.map((n) => {
           const active = n.exact ? path === n.href : path.startsWith(n.match ?? n.href);
           const Icon = n.icon;
           const badge = n.href === "/dashboard/risk" ? alerts : n.href === "/dashboard/compare" ? compare : 0;
           return (
-            <li key={n.href}>
+            <li key={n.href} className="w-full">
               <Link
                 href={n.href}
-                className={cn(
-                  "relative flex h-10 items-center gap-3 overflow-hidden rounded-md px-2.5 text-[12px] font-medium transition-colors",
-                  active ? "bg-cyan-400/12 text-cyan-100" : "text-slate-400 hover:bg-white/5 hover:text-slate-100",
-                )}
-                title={n.label}
+                title={n.title}
+                className={cn("group relative flex w-full flex-col items-center gap-1 rounded-[3px] py-2 transition-colors", active ? "text-brand-ink" : "text-ink-3 hover:text-ink")}
               >
-                {active && <span className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-cyan-300" />}
-                <Icon size={18} className="shrink-0" />
-                <span className="whitespace-nowrap opacity-0 transition-opacity group-hover/side:opacity-100">{n.label}</span>
-                {badge > 0 && (
-                  <span className={cn("absolute right-1.5 top-1.5 rounded px-1 text-[9px] font-bold", n.href === "/dashboard/risk" ? "bg-red-500 text-white" : "bg-cyan-400 text-cockpit-bg")}>
-                    {badge}
-                  </span>
+                {active && (
+                  <motion.span layoutId="rail-active" className="absolute inset-0 rounded-[3px] bg-brand-soft" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
                 )}
+                <span className="relative flex h-8 w-10 items-center justify-center rounded-[3px] transition-transform group-hover:scale-110">
+                  <Icon size={20} strokeWidth={active ? 2.3 : 1.9} />
+                  {badge > 0 && (
+                    <motion.span
+                      key={badge}
+                      initial={{ scale: 0.3 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 14 }}
+                      className={cn(
+                        "absolute -right-1.5 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-[2px] px-1 text-[11px] font-extrabold text-white ring-2 ring-surface",
+                        n.href === "/dashboard/risk" ? "bg-crit" : "bg-brand",
+                      )}
+                    >
+                      {badge}
+                    </motion.span>
+                  )}
+                </span>
+                <span className={cn("relative text-[11.5px] font-semibold leading-none", active ? "text-ink" : "")}>{n.label}</span>
               </Link>
             </li>
           );
         })}
       </ul>
-      <div className="mt-auto overflow-hidden px-2">
-        <div className="rounded-md border border-amber-500/30 bg-amber-500/5 px-1.5 py-2 text-[9px] leading-snug text-amber-200/80" title="Synthetic demo data — not Oil India operational records">
-          <div className="flex items-center gap-1.5 font-bold tracking-wider">
-            <Database size={14} className="shrink-0" />
-            <span className="hidden group-hover/side:inline">SYNTHETIC DATA</span>
+      <div className="flex flex-col items-center gap-2">
+        <ThemeToggle />
+        <div className="group relative">
+          <div className="flex h-10 w-10 cursor-help flex-col items-center justify-center rounded-[3px] bg-surface-3 text-[11px] font-extrabold leading-tight tracking-wide text-ink-3">
+            <span>DEMO</span>
+            <span className="font-semibold opacity-80">DATA</span>
           </div>
-          <div className="mt-1 hidden whitespace-normal group-hover/side:block">
-            Synthetic demo data — not Oil India operational records.
+          <div className="pointer-events-none absolute bottom-0 left-full z-50 ml-3 w-64 translate-x-1 rounded-[3px] border border-line bg-surface p-3 text-[12.5px] text-ink-2 opacity-0 shadow-lg transition-all group-hover:translate-x-0 group-hover:opacity-100">
+            <div className="font-bold text-ink">Demo dataset</div>
+            <p className="mt-1 leading-snug text-ink-3">
+              Realistic synthetic wells on real Upper Assam stratigraphy, shaped like OIL&apos;s WCRs, DDRs and eRTMAC stream — not Oil India operational records.
+              Swap in the archive and the same pipeline runs.
+            </p>
             {sim && (
-              <div className="mt-1 font-mono text-amber-100/70">
-                {sim.knowledge_base.wells} wells · {sim.knowledge_base.events} events · {sim.knowledge_base.documents} docs · {sim.knowledge_base.chunks} chunks
+              <div className="mt-2 grid grid-cols-2 gap-1.5 text-[12.5px]">
+                {Object.entries(sim.knowledge_base).map(([k, v]) => (
+                  <div key={k} className="rounded-[3px] bg-surface-2 px-2 py-1">
+                    <div className="font-extrabold tabular text-ink">{v}</div>
+                    <div className="capitalize text-ink-3">{k}</div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

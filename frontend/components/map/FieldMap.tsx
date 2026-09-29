@@ -1,50 +1,149 @@
 "use client";
 
-import L from "leaflet";
-import { Focus, Globe2, Layers, WifiOff } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { Feature, FeatureCollection } from "geojson";
+import { Box, Focus, Globe2, Map as MapIcon, Orbit, Satellite, Square, WifiOff } from "lucide-react";
+import { AttributionControl, LngLatBounds, Map as MLMap, Marker, NavigationControl, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { FamilyIcon } from "@/components/shared/FamilyIcon";
+import { introPlayed, markIntroPlayed, useTheme } from "@/lib/prefs";
 import { useNWIS } from "@/lib/store";
-import type { Trajectory, WellListItem } from "@/lib/types";
+import type { DrillingEvent, Trajectory, WellListItem } from "@/lib/types";
 import { cn, EVENT_LABELS, FAMILY_META, familyOf, fmtDepth, SEVERITY_STYLE } from "@/lib/utils";
 import { MapLegend } from "./MapLegend";
+import { circleRing, DEM_SOURCE, metersPerPixel, SKY, styleFor, TERRARIUM, type Basemap } from "./mapStyle";
+import { WellPin, type PinHighlight } from "./WellPin";
 
-const TILE_DARK = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}";
-const TILE_SAT = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+// Served from public/ (see scripts/copy-maplibre-worker.mjs) — the bundler can't resolve MapLibre's worker URL.
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+
+const FIELD_VIEW = { center: [95.3522, 27.2503] as [number, number], zoom: 14.2, pitch: 58, bearing: -24 };
+const BRAND = "#6d5cff";
+const RADAR_KM = 1.6;
+const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
+// "Ant march" dash frames for evidence links.
+const DASHES: number[][] = [
+  [0, 4, 3], [0.5, 4, 2.5], [1, 4, 2], [1.5, 4, 1.5], [2, 4, 1], [2.5, 4, 0.5], [3, 4, 0],
+  [0, 0.5, 3, 3.5], [0, 1, 3, 3], [0, 1.5, 3, 2.5], [0, 2, 3, 2], [0, 2.5, 3, 1.5], [0, 3, 3, 1], [0, 3.5, 3, 0.5],
+];
+
+type ZoomBucket = "far" | "mid" | "near";
+
+/** Frame the core field (offsets within 5 km) flat or pitched. */
+function fitCore(map: MLMap, pitch: number, duration: number) {
+  const core = useNWIS.getState().wells.filter((w) => w.distance_km <= 5);
+  if (!core.length) return;
+  const b = core.reduce((acc, w) => acc.extend([w.longitude, w.latitude]), new LngLatBounds([core[0].longitude, core[0].latitude], [core[0].longitude, core[0].latitude]));
+  map.fitBounds(b, { padding: { top: 110, bottom: 60, left: 60, right: 90 }, pitch, bearing: 0, duration });
+}
+
+/** Radar sweep diameter tracks the map scale (RADAR_KM radius); hidden when zoomed far out. */
+function sizeRadar(el: HTMLDivElement | null, zoom: number) {
+  if (!el) return;
+  const px = Math.min(4000, (RADAR_KM * 2000) / metersPerPixel(FIELD_VIEW.center[1], zoom));
+  el.style.width = el.style.height = `${px}px`;
+  el.style.opacity = zoom < 11.5 ? "0" : "1";
+}
+const bucketOf = (z: number): ZoomBucket => (z >= 13.2 ? "near" : z >= 10 ? "mid" : "far");
 
 function pointAtMd(traj: Trajectory[] | undefined, md: number): [number, number] | null {
   if (!traj?.length) return null;
-  if (md <= traj[0].md) return [traj[0].lat, traj[0].lon];
+  if (md <= traj[0].md) return [traj[0].lon, traj[0].lat];
   for (let i = 1; i < traj.length; i++) {
     if (traj[i].md >= md) {
       const a = traj[i - 1];
       const b = traj[i];
       const t = (md - a.md) / (b.md - a.md || 1);
-      return [a.lat + (b.lat - a.lat) * t, a.lon + (b.lon - a.lon) * t];
+      return [a.lon + (b.lon - a.lon) * t, a.lat + (b.lat - a.lat) * t];
     }
   }
   const last = traj[traj.length - 1];
-  return [last.lat, last.lon];
+  return [last.lon, last.lat];
 }
 
-function markerHtml(w: WellListItem, o: { highlight?: string; dim: boolean; selected: boolean; hover: boolean }) {
-  if (w.role === "active") {
-    return `<div class="well-marker active" style="width:16px;height:16px;color:#22d3ee"><div class="ring"></div><div class="ring" style="animation-delay:1.1s"></div><div class="dot"></div></div>`;
+function hexagon(lon: number, lat: number, meters: number): [number, number][] {
+  const dLat = meters / 111320;
+  const dLon = meters / (111320 * Math.cos((lat * Math.PI) / 180));
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= 6; i++) {
+    const a = (Math.PI / 3) * i + Math.PI / 6;
+    ring.push([lon + dLon * Math.cos(a), lat + dLat * Math.sin(a)]);
   }
-  const sev = w.history_severity;
-  const fill = sev ? SEVERITY_STYLE[sev].hex : "#475569";
-  const size = o.selected || o.hover ? 15 : 12;
-  const ring = o.highlight ? `<div class="ring" style="color:${o.highlight}"></div>` : "";
-  const border = o.selected || o.hover ? "border-color:#f8fafc" : o.highlight ? `border-color:${o.highlight}` : "";
-  return `<div class="well-marker" style="width:${size}px;height:${size}px;opacity:${o.dim ? 0.28 : 1};color:${o.highlight ?? fill}">${ring}<div class="dot" style="background:${fill};${border};box-shadow:0 0 ${o.highlight ? 14 : 6}px ${o.highlight ?? fill}66"></div></div>`;
+  return ring;
 }
 
-export default function FieldMap({ className, showControls = true }: { className?: string; showControls?: boolean }) {
+function addNwisLayers(map: MLMap) {
+  if (!map.getSource(DEM_SOURCE)) {
+    map.addSource(DEM_SOURCE, { type: "raster-dem", tiles: [TERRARIUM], encoding: "terrarium", tileSize: 256, maxzoom: 14, attribution: "Terrain: Mapzen / AWS Open Data" });
+  }
+  for (const id of ["nwis-radius", "nwis-rings", "nwis-traj", "nwis-links", "nwis-towers"]) {
+    if (!map.getSource(id)) map.addSource(id, { type: "geojson", data: EMPTY });
+  }
+  const add = (layer: Parameters<MLMap["addLayer"]>[0]) => !map.getLayer(layer.id) && map.addLayer(layer);
+  add({ id: "nwis-radius-fill", type: "fill", source: "nwis-radius", paint: { "fill-color": BRAND, "fill-opacity": 0.035 } });
+  add({ id: "nwis-radius-line", type: "line", source: "nwis-radius", paint: { "line-color": BRAND, "line-width": 2.2, "line-opacity": 0.9, "line-dasharray": [2.5, 1.8] } });
+  add({ id: "nwis-rings", type: "line", source: "nwis-rings", paint: { "line-color": "#ffffff", "line-width": 1.3, "line-opacity": 0.6, "line-dasharray": [1, 2.2] } });
+  add({
+    id: "nwis-traj-glow",
+    type: "line",
+    source: "nwis-traj",
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": ["*", ["get", "width"], 3.2], "line-blur": 5, "line-opacity": ["*", ["get", "opacity"], 0.45] },
+  });
+  add({
+    id: "nwis-traj",
+    type: "line",
+    source: "nwis-traj",
+    filter: ["!", ["get", "planned"]],
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": ["get", "width"], "line-opacity": ["get", "opacity"] },
+  });
+  add({
+    id: "nwis-traj-planned",
+    type: "line",
+    source: "nwis-traj",
+    filter: ["get", "planned"],
+    layout: { "line-cap": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": ["get", "width"], "line-opacity": 0.85, "line-dasharray": [1.2, 1.6] },
+  });
+  add({
+    id: "nwis-links-glow",
+    type: "line",
+    source: "nwis-links",
+    layout: { "line-cap": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": 9, "line-blur": 7, "line-opacity": 0.5 },
+  });
+  add({ id: "nwis-links", type: "line", source: "nwis-links", paint: { "line-color": ["get", "color"], "line-width": 3, "line-dasharray": DASHES[0] } });
+  add({
+    id: "nwis-towers",
+    type: "fill-extrusion",
+    source: "nwis-towers",
+    paint: {
+      "fill-extrusion-color": ["get", "color"],
+      "fill-extrusion-height": ["get", "height"],
+      "fill-extrusion-base": 0,
+      "fill-extrusion-opacity": 0.86,
+      "fill-extrusion-vertical-gradient": true,
+    },
+  });
+}
+
+export default function FieldMap({ className, showControls = true, overlay }: { className?: string; showControls?: boolean; overlay?: ReactNode }) {
   const elRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const layers = useRef<{ traj: L.LayerGroup; wells: L.LayerGroup; overlay: L.LayerGroup; labels: L.LayerGroup; base?: L.TileLayer } | null>(null);
-  const [zoom, setZoom] = useState(14);
+  const mapRef = useRef<MLMap | null>(null);
+  const styleKeyRef = useRef<string>("");
+  const mode3dRef = useRef(true);
+  const bitPos = useRef<[number, number] | null>(null);
+  const bitMarker = useRef<Marker | null>(null);
+  const radarRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
+  const [styleEpoch, setStyleEpoch] = useState(0);
+  const [zoomBucket, setZoomBucket] = useState<ZoomBucket>(() => (introPlayed() ? "near" : "far"));
+  const [basemap, setBasemap] = useState<Basemap>("satellite");
+  const [mode3d, setMode3d] = useState(true);
+  const [orbit, setOrbit] = useState(false);
+  const [towers, setTowers] = useState(true);
   const [offline, setOffline] = useState(false);
-  const [basemap, setBasemap] = useState<"dark" | "sat">("dark");
 
   const wells = useNWIS((s) => s.wells);
   const trajectories = useNWIS((s) => s.trajectories);
@@ -56,215 +155,471 @@ export default function FieldMap({ className, showControls = true }: { className
   const selectedWellId = useNWIS((s) => s.selectedWellId);
   const hoverWellId = useNWIS((s) => s.hoverWellId);
   const familyFilter = useNWIS((s) => s.familyFilter);
+  const latestToast = useNWIS((s) => s.toasts.at(-1));
   const openWell = useNWIS((s) => s.openWell);
   const setHover = useNWIS((s) => s.setHover);
 
   const active = wells.find((w) => w.role === "active");
+  const inRadius = wells.filter((w) => w.role === "offset" && w.distance_km <= radiusKm).length;
 
-  // Wells to glow: offsets with events near the bit + alerts' supporting wells in the scenario.
+  // Wells to glow: offsets with events near the bit + the scenario's supporting wells.
   const highlight = useMemo(() => {
-    const m = new Map<string, string>();
+    const m = new Map<string, PinHighlight>();
     for (const h of evaluation?.context.highlighted_wells ?? []) {
-      m.set(h.well_id, FAMILY_META[familyOf(h.event_types[0])].color);
+      const fam = familyOf(h.event_types[0]);
+      const ev = events
+        .filter((e) => e.well_id === h.well_id && familyOf(e.event_type) === fam)
+        .sort((a, b) => Math.abs(a.depth_start - depth) - Math.abs(b.depth_start - depth))[0];
+      m.set(h.well_id, { color: FAMILY_META[fam].color, family: fam, depth: ev?.depth_start });
     }
-    for (const id of scenarioHighlight) if (!m.has(id)) m.set(id, "#ef4444");
+    for (const id of scenarioHighlight) if (!m.has(id)) m.set(id, { color: SEVERITY_STYLE.critical.hex, family: "kick" });
     return m;
-  }, [evaluation, scenarioHighlight]);
+  }, [evaluation, scenarioHighlight, events, depth]);
 
-  // ---------------------------------------------------------------- init
+  const nearEvents: DrillingEvent[] = useMemo(() => {
+    if (!active) return [];
+    const dist = new Map(wells.map((w) => [w.id, w.distance_km]));
+    return events.filter((e) => e.well_id !== active.id && Math.abs((e.depth_start + e.depth_end) / 2 - depth) <= 150 && (dist.get(e.well_id) ?? 99) <= radiusKm);
+  }, [events, wells, active, depth, radiusKm]);
+
+  // ------------------------------------------------------------------ DOM hosts for portal-rendered markers
+  const wellIds = wells.map((w) => w.id).join(",");
+  const pinEls = useMemo(() => Object.fromEntries(wellIds.split(",").filter(Boolean).map((id) => [id, document.createElement("div")])), [wellIds]);
+  const eventKey = nearEvents.map((e) => e.id).join(",");
+  const eventEls = useMemo(() => Object.fromEntries(eventKey.split(",").filter(Boolean).map((id) => [id, document.createElement("div")])), [eventKey]);
+  const radarEl = useMemo(() => document.createElement("div"), []);
+  const bitEl = useMemo(() => document.createElement("div"), []);
+
+  // ------------------------------------------------------------------ init
   useEffect(() => {
-    if (!elRef.current || mapRef.current) return;
-    const map = L.map(elRef.current, { zoomControl: false, attributionControl: true, minZoom: 8, maxZoom: 17, zoomSnap: 0.25 });
-    L.control.zoom({ position: "bottomright" }).addTo(map);
-    map.setView([27.2515, 95.3525], 14);
-    const traj = L.layerGroup().addTo(map);
-    const overlay = L.layerGroup().addTo(map);
-    const wellsL = L.layerGroup().addTo(map);
-    const labels = L.layerGroup().addTo(map);
-    layers.current = { traj, wells: wellsL, overlay, labels };
-    map.on("zoomend", () => setZoom(map.getZoom()));
+    if (!elRef.current) return;
+    const intro = !introPlayed();
+    const dark = document.documentElement.dataset.theme === "dark";
+    styleKeyRef.current = "satellite:any";
+    const map = new MLMap({
+      container: elRef.current,
+      style: styleFor("satellite", dark),
+      center: intro ? [84.5, 22] : FIELD_VIEW.center,
+      zoom: intro ? 2.3 : FIELD_VIEW.zoom,
+      pitch: intro ? 0 : FIELD_VIEW.pitch,
+      bearing: intro ? 0 : FIELD_VIEW.bearing,
+      maxPitch: 78,
+      attributionControl: false,
+      canvasContextAttributes: { antialias: true },
+    });
+    map.addControl(new NavigationControl({ visualizePitch: true }), "bottom-right");
+    map.addControl(new AttributionControl({ compact: true }), "bottom-right");
+    let errors = 0;
+    map.on("style.load", () => {
+      addNwisLayers(map);
+      map.setProjection({ type: "globe" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      map.setSky(SKY as any);
+      map.setTerrain(mode3dRef.current ? { source: DEM_SOURCE, exaggeration: 1.7 } : null);
+      setStyleEpoch((e) => e + 1);
+    });
+    map.on("load", () => {
+      elRef.current?.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show");
+      if (!intro) return;
+      markIntroPlayed();
+      map.flyTo({ ...FIELD_VIEW, duration: 7000, curve: 1.65, essential: true });
+    });
+    map.on("zoom", () => sizeRadar(radarRef.current, map.getZoom()));
+    map.on("zoomend", () => setZoomBucket(bucketOf(map.getZoom())));
+    map.on("dragstart", () => setOrbit(false));
+    map.on("error", (e) => {
+      const src = (e as unknown as { sourceId?: string }).sourceId;
+      if (src === "sat" || src === "labels" || src === "openmaptiles") {
+        errors += 1;
+        if (errors > 4) setOffline(true);
+      }
+    });
     mapRef.current = map;
+    (window as unknown as { __nwisMap?: MLMap }).__nwisMap = map; // handle for E2E checks / screenshots
     return () => {
       map.remove();
       mapRef.current = null;
-      layers.current = null;
     };
   }, []);
 
-  // ---------------------------------------------------------------- basemap
+  // ------------------------------------------------------------------ basemap / theme
   useEffect(() => {
     const map = mapRef.current;
-    const l = layers.current;
-    if (!map || !l) return;
-    l.base?.remove();
-    const base = L.tileLayer(basemap === "dark" ? TILE_DARK : TILE_SAT, {
-      maxZoom: 19,
-      maxNativeZoom: basemap === "dark" ? 16 : 18,
-      attribution: basemap === "dark" ? "Tiles &copy; Esri — Esri, HERE, Garmin" : "Imagery &copy; Esri, Maxar, Earthstar Geographics",
-    });
-    let errors = 0;
-    base.on("tileerror", () => {
-      errors += 1;
-      if (errors > 3) setOffline(true);
-    });
-    base.on("tileload", () => setOffline(false));
-    base.addTo(map);
-    base.bringToBack();
-    l.base = base;
-  }, [basemap]);
+    if (!map) return;
+    const dark = theme === "dark";
+    const key = `${basemap}:${basemap === "streets" ? dark : "any"}`;
+    if (key === styleKeyRef.current) return;
+    styleKeyRef.current = key;
+    map.setStyle(styleFor(basemap, dark));
+  }, [basemap, theme]);
 
-  // ---------------------------------------------------------------- vector layers
+  // ------------------------------------------------------------------ 3D / 2D
   useEffect(() => {
-    const l = layers.current;
-    if (!l || !active) return;
-    l.traj.clearLayers();
-    l.wells.clearLayers();
-    l.overlay.clearLayers();
-    l.labels.clearLayers();
-    const center: L.LatLngExpression = [active.latitude, active.longitude];
+    const map = mapRef.current;
+    if (!map || mode3dRef.current === mode3d) return;
+    mode3dRef.current = mode3d;
+    map.setTerrain(mode3d ? { source: DEM_SOURCE, exaggeration: 1.7 } : null);
+    // A flat view shows less ground than a pitched one at the same zoom — refit the core field.
+    if (mode3d) map.flyTo({ ...FIELD_VIEW, duration: 1100 });
+    else fitCore(map, 0, 1100);
+  }, [mode3d]);
 
-    // radius + range rings
-    L.circle(center, { radius: radiusKm * 1000, color: "#22d3ee", weight: 1.2, dashArray: "6 6", fillColor: "#22d3ee", fillOpacity: 0.025, interactive: false }).addTo(l.overlay);
-    for (const km of [1, 2]) {
-      L.circle(center, { radius: km * 1000, color: "#1e3a5f", weight: 1, dashArray: "2 5", fill: false, interactive: false }).addTo(l.overlay);
-      L.marker([active.latitude + km / 111.32, active.longitude], {
-        icon: L.divIcon({ className: "", html: `<span style="font:600 9px var(--font-mono);color:#475569">${km} km</span>`, iconSize: [30, 10] }),
-        interactive: false,
-      }).addTo(l.overlay);
-    }
-
+  // ------------------------------------------------------------------ vector data
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !active || !styleEpoch) return;
+    const src = (id: string) => map.getSource(id) as GeoJSONSource | undefined;
     const filtered = new Set(familyFilter);
+    const isDim = (w: WellListItem) => w.role === "offset" && ((filtered.size > 0 && !w.risk_families.some((f) => filtered.has(f))) || w.distance_km > radiusKm);
+
+    src("nwis-radius")?.setData({
+      type: "FeatureCollection",
+      features: [{ type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [circleRing(active.longitude, active.latitude, radiusKm)] } }],
+    });
+    src("nwis-rings")?.setData({
+      type: "FeatureCollection",
+      features: [1, 2].map((km) => ({ type: "Feature", properties: { km }, geometry: { type: "LineString", coordinates: circleRing(active.longitude, active.latitude, km) } })),
+    });
+
+    const traj: Feature[] = [];
     for (const w of wells) {
       const t = trajectories[w.id];
-      if (t?.length) {
+      if (!t?.length) continue;
+      if (w.role === "active") {
+        const drilled = t.filter((p) => !p.planned).map((p) => [p.lon, p.lat]);
+        const planned = t.filter((p) => p.planned).map((p) => [p.lon, p.lat]);
+        if (drilled.length) planned.unshift(drilled[drilled.length - 1]);
+        traj.push({ type: "Feature", properties: { color: BRAND, width: 4, opacity: 1, planned: false }, geometry: { type: "LineString", coordinates: drilled } });
+        if (planned.length > 1) traj.push({ type: "Feature", properties: { color: "#b9b1ff", width: 3, opacity: 0.9, planned: true }, geometry: { type: "LineString", coordinates: planned } });
+      } else {
         const hl = highlight.get(w.id);
+        const dim = isDim(w);
+        traj.push({
+          type: "Feature",
+          properties: { color: hl?.color ?? "#ffffff", width: hl ? 3.2 : 2, opacity: dim ? 0.18 : hl ? 1 : 0.7, planned: false },
+          geometry: { type: "LineString", coordinates: t.map((p) => [p.lon, p.lat]) },
+        });
+      }
+    }
+    src("nwis-traj")?.setData({ type: "FeatureCollection", features: traj });
+
+    const links: Feature[] = [];
+    for (const [id, hl] of highlight) {
+      const w = wells.find((x) => x.id === id);
+      if (!w || isDim(w)) continue;
+      links.push({ type: "Feature", properties: { color: hl.color }, geometry: { type: "LineString", coordinates: [[active.longitude, active.latitude], [w.longitude, w.latitude]] } });
+    }
+    src("nwis-links")?.setData({ type: "FeatureCollection", features: links });
+
+    const tw: Feature[] = [];
+    if (towers) {
+      for (const w of wells) {
         if (w.role === "active") {
-          const drilled = t.filter((p) => !p.planned).map((p) => [p.lat, p.lon] as [number, number]);
-          const planned = t.filter((p, i) => p.planned || (i > 0 && t[i - 1] && !t[i - 1].planned && p.planned)).map((p) => [p.lat, p.lon] as [number, number]);
-          if (drilled.length) planned.unshift(drilled[drilled.length - 1]);
-          L.polyline(drilled, { color: "#22d3ee", weight: 3, opacity: 0.95 }).addTo(l.traj);
-          L.polyline(planned, { color: "#22d3ee", weight: 2, opacity: 0.6, dashArray: "4 6" }).addTo(l.traj);
-          const bit = pointAtMd(t, depth);
-          if (bit) {
-            L.marker(bit, {
-              icon: L.divIcon({
-                className: "",
-                html: `<div title="Bit position ${Math.round(depth)} m MD" style="width:12px;height:12px;transform:rotate(45deg);background:#0a0e17;border:2px solid #67e8f9;box-shadow:0 0 12px #22d3ee"></div>`,
-                iconSize: [12, 12],
-                iconAnchor: [6, 6],
-              }),
-              zIndexOffset: 900,
-            })
-              .bindTooltip(`Bit @ ${fmtDepth(depth)} MD (surface projection)`, { className: "nwis-tip", direction: "top" })
-              .addTo(l.overlay);
-          }
-        } else {
-          const dim = filtered.size > 0 && !w.risk_families.some((f) => filtered.has(f));
-          L.polyline(t.map((p) => [p.lat, p.lon] as [number, number]), {
-            color: hl ?? "#64748b",
-            weight: hl ? 2.2 : 1.4,
-            opacity: dim ? 0.15 : hl ? 0.9 : 0.55,
-          }).addTo(l.traj);
+          tw.push({ type: "Feature", properties: { color: BRAND, height: 300 }, geometry: { type: "Polygon", coordinates: [hexagon(w.longitude, w.latitude, 22)] } });
+        } else if (!isDim(w)) {
+          const color = highlight.get(w.id)?.color ?? (w.history_severity ? SEVERITY_STYLE[w.history_severity].hex : "#94a3b8");
+          tw.push({ type: "Feature", properties: { color, height: 30 + w.npt_hours * 3.2 + w.event_count * 12 }, geometry: { type: "Polygon", coordinates: [hexagon(w.longitude, w.latitude, 34)] } });
         }
       }
     }
+    src("nwis-towers")?.setData({ type: "FeatureCollection", features: tw });
+  }, [styleEpoch, wells, trajectories, radiusKm, highlight, familyFilter, towers, active]);
 
-    // Subsurface location of offset events near the current bit depth.
-    const near = events.filter(
-      (e) => e.well_id !== active.id && Math.abs((e.depth_start + e.depth_end) / 2 - depth) <= 150 &&
-        (wells.find((w) => w.id === e.well_id)?.distance_km ?? 99) <= radiusKm,
-    );
-    for (const e of near) {
-      const p = pointAtMd(trajectories[e.well_id], (e.depth_start + e.depth_end) / 2);
-      if (!p) continue;
-      const c = FAMILY_META[familyOf(e.event_type)].color;
-      L.marker(p, {
-        icon: L.divIcon({
-          className: "",
-          html: `<div style="width:10px;height:10px;transform:rotate(45deg);background:${c};border:1.5px solid #0a0e17;box-shadow:0 0 10px ${c}"></div>`,
-          iconSize: [10, 10],
-          iconAnchor: [5, 5],
-        }),
-        zIndexOffset: 800,
+  // Towers rise out of the ground whenever the style (re)loads.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !styleEpoch) return;
+    const t0 = performance.now();
+    let raf = 0;
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / 1600);
+      const ease = 1 - Math.pow(1 - k, 3);
+      if (map.getLayer("nwis-towers")) map.setPaintProperty("nwis-towers", "fill-extrusion-height", ["*", ["get", "height"], ease]);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [styleEpoch]);
+
+  // Evidence links march from the active well towards the offsets that saw this depth before.
+  const hasLinks = highlight.size > 0;
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !styleEpoch || !hasLinks) return;
+    let i = 0;
+    const timer = setInterval(() => {
+      i = (i + 1) % DASHES.length;
+      if (map.getLayer("nwis-links")) map.setPaintProperty("nwis-links", "line-dasharray", DASHES[i]);
+    }, 55);
+    return () => clearInterval(timer);
+  }, [styleEpoch, hasLinks]);
+
+  // ------------------------------------------------------------------ markers
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const markers = wells
+      .filter((w) => pinEls[w.id])
+      .map((w) => new Marker({ element: pinEls[w.id], anchor: "center", opacityWhenCovered: "1", subpixelPositioning: true }).setLngLat([w.longitude, w.latitude]).addTo(map));
+    return () => markers.forEach((m) => m.remove());
+  }, [wells, pinEls]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const markers = nearEvents
+      .map((e) => {
+        const p = pointAtMd(trajectories[e.well_id], (e.depth_start + e.depth_end) / 2);
+        const el = eventEls[e.id];
+        return p && el ? new Marker({ element: el, anchor: "center", opacityWhenCovered: "1" }).setLngLat(p).addTo(map) : null;
       })
-        .bindTooltip(
-          `<b>${e.well_name}</b> · ${EVENT_LABELS[e.event_type] ?? e.event_type}<br/>${fmtDepth(e.depth_start)}–${fmtDepth(e.depth_end)} · ${e.formation}<br/><span style="color:#94a3b8">${e.severity.toUpperCase()} · subsurface location at event depth</span>`,
-          { className: "nwis-tip", direction: "top" },
-        )
-        .on("click", () => openWell(e.well_id))
-        .addTo(l.overlay);
-    }
+      .filter((m): m is Marker => Boolean(m));
+    return () => markers.forEach((m) => m.remove());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventEls, trajectories]);
 
-    // Surface well markers.
-    for (const w of wells) {
-      const dim = w.role === "offset" && ((familyFilter.length > 0 && !w.risk_families.some((f) => filtered.has(f))) || w.distance_km > radiusKm);
-      const m = L.marker([w.latitude, w.longitude], {
-        icon: L.divIcon({
-          className: "",
-          html: markerHtml(w, { highlight: highlight.get(w.id), dim, selected: selectedWellId === w.id, hover: hoverWellId === w.id }),
-          iconSize: w.role === "active" ? [16, 16] : [14, 14],
-          iconAnchor: w.role === "active" ? [8, 8] : [7, 7],
-        }),
-        zIndexOffset: w.role === "active" ? 1000 : highlight.has(w.id) ? 500 : 0,
-      });
-      const fams = w.risk_families.map((f) => `<span style="color:${FAMILY_META[f].color}">${FAMILY_META[f].short}</span>`).join(" ");
-      m.bindTooltip(
-        `<div style="font-weight:600;color:#f8fafc">${w.name} <span style="color:#64748b;font-weight:400">${w.id}</span></div>
-         <div style="color:#94a3b8">${w.role === "active" ? "ACTIVE · drilling" : w.status} · TD ${fmtDepth(w.total_depth_md)}</div>
-         ${w.role === "offset" ? `<div style="color:#94a3b8">${w.distance_km.toFixed(2)} km ${w.direction} · similarity ${Math.round((w.similarity ?? 0) * 100)}%</div><div>${w.event_count} events ${fams}</div>` : ""}`,
-        { className: "nwis-tip", direction: "top", offset: [0, -8] },
-      );
-      m.on("click", () => openWell(w.id));
-      m.on("mouseover", () => setHover(w.id));
-      m.on("mouseout", () => setHover(null));
-      m.addTo(l.wells);
-      if (zoom >= 13.5 || w.role === "active") {
-        L.marker([w.latitude, w.longitude], { interactive: false, icon: L.divIcon({ className: "", html: "", iconSize: [0, 0] }) })
-          .bindTooltip(w.name, { permanent: true, direction: "right", offset: [9, 0], className: "nwis-label" })
-          .addTo(l.labels);
-      }
-    }
-  }, [wells, trajectories, radiusKm, depth, events, highlight, selectedWellId, hoverWellId, familyFilter, zoom, active, openWell, setHover]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !active) return;
+    const m = new Marker({ element: radarEl, anchor: "center", pitchAlignment: "map", rotationAlignment: "map", opacityWhenCovered: "1" }).setLngLat([active.longitude, active.latitude]).addTo(map);
+    sizeRadar(radarRef.current, map.getZoom());
+    return () => {
+      m.remove();
+    };
+  }, [active, radarEl]);
+
+  // The bit glides along the (surface projection of the) active trajectory.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !active) return;
+    const start = pointAtMd(trajectories[active.id], useNWIS.getState().depth) ?? [active.longitude, active.latitude];
+    bitPos.current = start;
+    const m = new Marker({ element: bitEl, anchor: "center", opacityWhenCovered: "1" }).setLngLat(start).addTo(map);
+    bitMarker.current = m;
+    return () => {
+      m.remove();
+      bitMarker.current = null;
+    };
+  }, [active, trajectories, bitEl]);
+
+  useEffect(() => {
+    const marker = bitMarker.current;
+    if (!marker || !active) return;
+    const target = pointAtMd(trajectories[active.id], depth);
+    if (!target) return;
+    const from = bitPos.current ?? target;
+    const t0 = performance.now();
+    let raf = 0;
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / 420);
+      const e = 1 - Math.pow(1 - k, 3);
+      const p: [number, number] = [from[0] + (target[0] - from[0]) * e, from[1] + (target[1] - from[1]) * e];
+      bitPos.current = p;
+      marker.setLngLat(p);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [active, trajectories, depth]);
+
+  // ------------------------------------------------------------------ camera choreography
+  // A new alert flies the camera to frame the active well and the offsets behind it.
+  const toastKey = latestToast ? `${latestToast.id}:${latestToast.at}` : "";
+  useEffect(() => {
+    const map = mapRef.current;
+    const toast = useNWIS.getState().toasts.at(-1);
+    if (!map || !toastKey || !toast) return;
+    const ids = new Set(toast.alert.assessment.supporting_wells.map((s) => s.well_id));
+    const all = useNWIS.getState().wells;
+    const pts = all.filter((w) => ids.has(w.id) || w.role === "active").map((w) => [w.longitude, w.latitude] as [number, number]);
+    if (pts.length < 2) return;
+    const b = pts.reduce((acc, p) => acc.extend(p), new LngLatBounds(pts[0], pts[0]));
+    map.fitBounds(b, { padding: { top: 140, bottom: 140, left: 160, right: 160 }, maxZoom: 15.2, pitch: mode3dRef.current ? 60 : 0, bearing: map.getBearing() - 25, duration: 2200 });
+  }, [toastKey]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const w = useNWIS.getState().wells.find((x) => x.id === selectedWellId);
+    if (!map || !w || w.role === "active") return;
+    map.easeTo({ center: [w.longitude, w.latitude], offset: [-160, 40], zoom: Math.max(map.getZoom(), 14.6), duration: 1200 });
+  }, [selectedWellId]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !orbit) return;
+    let raf = 0;
+    const step = () => {
+      map.setBearing(map.getBearing() + 0.07);
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [orbit]);
 
   const fit = (what: "field" | "radius") => {
     const map = mapRef.current;
     if (!map || !active) return;
     if (what === "radius") {
-      map.fitBounds(L.latLng(active.latitude, active.longitude).toBounds(radiusKm * 2000 * 1.05), { padding: [20, 20] });
+      const ring = circleRing(active.longitude, active.latitude, radiusKm, 32);
+      const b = ring.reduce((acc, p) => acc.extend(p), new LngLatBounds(ring[0], ring[0]));
+      map.fitBounds(b, { padding: 40, pitch: mode3dRef.current ? 45 : 0, duration: 1600 });
+    } else if (mode3dRef.current) {
+      map.flyTo({ ...FIELD_VIEW, duration: 1600 });
     } else {
-      const core = wells.filter((w) => w.distance_km <= 5);
-      map.fitBounds(L.latLngBounds(core.map((w) => [w.latitude, w.longitude] as [number, number])).pad(0.25));
+      fitCore(map, 0, 1600);
     }
   };
 
+  const filtered = new Set(familyFilter);
+
   return (
-    <div className={cn("relative h-full w-full overflow-hidden rounded-lg", className)}>
-      <div ref={elRef} className="nwis-map-grid absolute inset-0" />
+    <div className={cn("relative h-full w-full overflow-hidden rounded-[inherit] bg-[#0b1220]", className)}>
+      {/* `!absolute`: maplibre-gl.css sets .maplibregl-map { position: relative }, which would collapse the height. */}
+      <div ref={elRef} className="!absolute inset-0" />
+
+      {/* portal-rendered markers */}
+      {wells.map((w) => {
+        const el = pinEls[w.id];
+        if (!el) return null;
+        const dim = w.role === "offset" && ((filtered.size > 0 && !w.risk_families.some((f) => filtered.has(f))) || w.distance_km > radiusKm);
+        const hidden = zoomBucket === "far";
+        return createPortal(
+          <div className={cn("transition-opacity duration-500", hidden ? "pointer-events-none opacity-0" : "opacity-100")}>
+            <WellPin
+              w={w}
+              depth={depth}
+              highlight={highlight.get(w.id)}
+              dim={dim}
+              selected={selectedWellId === w.id}
+              hover={hoverWellId === w.id}
+              showLabel={zoomBucket === "near" || w.distance_km > 5}
+              onClick={() => openWell(w.id)}
+              onHover={(on) => setHover(on ? w.id : null)}
+            />
+          </div>,
+          el,
+          w.id,
+        );
+      })}
+      {nearEvents.map((e) => {
+        const el = eventEls[e.id];
+        if (!el) return null;
+        const fam = familyOf(e.event_type);
+        const c = FAMILY_META[fam].color;
+        return createPortal(
+          <button
+            onClick={() => openWell(e.well_id)}
+            className={cn("group relative flex h-6 w-6 items-center justify-center transition-opacity", zoomBucket !== "near" && "opacity-0")}
+            title={`${e.well_name}: ${EVENT_LABELS[e.event_type] ?? e.event_type} ${fmtDepth(e.depth_start)}–${fmtDepth(e.depth_end)} · ${e.formation} (subsurface position at event depth)`}
+          >
+            <span className="absolute inset-0 animate-pulse-ring rounded-[2px]" style={{ border: `2px solid ${c}` }} />
+            <span className="flex h-5 w-5 rotate-45 items-center justify-center rounded-[2px] border-2 border-white shadow-lg" style={{ background: c, boxShadow: `0 0 16px ${c}` }}>
+              <span className="-rotate-45">
+                <FamilyIcon family={fam} size={10} color="#fff" />
+              </span>
+            </span>
+          </button>,
+          el,
+          e.id,
+        );
+      })}
+      {createPortal(
+        // The marker element stays 0×0 at the well; this child is centred on it and sized per zoom.
+        <div ref={radarRef} className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500">
+          <div className="absolute inset-0 rounded-full border border-white/25 bg-[radial-gradient(circle,rgb(109_92_255/0.16)_0%,rgb(109_92_255/0.05)_55%,transparent_71%)]" />
+          <div className="absolute inset-[25%] rounded-full border border-white/20" />
+          <div className="absolute inset-0 animate-radar rounded-full [background:conic-gradient(from_0deg,rgb(160_150_255/0)_0deg,rgb(160_150_255/0)_290deg,rgb(170_160_255/0.22)_356deg,rgb(255_255_255/0.55)_360deg)] [mask:radial-gradient(circle,black_0%,black_70%,transparent_71%)]" />
+        </div>,
+        radarEl,
+      )}
+      {createPortal(
+        <div className={cn("relative flex h-4 w-4 items-center justify-center transition-opacity duration-500", zoomBucket === "far" && "opacity-0")} title={`Bit at ${fmtDepth(depth)} MD (surface projection)`}>
+          <span className="absolute h-4 w-4 rotate-45 rounded-[2px] border-2 border-white bg-[#6d5cff] shadow-[0_0_16px_#6d5cff]" />
+        </div>,
+        bitEl,
+      )}
+
       {showControls && (
-        <div className="absolute left-2 top-2 z-[500] flex flex-col gap-1.5">
-          <div className="glass flex overflow-hidden rounded-md text-[10px] font-semibold uppercase tracking-wider">
-            <button onClick={() => fit("field")} className="flex items-center gap-1 px-2 py-1.5 text-slate-300 hover:bg-white/5 hover:text-cyan-200" title="Zoom to the core field">
-              <Focus size={12} /> Field
-            </button>
-            <button onClick={() => fit("radius")} className="flex items-center gap-1 border-l border-cockpit-line px-2 py-1.5 text-slate-300 hover:bg-white/5 hover:text-cyan-200" title="Zoom to the search radius">
-              <Globe2 size={12} /> {radiusKm} km
-            </button>
-            <button
-              onClick={() => setBasemap(basemap === "dark" ? "sat" : "dark")}
-              className="flex items-center gap-1 border-l border-cockpit-line px-2 py-1.5 text-slate-300 hover:bg-white/5 hover:text-cyan-200"
-              title="Toggle basemap"
-            >
-              <Layers size={12} /> {basemap === "dark" ? "Dark" : "Imagery"}
-            </button>
+        <>
+          <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-start justify-between gap-3">
+            <div className="glass pointer-events-auto rounded-[4px] p-1.5">
+              <div className="flex items-center gap-2 px-2 pb-1.5 pt-1">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-brand/70" />
+                  <span className="relative h-2 w-2 rounded-full bg-brand" />
+                </span>
+                <span className="text-[13px] font-bold text-ink">
+                  {inRadius} offset wells within {radiusKm} km
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Seg on={basemap === "satellite"} onClick={() => setBasemap("satellite")} title="Satellite imagery (Esri World Imagery)">
+                  <Satellite size={14} /> Satellite
+                </Seg>
+                <Seg on={basemap === "streets"} onClick={() => setBasemap("streets")} title="Vector street map (OpenFreeMap)">
+                  <MapIcon size={14} /> Map
+                </Seg>
+                <span className="mx-0.5 h-5 w-px bg-line-2" />
+                <Seg on={mode3d} onClick={() => setMode3d(true)} title="3D terrain + pitched camera">
+                  <Box size={14} /> 3D
+                </Seg>
+                <Seg on={!mode3d} onClick={() => setMode3d(false)} title="Flat plan view">
+                  <Square size={13} /> 2D
+                </Seg>
+              </div>
+            </div>
+            {overlay && <div className="pointer-events-auto max-w-[58%]">{overlay}</div>}
+          </div>
+          <div className="glass absolute bottom-[132px] right-[10px] z-10 flex flex-col gap-1 rounded-[3px] p-1">
+            <Tool onClick={() => fit("field")} title="Fly back to the core field">
+              <Focus size={16} />
+            </Tool>
+            <Tool onClick={() => fit("radius")} title={`Zoom out to the ${radiusKm} km search radius`}>
+              <Globe2 size={16} />
+            </Tool>
+            <Tool on={orbit} onClick={() => setOrbit(!orbit)} title="Orbit the field (presentation mode)">
+              <Orbit size={16} />
+            </Tool>
+            <Tool on={towers} onClick={() => setTowers(!towers)} title="3D history towers: height = NPT + events, colour = worst event">
+              <Box size={16} />
+            </Tool>
           </div>
           {offline && (
-            <div className="glass flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] text-amber-200">
-              <WifiOff size={11} /> Basemap offline — well layers unaffected
+            <div className="glass absolute left-1/2 top-3 z-10 flex -translate-x-1/2 items-center gap-2 rounded-[2px] px-3 py-1.5 text-[12.5px] font-semibold text-med-ink">
+              <WifiOff size={13} /> Basemap offline — well layers unaffected
             </div>
           )}
-        </div>
+        </>
       )}
       <MapLegend />
     </div>
+  );
+}
+
+function Tool({ children, on = false, onClick, title }: { children: ReactNode; on?: boolean; onClick: () => void; title: string }) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+      className={cn("flex h-[34px] w-[34px] items-center justify-center rounded-[3px] transition-all", on ? "bg-brand text-white shadow-brand" : "text-ink-2 hover:bg-surface-3 hover:text-ink")}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Seg({ children, on = false, onClick, title }: { children: ReactNode; on?: boolean; onClick: () => void; title: string }) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={cn(
+        "flex items-center gap-1.5 rounded-[3px] px-2.5 py-1.5 text-[12.5px] font-bold transition-all",
+        on ? "bg-brand text-white shadow-brand" : "text-ink-2 hover:bg-surface-3 hover:text-ink",
+      )}
+    >
+      {children}
+    </button>
   );
 }

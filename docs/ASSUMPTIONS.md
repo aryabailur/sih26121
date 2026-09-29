@@ -2,8 +2,10 @@
 
 ## Data
 
-- All data is **synthetic** and labelled as such in the UI (top bar "Demo mode", sidebar "Synthetic data",
-  document badges) and API (`/api/health`, `/api/simulation/state`).
+- All data is **synthetic** (realistic wells on real Upper Assam stratigraphy — Girujan, Tipam, Namsang, Barail,
+  Kopili, Sylhet). It is disclosed once per surface rather than on every label: the welcome screen, the rail's
+  "Demo data" chip (hover for details), the pitch deck title slide, and
+  the API (`/api/health`, `/api/simulation/state`). It is never presented as Oil India data.
 - Field name "Dikhow East (Demo Field)" and regional block names are fictional; coordinates follow the spec
   (≈27.25 °N, 95.35 °E, Upper Assam Shelf).
 - IDs are readable strings (`W001`, `EV-W002-01`, `DOC-W002-DDR42`) instead of UUIDs so citations stay legible.
@@ -21,19 +23,26 @@
 | 200 parameter samples 3,000–3,500 m | Every 2.5 m from 3,000 to 3,800 m (+ every 10 m above) | The spec's kick precursor is at 3,580 m, outside 3,000–3,500 m. |
 | Documents: 15–20 | 26 (+ 1 sample upload) | Every seeded event needs a real source page; regional wells and the active well's own programme added. |
 | Shadcn UI | Hand-built primitives in `components/ui` | Same pattern (Tailwind-styled, accessible) without an interactive generator. |
-| MapLibre/Mapbox | Leaflet + Esri tiles | No token needed; vector layers render offline. |
+| MapLibre/Mapbox | MapLibre GL JS v6 (globe + 3D terrain) with key-free tiles: Esri World Imagery + reference labels, OpenFreeMap vector streets, AWS Terrarium DEM | No token needed; well, path, tower and risk layers still render if tiles are offline. |
+| Dark industrial cockpit only | Two themes: **Daylight** (default) and **Night shift** (dark), toggled in the rail and remembered per browser | Team redesign brief: a brighter, friendlier product look; light UIs project better in judge rooms, and the dark control-room palette is one click away. |
+| Glassmorphism on panels, sheets and nav | Solid cards; frosted glass only for controls floating over the map | Legibility — solid surfaces read better in daylight and over satellite imagery. |
+| Horizontal depth scrubber on the Command Center | Vertical **wellbore navigator** (drag the bit down the strata column); the horizontal ruler stays on Risk Explorer | Depth reads top-to-bottom like a well log, matching how drillers think about the hole. |
+| `/` opens the dashboard | `/` is a welcome screen with role select (Drilling engineer / Office analyst / Drilling manager) and a globe fly-in | The role picks the landing workspace; it is still cosmetic (no authentication). |
 | LangChain + ChromaDB | Dependency-free hybrid retrieval | Offline, deterministic, runs on any laptop; `EmbeddingProvider` is the swap point. |
+| "Predictive analytics models" | Explainable hand-set score drives alerts; a logistic model backtested leave-one-well-out on the offsets cross-checks it (`services/risk_model.py`) | Keeps alerts transparent and the tuned scenario stable while still learning from history (AUC ≈ 0.86 vs 0.76). Pure Python — no ML dependencies. |
+| OCR adapter (optional) | Tesseract via `pytesseract` in the base requirements; binary auto-discovered; scanned sample report included | OCR is demonstrable end to end; scanned pages report word confidence and still go through human review. |
 
 ## Known limitations
 
-- Weights and thresholds are hand-set; no statistical calibration.
+- Alert weights and thresholds are hand-set; the learned cross-check is fitted on the synthetic field, so its numbers show the method, not field accuracy.
 - Concept-hash embeddings approximate semantics through a domain synonym lexicon; they are not a neural encoder.
 - Event extraction is rule-based and tuned to drilling-report English; it will miss unusual phrasing (those
   documents still get chunked and become searchable).
-- Scanned PDFs need Tesseract (optional dependency) — without it, scanned pages are reported, not read.
+- Scanned PDFs need the Tesseract binary installed — without it, scanned pages are flagged, not read. English only (`eng` traineddata).
 - Similarity is computed against the active well only (on demand for others).
-- One active well; no authentication; the role label is cosmetic.
-- The map basemap needs internet; everything else is offline.
+- One active well; no authentication; the role only picks the landing screen and label.
+- The map imagery and terrain need internet; everything else is offline.
+- The 3D map needs WebGL with hardware acceleration for smooth animation (software rendering works, slowly).
 
 ## Next three improvements
 

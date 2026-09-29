@@ -24,7 +24,6 @@ def write_report_file(doc: dict, directory: Path) -> Path:
         f"### NWIS-DOC id={doc['id']} | well={doc['well_id']} | type={doc['doc_type']} | date={doc['date'].isoformat()} | pages={doc['page_count']}",
         f"### TITLE {doc['title']}",
         f"### SUMMARY {doc['summary']}",
-        "### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data",
     ]
     for p in doc["pages"]:
         ds = "-" if p["depth_start"] is None else f"{p['depth_start']:.0f}"

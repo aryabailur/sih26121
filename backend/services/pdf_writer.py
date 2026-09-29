@@ -37,7 +37,7 @@ def write_pdf(path: Path, pages: list[list[str]], title: str = "") -> Path:
             ops.append(f"/{'F2' if bold else 'F1'} {11 if bold else 9.5} Tf")
             ops.append(f"({_esc(text)}) Tj T*")
         ops.append("/F1 8 Tf")
-        ops.append(f"(Page {page_no} of {len(pages)}  -  SYNTHETIC DEMO DOCUMENT {title}) Tj")
+        ops.append(f"(Page {page_no} of {len(pages)}  -  {title}) Tj")
         ops.append("ET")
         stream = "\n".join(ops).encode("cp1252", errors="replace")
         content_id = add(b"<< /Length %d >>\nstream\n" % len(stream) + stream + b"\nendstream")

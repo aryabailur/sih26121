@@ -9,19 +9,28 @@ const DIR = path.join(ROOT, "tools/.video-tmp");
 mkdirSync(DIR, { recursive: true });
 await fetch("http://127.0.0.1:8000/api/simulation/reset", { method: "POST" });
 
-const browser = await chromium.launch();
+// Hardware GL (ANGLE/D3D11): the 3D map is far too slow on the software rasteriser (~3 fps).
+const browser = await chromium.launch({ args: ["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"] });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 810 }, recordVideo: { dir: DIR, size: { width: 1440, height: 810 } } });
 const page = await ctx.newPage();
 const w = (ms) => page.waitForTimeout(ms);
 
-await page.goto("http://localhost:3000/dashboard", { waitUntil: "domcontentloaded" });
-await w(7000);
+await page.addInitScript(() => {
+  try {
+    localStorage.setItem("nwis-theme", "light");
+  } catch {}
+});
+// welcome: spinning globe → choose the field role → dive into the command center
+await page.goto("http://localhost:3000/", { waitUntil: "domcontentloaded" });
+await w(5000);
+await page.click("button:has-text('Enter as')");
+await w(8000);
 // map filter
-await page.click("button:has-text('Losses')");
+await page.click("button[aria-pressed]:has-text('Losses')");
 await w(900);
-await page.click("button:has-text('Stuck pipe')");
+await page.click("button[aria-pressed]:has-text('Stuck pipe')");
 await w(2200);
-await page.click("button:has-text('clear')");
+await page.click("button:has-text('Clear')");
 await w(800);
 
 // nearby wells → OIL-AX-99 profile → source page

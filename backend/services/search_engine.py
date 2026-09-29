@@ -335,6 +335,13 @@ def retrieve(db: Session, q: nlp.QueryIntent, filters: dict, ranges: list[tuple[
 
 
 # ------------------------------------------------------------------------------ answer composition
+def _unlabel(text: str, label: str) -> str:
+    """Drop a leading report label ("Cause attributed to …", "Mitigation: …") so answers don't say it twice."""
+    pattern = r"^\s*cause[sd]?\s*(attributed to|:)?\s*" if label == "cause" else r"^\s*" + label + r"\s*:\s*"
+    out = re.sub(pattern, "", text, flags=re.I).strip()
+    return out[:1].upper() + out[1:] if out else text
+
+
 def _first_sentence(text: str, limit: int = 220) -> str:
     s = nlp.sentences(text)
     t = s[0] if s else text
@@ -406,14 +413,14 @@ def compose_answer(q: nlp.QueryIntent, evidence: list[dict], forms: list[str], r
                 sentences.append(dict(text=f"Most severe case mitigation — {e['well_name']}: {e['mitigation']}", citations=[i]))
         else:
             for i, e in top[:2]:
-                cause = f" Cause: {e['root_cause']}" if e["root_cause"] else ""
+                cause = f" Cause: {_unlabel(e['root_cause'], 'cause')}" if e["root_cause"] else ""
                 sentences.append(dict(text=f"{e['well_name']} ({_fmt_depth(e['depth_start'], e['depth_end'])}, {e['severity']}): "
                                            f"{e.get('description') or _first_sentence(e['chunk_text'])}{cause}",
                                       citations=[i]))
             mit = next(((i, e) for i, e in top if e["mitigation"]), None)
             if mit:
                 i, e = mit
-                sentences.append(dict(text=f"What worked at {e['well_name']}: {e['mitigation']}", citations=[i]))
+                sentences.append(dict(text=f"What worked at {e['well_name']}: {_unlabel(e['mitigation'], 'mitigation')}", citations=[i]))
     else:
         # Report pages without a structured event — quote the most relevant sentence of each.
         for i, e in enumerate(evidence[:3], start=1):

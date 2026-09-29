@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W005-CEM | well=W005 | type=cementing_report | date=2021-07-26 | pages=8
 ### TITLE 7-in Liner Cementing Report OIL-AX-66
 ### SUMMARY 7" liner cementing — good bond; centraliser and lightweight-slurry practice.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Job Summary | DEPTH 3280-3900 ===
 7" liner run and cemented 2,900–3,895 m. Job pumped as designed; full returns during displacement. CBL shows good bond across Kopili and Sylhet. Centralisation: one rigid centraliser per joint through the build section and the Kopili; spacer pumped at turbulent flow (1,400 l/min).
 === PAGE 2 | SECTION Pre-job Well Conditions | DEPTH 3720-3760 ===

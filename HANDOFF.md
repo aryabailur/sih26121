@@ -1,97 +1,145 @@
 # NWIS — project handoff (read this first)
 
-> Status snapshot for a new Claude session picking up this repo. Last updated **2026-09-29**, commit `f8fb26e`
-> + the `tools/` / handoff commit. Repo: **https://github.com/aryabailur/sih26121** (branch `main`).
-> `CLAUDE.md` holds the short list of technical gotchas; this file is the full picture.
+> Snapshot for a new Claude session. Last updated **2026-09-29 (session 3)**.
+> Repo: **https://github.com/aryabailur/sih26121** (branch `main`). `CLAUDE.md` = short technical gotchas;
+> this file = the full picture. Session 2's work is **committed and pushed** — see §2.
 
 ## 1. What this is
 
 Smart India Hackathon 2026 entry for problem statement **SIH26121 (Oil India Limited)** — **NWIS, Nearby Wells
-Intelligence System**: a drilling decision-support cockpit that sits beside the real-time monitor (eRTMAC) and
-connects the active well's *current depth* to what *nearby wells* experienced there (events, causes,
-mitigations, source report pages), with explainable risk alerts.
+Intelligence System**: a drilling decision-support cockpit beside the real-time monitor (eRTMAC) that connects the
+active well's *current depth* to what *nearby wells* experienced there (events, causes, mitigations, source report
+pages) and raises explainable risk alerts.
 
-- Specification: `SIH26121_MASTER_BUILD.md` (the build spec the user provided). Two companion PDFs from the user
-  are summarised in `docs/BUILD_GUIDANCE.md`.
-- **All data is synthetic** and must stay labelled as such (UI badges, API disclaimer). Never present it as OIL data.
-- The user is the SIH team member who owns the repo (GitHub `aryabailur`). They asked for autonomous, complete work.
+- Build spec: `SIH26121_MASTER_BUILD.md`; companion PDFs summarised in `docs/BUILD_GUIDANCE.md`; every deliberate
+  deviation is in `docs/ASSUMPTIONS.md` (keep it current).
+- Official SIH text: the user pasted it in session 2 — problem points i–iv, solution points i–vii, data sources i–ix.
+  It names **no dataset**; it only lists data that exists *inside* OIL. `python -m tests.requirements_check` verifies
+  all 20 items through the API (currently **20/20 PASS**).
+- The user owns the repo (GitHub `aryabailur`), is on the SIH team, wants autonomous complete work and wants to win.
 
-## 2. Status
+## 2. Current state (important)
 
-**Everything in the spec's build scope is implemented, tested and pushed.** Verified at hand-off:
+- **Committed and pushed** (session 3, at the user's request) after re-running every check in §4: pytest 14/14,
+  scenario sweep = §6, requirements 20/20, tsc/eslint/build clean, E2E verify (alerts 3,150 / 3,380 / 3,580).
+  Ask before future commits. Push with `git -c credential.helper= -c "credential.helper=!gh auth git-credential" push`
+  (plain `git push` → 403: cached creds belong to another account). Commit messages end with the co-author trailer.
+- **Deferred by the user:** re-recording the demo video (“make video later”). `docs/nwis-demo-walkthrough.webm`
+  is **stale** (pre-legibility pass). Re-record with `cd tools && npm run video` only when asked.
+- Everything else is verified (§4) and the docs, screenshots (`docs/screenshots/00…16`) and deck are regenerated.
 
-- Backend: 10 pytest tests pass (Python 3.14 in `backend/.venv`; also verified on Python 3.11).
-- Frontend: `npx tsc --noEmit` clean, `npx eslint .` clean, `npm run build` passes (9 routes).
-- End-to-end browser check (`tools/verify_scenario.mjs`) passes; visual QA done at 1600×900 and 1366×768.
+## 3. What was done (session log)
 
-Spec final checklist (Section 13): all items done **except** (a) a *narrated* 3-minute video — only an
-automated, silent backup walkthrough exists (`docs/nwis-demo-walkthrough.webm`), and (b) team names on the deck.
+**Session 1** — built everything in the spec: FastAPI backend (KB, explainable risk engine, hybrid evidence search,
+document pipeline, pressure window, similarity), Next.js cockpit, seed data, tests, docs, deck, silent backup video.
 
-Deliverables present: working app · seed dataset · backend API · risk engine · evidence search · demo scenario ·
-README · architecture diagram (mermaid) · pitch content + 10-slide deck · assumptions & integration points.
+**Session 2** (user feedback drove each step):
+1. *"Looks like AI slop — make it world class, vibrant, real maps, crazy animation"* → full frontend redesign:
+   Daylight (default) + Night-shift themes on CSS tokens; Plus Jakarta Sans + JetBrains Mono; welcome screen `/`
+   (spinning satellite globe, role select, dive into the field); **MapLibre GL 6 3D map** (Esri imagery + labels,
+   AWS terrain, OpenFreeMap streets; globe fly-in, radar sweep, history towers, marching evidence links, camera
+   framing on alerts, 2D/3D, orbit); vertical **wellbore navigator**; "Right now" status card; risk radar; alert
+   toasts with screen-edge flash; animated *Why?* breakdown; geological cross-section on Compare; paper-style
+   source viewer. Leaflet removed.
+2. *"Check coverage vs the official SIH text"* → added: **learned risk cross-check** (`services/risk_model.py`,
+   logistic regression backtested leave-one-well-out on the offsets, AUC ≈ 0.86 vs 0.76 hand-set; shown as the ML
+   chip, a *Why?* section, learned-vs-hand-set weights — **never drives alerts**); **real OCR** (Tesseract 5.4
+   installed via winget, auto-discovered; image-only sample `DDR_OIL-AX-44_Day38_SCANNED.pdf` OCR'd at ~93 %);
+   **casing + mud programmes** correlated on Compare.
+3. *"Don't show synthetic everywhere"* → disclosure reduced to: welcome-screen line, rail "Demo data" chip, deck
+   title slide, API disclaimer. Later: *"remove the synthetic word in the docs"* → removed from report pages,
+   report files, PDF footers and sample reports. Internal markdown docs still discuss synthetic data (by design).
+4. *"Curved corners look AI-generated; change the logo"* → near-square geometry (4 px panels / 3 px controls /
+   2 px tags; circles only for dots, pins, gauges), purple→pink gradient flattened to solid brand (`--aurora`
+   token), no glows/blurred blobs, amber headline accent. **New logo**: an "N" drawn from wells (offset well,
+   deviated path, active well with an amber bit in the Kopili band) — `components/layout/Logo.tsx`,
+   `app/icon.svg`, `app/favicon.ico`, `docs/nwis-logo.png`.
+5. *"Text is light and small"* → legibility pass: type scale lifted (body 12.5–13.5 px, micro labels ≥ 11 px,
+   base weight 450), grey inks darkened (≥ 4.6:1 in both themes), severity gradients/solid badges deepened for
+   white text, `SEVERITY_STYLE[*].deep` for coloured text on white, dark tags behind rock-layer labels, layouts
+   re-fitted at 1366 px. Audit tool `tools/audit_text.mjs` (faint text 272 → ~40; remainder mostly false positives
+   on gradient cards).
+6. Requirements check script added (`backend/tests/requirements_check.py`) → 20/20 PASS.
 
-## 3. Run & verify
+**Session 3** — committed and pushed session 2. Fix: `tests.requirements_check` crashed with `UnicodeEncodeError`
+when its output was piped/redirected on Windows (cp1252 can't print `✓`); it now forces UTF-8 stdout.
+
+**Advice already given to the user** (don't repeat unprompted): keep realistic synthetic data but say so once;
+real public drilling data = Equinor **Volve** (North Sea; user must register/download — then build an importer);
+ask OIL mentors for 2–3 anonymised DDR/WCR pages to ingest live; to win: official SIH PPT template + team names,
+one NPT-cost number, rehearse the 3-min demo (`docs/DEMO_SCRIPT.md`), stress on-prem integration beside eRTMAC,
+protect the demo against venue Wi-Fi (offline map tiles not built yet).
+
+## 4. Run & verify
 
 ```powershell
-.\start.ps1            # Windows: venv + deps + reseed + start API (:8000) and UI (:3000) in minimized windows, opens browser
+.\start.ps1            # venv + deps + reseed + API (:8000) + UI (:3000) in minimized windows; warns if Tesseract is missing
 .\start.ps1 -NoSeed    # keep the current DB
 ./start.sh             # macOS/Linux
 ```
 
-Manual: `cd backend; .venv\Scripts\python.exe -m uvicorn main:app --port 8000` (no `--reload` — restart after
-Python edits) and `cd frontend; npm run dev`. The UI proxies `/api/*` to the backend (`frontend/next.config.ts`).
-
-Checks to run after changes:
+Manual: `cd backend; .venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000` (no `--reload`;
+restart after Python edits; stop it before `seed_data.py`) and `cd frontend; npm run dev` (`predev` copies the
+MapLibre worker to `public/maplibre/`). Open `http://localhost:3000` (welcome) or `/dashboard`. The servers do not
+survive a closed session — check `curl http://127.0.0.1:8000/api/health` and `http://localhost:3000/` first.
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe -m pytest -q          # 10 tests (resets the live DB state — alerts/uploads)
-.venv\Scripts\python.exe -m tests.scenario_sweep  # expected table in §5
+.venv\Scripts\python.exe -m pytest -q                  # 14 tests (resets live DB state)
+.venv\Scripts\python.exe -m tests.scenario_sweep       # must match §6
+.venv\Scripts\python.exe -m tests.requirements_check   # 20/20 PASS vs the official SIH text
 cd ..\frontend; npx tsc --noEmit; npx eslint .; npm run build
-cd ..\tools; npm install; npm run verify         # needs both servers running
+cd ..\tools; npm run verify                            # E2E scenario (needs both servers)
+node audit_text.mjs --detail                           # legibility audit (THEME=dark for night theme)
+npm run shots; node pw_shot.mjs; npm run deck          # refresh docs/screenshots + deck after visible UI changes
 ```
 
-Dev tools in `tools/` (screenshots, video, deck, E2E) — see `tools/README.md`.
+Machine facts: Windows 11, NVIDIA RTX 4050 — headless Playwright must use `--use-angle=d3d11` (all tools do;
+software GL runs the map at ~3 fps). Tesseract at `C:\Program Files\Tesseract-OCR\tesseract.exe`
+(`NWIS_TESSERACT_CMD` overrides). Project lives in OneDrive.
 
-## 4. Repository map
+## 5. Repository map
 
 ```
 backend/
-  main.py            FastAPI app; auto-seeds an empty DB; builds the search index at startup
-  config.py          env settings (NWIS_DATABASE_URL, NWIS_DEMO_MODE=1, NWIS_LLM_PROVIDER=none, ...)
-  models.py          SQLAlchemy: Well, SurveyPoint, Formation(+porosity/pore/frac), CasingString, Document,
-                     DocumentChunk, DrillingEvent(+event_params), ParameterSample, RiskZone, Alert, AlertAudit,
-                     Recommendation, WellSimilarity
-  schemas.py         Pydantic contracts (mirrored in frontend/lib/types.ts)
-  seed_data.py       rebuilds the whole KB (drop/create), writes data/synthetic_reports/*.txt then ingests them
-  seed/field.py      wells, formation tops & properties, casing, trajectories, 36 events, 7 risk zones, recommendations
-  seed/corpus.py     26 synthetic reports (DDR/WCR/mud log/cementing/NPT/programme) → 84 page chunks
-  seed/parameters.py deterministic parameter generator (eRTMAC sim) incl. the active well's designed precursors
-  seed/sample_docs.py sample upload PDF (DDR OIL-AX-22 Day 45) not in the KB
-  services/risk_engine.py    explainable hybrid score, alert policy, alert persistence/escalation/audit, profile, clusters
-  services/search_engine.py  BM25 + concept-hash embedding + metadata retrieval; extractive cited answers; intents
-  services/document_processor.py  upload → pypdf/OCR adapter → chunk → rule-based event/entity extraction → review → commit
-  services/pressure.py       offset-calibrated mud-weight window (pore / frac gradient) + breaches
-  services/similarity.py     offset similarity (formations, coverage, trajectory, parameters, distance)
-  services/nlp.py · taxonomy.py · ingest.py · pdf_writer.py · geo.py · llm.py (optional Claude adapter, off by default)
-  routers/           wells · events · formations · risk · search · documents · simulation
-  tests/             test_api.py, test_pressure.py (+ scenario_sweep, search_debug, answer_preview dev scripts)
-frontend/            Next.js 16 App Router · React 19 · Tailwind 4 · Leaflet · Recharts 3 · Zustand
-  app/dashboard/     page (Command Center) · nearby · well/[wellId] · compare · search · risk · documents
-  components/        map/FieldMap · shared/DepthScrubber · dashboard/(KPIStrip, RiskWatch, DepthTimeline, LiveFeed)
-                     risk/(RiskCard, WhyExplainer, AlertToaster, RiskProfileChart, PressureWindowChart)
-                     search/(EvidenceCard, SourceViewer) · well/(EventTimeline, ParameterChart, WellProfileDrawer)
-                     documents/(UploadZone, ProcessingStepper, ExtractedEvents) · layout/ · ui/ (hand-built primitives)
-  lib/               store.ts (global state + scenario runner) · api.ts · types.ts · utils.ts · hooks.ts (useAsync)
-tools/               Playwright/pptxgenjs dev scripts (see tools/README.md)
-docs/                ARCHITECTURE · DEMO_SCRIPT · PITCH · ASSUMPTIONS · BUILD_GUIDANCE · screenshots/ · deck · video
-start.ps1 / start.sh one-command startup
+  main.py              FastAPI; auto-seeds an empty DB; builds search index + trains the learned model at startup
+  config.py            env (NWIS_DATABASE_URL, NWIS_DEMO_MODE=1, NWIS_LLM_PROVIDER=none, NWIS_TESSERACT_CMD, …)
+  models.py · schemas.py   SQLAlchemy models · Pydantic contracts (mirrored in frontend/lib/types.ts)
+  seed_data.py         rebuilds the KB; writes data/synthetic_reports/*.txt then ingests them; copies samples
+  seed/field.py        wells, formations (+porosity/PP/FG), casing, trajectories, 36 events, 7 risk zones
+  seed/corpus.py       26 reports → 84 page chunks · seed/parameters.py deterministic eRTMAC-style parameters
+  seed/sample_docs.py  text sample PDF (OIL-AX-22) + copies seed/assets/ scanned sample (OIL-AX-44)
+  seed/make_scanned_sample.py  renders the image-only scanned PDF (dev tool; output committed in seed/assets/)
+  services/risk_engine.py      explainable score, alert policy/persistence/escalation/audit, profile, clusters
+  services/risk_model.py       learned cross-check (pure-Python logistic regression, backtest, LOWO AUC)
+  services/search_engine.py    BM25 + concept embedding + metadata retrieval; extractive cited answers
+  services/document_processor.py  upload → text layer / Tesseract OCR → chunk → extract → review → commit
+  services/pressure.py · similarity.py · nlp.py · taxonomy.py · ingest.py · pdf_writer.py · geo.py · llm.py
+  routers/             wells · events · formations (correlate incl. casing + mud_program) · risk · search · documents · simulation
+  tests/               test_api.py · test_intelligence.py · test_pressure.py · scenario_sweep · requirements_check
+frontend/              Next.js 16 · React 19 · Tailwind 4 · MapLibre GL 6 · Motion · Recharts 3 · Zustand
+  app/page.tsx         welcome (globe + role select) · app/globals.css = theme tokens + radius/type scale
+  app/icon.svg · favicon.ico   logo
+  app/dashboard/       page (Command Center) · nearby · well/[wellId] · compare · search · risk · documents
+  components/map/      FieldMap (MapLibre, portal markers) · WellPin · mapStyle · MapLegend · landing/GlobeHero
+  components/dashboard/  WellboreNavigator · KPIStrip · StatusHero · RiskWatch · LiveFeed
+  components/risk/     RiskCard · WhyExplainer · LearnedOpinion · AlertToaster · RiskProfileChart · PressureWindowChart
+  components/…         search/(EvidenceCard, SourceViewer) · well/(EventTimeline, ParameterChart, WellProfileDrawer)
+                       documents/(UploadZone, ProcessingStepper, ExtractedEvents) · shared/(DepthScrubber, FamilyIcon, …)
+                       layout/(CommandCenter + ScenarioDock, Sidebar, TopNav, Logo) · ui/(primitives, animated)
+  lib/                 store.ts (state + scenario runner) · api.ts · types.ts · utils.ts (palettes, SEVERITY_STYLE,
+                       FAMILY_META, FORMATION_COLORS) · prefs.ts (theme/role/intro) · hooks.ts
+  scripts/copy-maplibre-worker.mjs
+tools/                 shot.mjs · docs_shots.mjs · pw_shot.mjs · record_video.mjs · verify_scenario.mjs ·
+                       audit_text.mjs · build_deck.js · render_pptx.ps1 (see tools/README.md)
+docs/                  ARCHITECTURE · DEMO_SCRIPT · PITCH (incl. judge Q&A) · ASSUMPTIONS · BUILD_GUIDANCE ·
+                       screenshots/00–16 · NWIS_Pitch_Deck.pptx · nwis-demo-walkthrough.webm (stale) · nwis-logo.png
 ```
 
-## 5. The demo scenario (tuned — protect it)
+## 6. The demo scenario (tuned — protect it)
 
-"Run historical risk scenario" drills the active well **OIL-AX-102 (W001)** from 3,100 → 3,600 m in 20 steps of
-1.5 s at radius 25 km. `python -m tests.scenario_sweep` must keep showing:
+"Run historical risk scenario" drills **OIL-AX-102 (W001)** 3,100 → 3,600 m in 20 steps of 1.5 s at 25 km.
+`python -m tests.scenario_sweep` must keep showing:
 
 | Depth | Expected |
 |---|---|
@@ -104,91 +152,73 @@ start.ps1 / start.sh one-command startup
 | 3,580 | **kick CRITICAL alert** (0.86) |
 
 Score = 0.30 proximity + 0.20 frequency + 0.10 similarity + 0.10 formation + 0.25 parameter + 0.05 trajectory;
-thresholds 0.35/0.55/0.75; alert policy: high/critical-history zones alert at ≥ 0.55, medium/low-history at ≥ 0.75.
-Depths depend on `seed/field.py` events, `seed/parameters.py` precursors (ECD ramp from 3,140; torque ramp from
-3,350; overpull from 3,398; SPP drop + drilling break from 3,579) and the weights — change any of them and re-run
-the sweep + tests. A fresh scenario run clears alerts (`POST /api/risk/alerts/clear`) and restores the default radius.
+thresholds 0.35/0.55/0.75; high/critical-history zones alert at ≥ 0.55, medium/low at ≥ 0.75. Depths depend on
+`seed/field.py` events, `seed/parameters.py` precursors and the weights. The learned model only annotates
+(`assessment.ml`). The scanned sample's events (2,655 m / 2,690 m, Barail) sit outside every tuned window.
 
-## 6. Data facts (synthetic)
+## 7. Data facts
 
-- 15 wells: W001 active OIL-AX-102 (27.2510, 95.3520; TD 3,800; current 3,100); W002–W011 = the spec's 10 offsets
-  (all ≤ 2 km); W012–W015 regional at 28–47 km (added so the radius control matters — 25 km shows exactly 10).
-- Formations: Girujan → Tipam → Namsang → Barail → Kopili → Sylhet (per-well tops in `FORMATION_TOPS`).
-- Six mandated seed stories reproduced verbatim: W002 losses 3,150–3,220 · W003 stuck 3,380–3,420 · W005 stuck
-  3,390–3,430 · W004 torque 3,500–3,540 · W008 kick 3,580–3,610 · W007 cement 2,800–2,850 (+30 more events).
-- Risk zones RZ01–RZ05 exactly as spec; RZ06 (Sylhet losses) and RZ07 (Namsang NPT) marked `derived`.
-- Readable IDs (`W001`, `EV-W002-01`, `DOC-W002-DDR42`, chunk `DOC-W002-DDR42-P03`) instead of UUIDs.
+- 15 wells: W001 active (27.2510, 95.3520; TD 3,800; at 3,100); W002–W011 offsets ≤ 2 km; W012–W015 regional
+  28–47 km (25 km radius shows exactly 10). Real Upper Assam stratigraphy names: Girujan → Tipam → Namsang →
+  Barail → Kopili → Sylhet; wells/depths/events are invented.
+- Six mandated seed stories verbatim (W002 losses 3,150 · W003/W005 stuck ~3,380–3,430 · W004 torque 3,500 ·
+  W008 kick 3,580 · W007 cement 2,800) + 30 more events; 26 reports (10 DDR, 9 WCR, 3 mud log, 2 cementing,
+  1 NPT, 1 programme) → 84 chunks; 2 upload samples (text PDF, scanned PDF).
+- Readable IDs (`W001`, `EV-W002-01`, `DOC-W002-DDR42`).
 
-## 7. API (all under `/api`, OpenAPI at `http://127.0.0.1:8000/docs`)
+## 8. API (under `/api`; OpenAPI at `http://127.0.0.1:8000/docs`)
 
-wells: `GET /wells`, `/wells/active`, `/wells/nearby`, `/wells/trajectories`, `/wells/{id}`, `/wells/{id}/similarity`,
-`/wells/{id}/pressure-window`, `/wells/{id}/parameters` · events: `GET /events`, `/events/at-depth`,
-`/events/timeline`, `/events/{id}` · formations: `GET /formations`, `/formations/correlate` · risk:
-`POST /risk/evaluate` (persist=true records alerts), `GET /risk/zones`, `/risk/alerts`, `POST /risk/acknowledge`,
-`POST /risk/alerts/clear`, `GET /risk/alerts/{id}/audit`, `/risk/profile`, `/risk/clusters`, `/risk/model` · search:
-`POST /search/evidence`, `GET /search/suggestions` · documents: `GET /documents`, `/documents/samples/list`,
-`/documents/samples/{name}`, `POST /documents/upload`, `/documents/upload-sample`, `GET /documents/{id}/status`,
-`/documents/{id}/extracted`, `POST /documents/{id}/commit`, `DELETE /documents/{id}`, `GET /documents/{id}`,
-`/documents/{id}/file` · simulation: `GET /simulation/ertmac`, `POST /simulation/demo-scenario`,
-`POST /simulation/reset` (clears alerts **and uploaded docs**), `GET /simulation/state` · `GET /health`.
+wells: `/wells`, `/wells/active`, `/wells/nearby`, `/wells/trajectories`, `/wells/{id}` (incl. casing),
+`/wells/{id}/similarity`, `/wells/{id}/pressure-window`, `/wells/{id}/parameters` · events: `/events`,
+`/events/at-depth`, `/events/timeline`, `/events/{id}` · formations: `/formations`, `/formations/correlate`
+(+ `casing`, `mud_program`) · risk: `POST /risk/evaluate` (assessments carry `ml`), `/risk/zones`, `/risk/alerts`,
+`POST /risk/acknowledge`, `POST /risk/alerts/clear`, `/risk/alerts/{id}/audit`, `/risk/profile`, `/risk/clusters`,
+`/risk/model` (+ `learned`) · search: `POST /search/evidence`, `/search/suggestions` · documents: list, samples,
+`POST /documents/upload`, `POST /documents/upload-sample?name=`, status, extracted (pages carry `ocr_confidence`),
+commit, delete, file · simulation: `/simulation/ertmac`, `POST /simulation/demo-scenario`, `POST /simulation/reset`
+(clears alerts **and uploads**, retrains the model if uploads existed), `/simulation/state` · `/health`.
 
-## 8. Frontend architecture
+## 9. Frontend architecture
 
-- One Zustand store (`lib/store.ts`): `depth`, `radiusKm`, `evaluation` (latest `/risk/evaluate` response), static
-  field data, toasts, scenario state. `setDepth` → debounced evaluate; every panel renders from the same evaluation.
-- Scenario runner: `scenarioRun` token stops superseded loops; Pause → Resume / Restart; toasts keyed per risk zone
-  and announced even for superseded responses (the server reports an alert as new only once).
-- Global overlays mounted in `components/layout/CommandCenter.tsx`: AlertToaster, WhyExplainer, SourceViewer,
-  WellProfileDrawer, scenario narration banner, live-mode ticker.
-- Alerts show their **trigger-time snapshot**; the live score appears as a "Now @ depth" line.
-- Charts follow a validated dark palette (`SERIES_COLORS`, active well first); colour for status/identity only.
+- One Zustand store (`lib/store.ts`): depth, radius, latest evaluation, static field data, toasts, scenario state;
+  `setDepth` → debounced evaluate; every panel renders from the same evaluation.
+- Overlays in `components/layout/CommandCenter.tsx` (AlertToaster + edge flash, WhyExplainer, SourceViewer,
+  WellProfileDrawer, ScenarioDock, live ticker), each wrapped in `<AnimatePresence>`.
+- `FieldMap` (Command Center + Nearby) reacts to the store: highlighted wells → evidence links; new toast →
+  `fitBounds`; selected well → ease; `window.__nwisMap` for E2E. Globe fly-in once per session.
+- Themes: `<html data-theme>` set before paint; `lib/prefs.ts` stores theme/role. Design rules: radius scale
+  4/3/2 px, no gradients/glows/pills, legibility floor (see CLAUDE.md), colour only for status/identity.
 
-## 9. Gotchas (things that already bit us)
+## 10. User preferences learned
 
-- **Git push**: plain `git push` → 403 (Git Credential Manager holds account "Learningwhim"). Use
-  `git -c credential.helper= -c "credential.helper=!gh auth git-credential" push` (gh is logged in as aryabailur).
-  Don't change the user's global git config. Commit messages end with the co-author trailer used in `git log`.
-- **Windows encoding**: never edit files with PowerShell `Get-Content`/`Set-Content` (re-encodes UTF-8, corrupted
-  `–·≥` once). Use the editor tools or Python with `encoding="utf-8", newline="\n"`.
-- **Git Bash** mangles `/dashboard` args → `export MSYS_NO_PATHCONV=1`.
-- **Next.js 16** differs from older docs — check `frontend/node_modules/next/dist/docs/`. `useSearchParams` needs
-  `<Suspense>`; params via `useParams()` in client pages; no `next lint`; `devIndicators: false` is set.
-- **Recharts vertical layout**: numeric Y minimum is already at the top; never add `reversed` (desyncs lines vs
-  reference areas).
-- **React hooks lint v7**: no synchronous setState in effects, no ref writes in render — key child components on
-  their target instead (pattern in `WhyExplainer`, `SourceViewer`); use `lib/hooks.ts#useAsync` for fetching.
-- **Shared backend state**: alerts are global; a second tab's Run/Reset clears the first tab's alerts. Demo with one tab.
-- **pytest resets the live DB** (alerts, uploads) — don't run it mid-demo.
-- The project sits in **OneDrive**; `node_modules` sync is heavy.
-- Map tiles: Esri Dark Gray (CARTO now needs an API key). Offline → tiles blank, vector layers still render.
+- Wants bold, vibrant, product-grade UI that does **not** look AI-generated: no pill shapes, big radii, purple
+  gradients, glows or blurred blobs. Readable text matters (they flagged light/small text).
+- Minimal "synthetic" labelling; never in the documents themselves; honest disclosure stays on welcome + rail.
+- Asks follow-up questions about winning SIH; appreciates concrete checks with evidence (e.g. requirements table).
+- Video work is on hold until they ask.
 
-## 10. Open items / sensible next steps
+## 11. Open items / next steps
 
-Optional extras from the companion PDFs (none started):
-1. **Evidence graph view** (Well → Report → Event → Formation → Risk → Mitigation) — highest demo value.
-2. **Well-log style track** (gamma ray / resistivity) on Well Intelligence.
-3. **Role-select screen** (Field Engineer / Office Analyst / Manager) — currently just a label in the top bar.
-4. **Cloud deployment** (Vercel frontend + Render/Railway backend) — currently local only.
-5. Tesseract OCR for scanned PDFs (adapter exists; binary not installed).
+1. ~~Commit and push session 2~~ — done in session 3.
+2. **Re-record the video** when the user asks (`npm run video`; currently stale).
+3. **Offline map fallback** for the venue (cache Esri/terrain tiles for the field area) — offered, not built.
+4. **Real-data proof**: Volve importer once the user downloads the data; or ingest OIL sample pages if obtained.
+5. Deck: official SIH template + team names (team task); impact number (NPT hours × rig day rate).
+6. Nice-to-haves: evidence graph view (Well → Report → Event → Formation → Risk → Mitigation), well-log track,
+   mobile layout (< 1280 px stacks but isn't tuned), cloud deployment.
 
-Only the team can do: team names / official SIH template on the deck, narrated demo video, rehearsal
-(`docs/DEMO_SCRIPT.md`), SIH portal submission.
-
-When continuing: keep `docs/ASSUMPTIONS.md` updated for any spec deviation, re-run §3 checks, refresh
-`docs/screenshots` (`tools/npm run shots`) and the deck (`npm run deck`) if the UI changes visibly.
-
-## 11. Commit history
+## 12. Commit history (pushed)
 
 ```
+(latest) Redesign cockpit, learned risk cross-check, OCR, casing/mud correlation   ← all of session 2
+04ced2e Add HANDOFF.md and move dev tooling into tools/
 f8fb26e One toast per risk window; demo note on shared backend state
 672063d Docs: mud-weight window screenshot, test counts; deck refresh
 a616406 Fix review findings: alert evidence routing, scenario runner races, clean scenario start
 dbef25a Reservoir properties, casing strings and offset-calibrated mud-weight window
 930756c Pitch deck (10 slides, speaker notes); active-well view and event-window fixes
 8fd69f0 Backup demo video; laptop-width top bar; aligned depth column and charts
-12b3c9f Make start.sh executable
 824ef60 Docs, start scripts, demo screenshots; alert snapshot depth; polish
 2991fd5 Frontend: NWIS drilling-intelligence cockpit (Next.js 16, Tailwind 4, Leaflet, Recharts)
-6b22dc9 Add .gitattributes: LF line endings, binary PDFs
 ed79152 Backend: NWIS knowledge base, explainable risk engine, hybrid evidence search, document pipeline
 ```

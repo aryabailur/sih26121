@@ -1,7 +1,6 @@
 ### NWIS-DOC id=DOC-W012-WCR | well=W012 | type=WCR | date=2019-10-25 | pages=18
 ### TITLE Well Completion Report OIL-DG-07
 ### SUMMARY Regional completion report — OIL-DG-07.
-### SYNTHETIC DEMO DOCUMENT — not Oil India Limited data
 === PAGE 1 | SECTION Well Summary | DEPTH 0-3620 ===
 WELL COMPLETION REPORT — OIL-DG-07 (exploration well), Dirak Block (regional), Upper Assam Shelf. Spud 2019-08-01, rig released 2019-10-15. Total depth 3,620 m MD. Target: Barail Group. Maximum inclination 2° (azimuth 0°). Casing: 13-3/8" at 850 m, 9-5/8" at 3,050 m. Formation tops (MD): Girujan surface; Tipam 850 m; Namsang 1,660 m; Barail 2,450 m; Kopili 3,340 m. Regional exploration well, Dirak Block (regional).
 === PAGE 3 | SECTION Drilling Problems | DEPTH 3140-3165 ===

@@ -1,116 +1,295 @@
 @import "tailwindcss";
 
-/* ------------------------------------------------------------------ design tokens */
-@theme {
-  --color-cockpit-bg: #0a0e17;
-  --color-cockpit-surface: #111827;
-  --color-cockpit-elevated: #1e293b;
-  --color-cockpit-border: #1e3a5f;
-  --color-cockpit-line: #1a2740;
-  --color-cockpit-text: #f1f5f9;
-  --color-cockpit-muted: #94a3b8;
-  --color-cockpit-dim: #64748b;
+/* Dark mode is driven by <html data-theme="dark"> (set before paint in app/layout.tsx). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-  --color-status-normal: #22d3ee;
-  --color-status-warning: #f59e0b;
-  --color-status-danger: #ef4444;
-  --color-status-success: #10b981;
-  --color-status-info: #3b82f6;
-
-  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", "Cascadia Mono", "Consolas", ui-monospace, "SFMono-Regular", monospace;
-
-  --animate-pulse-ring: pulse-ring 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
-  --animate-slide-in: slide-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  --animate-fade-in: fade-in 0.35s ease-out both;
-  --animate-alert-glow: alert-glow 1.6s ease-in-out 3;
-
-  @keyframes pulse-ring {
-    0% { transform: scale(0.6); opacity: 0.9; }
-    100% { transform: scale(2.4); opacity: 0; }
-  }
-  @keyframes slide-in {
-    from { transform: translateX(24px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes alert-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    50% { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.55), 0 0 28px rgba(239, 68, 68, 0.35); }
-  }
-}
-
+/* ------------------------------------------------------------------ design tokens
+   Two themes share one vocabulary. Colour is reserved for status (severity), identity
+   (risk family, formation, series) and the brand; text and surfaces use the neutral ramp. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  --canvas: #f2f3f7;
+  --surface: #ffffff;
+  --surface-2: #f7f8fb;
+  --surface-3: #eef0f5;
+  --line: #e4e7ee;
+  --line-2: #d4d9e3;
+  --ink: #0c0e14;
+  --ink-2: #3d4452;
+  --ink-3: #555c6b;
+  --ink-4: #6a7180;
+
+  --brand: #5b4bff;
+  --brand-ink: #4533ea;
+  --brand-soft: #eeebff;
+  --brand-2: #e847c8;
+  /* `aurora` = the solid brand fill (was a purple→pink gradient; kept as a token so it is one line to change). */
+  --aurora: linear-gradient(var(--brand), var(--brand));
+
+  --crit: #d92d32;
+  --crit-ink: #b91c1f;
+  --crit-soft: #fdecec;
+  --high: #f76b15;
+  --high-ink: #c2410c;
+  --high-soft: #fff1e6;
+  --med: #f2a60c;
+  --med-ink: #a15c07;
+  --med-soft: #fff6dc;
+  --low: #12a679;
+  --low-ink: #0b7a58;
+  --low-soft: #e4f7f0;
+
+  --chart-grid: #eceef3;
+  --chart-axis: #d4d9e3;
+  --chart-tick: #5f6675;
+  --chart-cursor: #b4bac6;
+
+  --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.05);
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.05), 0 1px 3px rgb(16 24 40 / 0.07);
+  --shadow-md: 0 6px 16px -4px rgb(16 24 40 / 0.1), 0 2px 4px -2px rgb(16 24 40 / 0.06);
+  --shadow-lg: 0 24px 48px -12px rgb(16 24 40 / 0.22), 0 4px 10px -4px rgb(16 24 40 / 0.08);
+  --shadow-brand: 0 1px 0 rgb(16 24 40 / 0.12);
+
+  --scrollbar: #cfd4de;
+  --hl-bg: #fff0b8;
+  --hl-ink: #5c4200;
+  --paper: #fffdf8;
+  --paper-line: #efe8d8;
 }
 
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #09090e;
+  --surface: #121219;
+  --surface-2: #17171f;
+  --surface-3: #1f1f29;
+  --line: #25252f;
+  --line-2: #32323e;
+  --ink: #f5f5f8;
+  --ink-2: #c4c6d2;
+  --ink-3: #a1a4b6;
+  --ink-4: #7f8396;
+
+  --brand: #6c5cff;
+  --brand-ink: #ada4ff;
+  --brand-soft: rgb(123 109 255 / 0.16);
+
+  --crit-ink: #ff8f91;
+  --crit-soft: rgb(229 56 59 / 0.16);
+  --high-ink: #ffa566;
+  --high-soft: rgb(247 107 21 / 0.16);
+  --med-ink: #ffd166;
+  --med-soft: rgb(242 166 12 / 0.15);
+  --low-ink: #4fdcaa;
+  --low-soft: rgb(18 166 121 / 0.16);
+
+  --chart-grid: #1f1f29;
+  --chart-axis: #32323e;
+  --chart-tick: #9a9db0;
+  --chart-cursor: #4a4c5c;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 8px 20px -6px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 28px 56px -12px rgb(0 0 0 / 0.7);
+  --shadow-brand: 0 1px 0 rgb(0 0 0 / 0.5);
+
+  --scrollbar: #33333f;
+  --hl-bg: rgb(242 166 12 / 0.28);
+  --hl-ink: #ffe6a3;
+  --paper: #16161d;
+  --paper-line: #25252f;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-crit: var(--crit);
+  --color-crit-ink: var(--crit-ink);
+  --color-crit-soft: var(--crit-soft);
+  --color-high: var(--high);
+  --color-high-ink: var(--high-ink);
+  --color-high-soft: var(--high-soft);
+  --color-med: var(--med);
+  --color-med-ink: var(--med-ink);
+  --color-med-soft: var(--med-soft);
+  --color-low: var(--low);
+  --color-low-ink: var(--low-ink);
+  --color-low-soft: var(--low-soft);
+
+  --font-sans: var(--font-jakarta), "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jbm), "Cascadia Mono", Consolas, ui-monospace, monospace;
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-brand: var(--shadow-brand);
+}
+
+@theme {
+  --radius-card: 4px;
+
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  --animate-halo: halo 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  --animate-spin-slow: nwis-spin 6s linear infinite;
+  --animate-radar: nwis-spin 5.5s linear infinite;
+  --animate-flow: flow 0.9s linear infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-breathe: breathe 2.2s ease-in-out infinite;
+  --animate-aurora: aurora-pan 10s ease-in-out infinite alternate;
+}
+
+/* Keyframes live at the top level so they are always emitted (utilities and inline styles use them). */
+@keyframes pulse-ring {
+  0% { transform: scale(0.55); opacity: 0.85; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes halo {
+  0% { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+@keyframes nwis-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes flow {
+  to { background-position: 0 16px; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes aurora-pan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes logo-scan {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(560%); }
+}
+@keyframes dash-march {
+  to { stroke-dashoffset: -24; }
+}
+
+/* ------------------------------------------------------------------ base */
 html,
 body {
-  background: var(--color-cockpit-bg);
-  color: var(--color-cockpit-text);
+  font-weight: 450;
+  background: var(--canvas);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv11", "ss01";
 }
 
 body {
   background-image:
-    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.05), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, rgba(59, 130, 246, 0.04), transparent 60%);
+    radial-gradient(900px 480px at -5% -10%, color-mix(in oklab, var(--brand) 9%, transparent), transparent 70%),
+    radial-gradient(700px 420px at 105% -5%, color-mix(in oklab, var(--brand-2) 7%, transparent), transparent 70%);
   background-attachment: fixed;
 }
 
-/* ------------------------------------------------------------------ utilities */
-@utility glass {
-  background: rgba(17, 24, 39, 0.62);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 58, 95, 0.55);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.28);
+::selection {
+  background: color-mix(in oklab, var(--brand) 26%, transparent);
 }
 
-@utility glass-strong {
-  background: rgba(11, 17, 29, 0.86);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(30, 58, 95, 0.7);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+/* ------------------------------------------------------------------ utilities */
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--surface) 84%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border: 1px solid color-mix(in oklab, var(--line-2) 70%, transparent);
+  box-shadow: var(--shadow-md);
+}
+
+@utility aurora {
+  background-image: var(--aurora);
+  background-size: 180% 180%;
+}
+
+@utility text-aurora {
+  background-image: var(--aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @utility tabular {
   font-variant-numeric: tabular-nums;
 }
 
+@utility label {
+  font-size: 12.5px;
+  line-height: 17px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
 @utility hatched {
   background-image: repeating-linear-gradient(
     135deg,
-    rgba(148, 163, 184, 0.09) 0 4px,
-    transparent 4px 9px
+    color-mix(in oklab, var(--ink) 9%, transparent) 0 3px,
+    transparent 3px 8px
   );
 }
 
-@utility label-caps {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-cockpit-dim);
-  font-weight: 600;
+@utility skeleton {
+  background: linear-gradient(90deg, var(--surface-3) 0%, var(--surface-2) 50%, var(--surface-3) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------------ scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1e3a5f transparent;
+  scrollbar-color: var(--scrollbar) transparent;
 }
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  background: #1e3a5f;
-  border-radius: 8px;
+  background: var(--scrollbar);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
 }
 *::-webkit-scrollbar-track {
   background: transparent;
@@ -118,10 +297,11 @@ body {
 
 /* ------------------------------------------------------------------ highlight marks */
 mark.hl {
-  background: rgba(245, 158, 11, 0.22);
-  color: #fde68a;
-  border-radius: 2px;
-  padding: 0 2px;
+  background: var(--hl-bg);
+  color: var(--hl-ink);
+  border-radius: 4px;
+  padding: 0 3px;
+  box-decoration-break: clone;
 }
 
 /* ------------------------------------------------------------------ range input */
@@ -129,120 +309,99 @@ input[type="range"].nwis-range {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
-  height: 18px;
+  height: 22px;
+  cursor: pointer;
 }
 input[type="range"].nwis-range::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #22d3ee var(--fill, 50%), #1e293b var(--fill, 50%));
+  height: 6px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--brand) var(--fill, 50%), var(--surface-3) var(--fill, 50%));
 }
 input[type="range"].nwis-range::-moz-range-track {
-  height: 4px;
-  border-radius: 4px;
-  background: #1e293b;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--surface-3);
 }
 input[type="range"].nwis-range::-moz-range-progress {
-  height: 4px;
-  border-radius: 4px;
-  background: #22d3ee;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--brand);
 }
 input[type="range"].nwis-range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  margin-top: -6px;
-  width: 16px;
-  height: 16px;
+  margin-top: -7px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #0a0e17;
-  border: 2px solid #22d3ee;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
-  cursor: pointer;
+  background: #fff;
+  border: 5px solid var(--brand);
+  box-shadow: 0 2px 8px rgb(91 75 255 / 0.45);
+  transition: transform 0.15s;
+}
+input[type="range"].nwis-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
 }
 input[type="range"].nwis-range::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #0a0e17;
-  border: 2px solid #22d3ee;
-  cursor: pointer;
+  background: #fff;
+  border: 5px solid var(--brand);
 }
 
-/* ------------------------------------------------------------------ leaflet dark theme */
-.leaflet-container {
-  background: #070b13 !important;
-  font-family: var(--font-sans) !important;
+/* ------------------------------------------------------------------ MapLibre chrome */
+.maplibregl-map {
+  font-family: var(--font-sans);
 }
-.leaflet-container .leaflet-tile-pane {
-  filter: saturate(0.7) brightness(0.92);
+.maplibregl-ctrl-group {
+  background: color-mix(in oklab, var(--surface) 88%, transparent) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line-2) !important;
+  border-radius: 3px !important;
+  box-shadow: var(--shadow-md) !important;
+  overflow: hidden;
 }
-.leaflet-control-attribution {
-  background: rgba(10, 14, 23, 0.75) !important;
-  color: #64748b !important;
-  font-size: 9px !important;
+.maplibregl-ctrl-group button {
+  width: 34px !important;
+  height: 34px !important;
 }
-.leaflet-control-attribution a {
-  color: #94a3b8 !important;
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid var(--line) !important;
 }
-.leaflet-bar a,
-.leaflet-bar a:hover {
-  background: rgba(17, 24, 39, 0.9) !important;
-  color: #cbd5e1 !important;
-  border-bottom-color: #1e3a5f !important;
+[data-theme="dark"] .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1);
 }
-.leaflet-bar {
-  border: 1px solid #1e3a5f !important;
-  box-shadow: none !important;
+.maplibregl-ctrl-attrib {
+  background: color-mix(in oklab, var(--surface) 70%, transparent) !important;
+  color: var(--ink-3) !important;
+  font-size: 10px !important;
+  border-radius: 2px 0 0 0;
 }
-.leaflet-tooltip.nwis-tip {
-  background: rgba(11, 17, 29, 0.94);
-  border: 1px solid #1e3a5f;
-  color: #e2e8f0;
-  border-radius: 6px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
-  padding: 6px 8px;
-  font-size: 11px;
+.maplibregl-ctrl-attrib a {
+  color: var(--ink-2) !important;
 }
-.leaflet-tooltip.nwis-tip::before {
+/* Compact attribution: the "i" button stays; the credits open on hover. */
+.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-inner {
   display: none;
 }
-.leaflet-tooltip.nwis-label {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  color: #cbd5e1;
-  font-size: 10px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  text-shadow: 0 1px 3px #000, 0 0 6px #000;
-  padding: 0;
+.maplibregl-ctrl-attrib.maplibregl-compact:hover .maplibregl-ctrl-attrib-inner {
+  display: block;
 }
-.leaflet-tooltip.nwis-label::before {
-  display: none;
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  border-radius: 3px !important;
+  min-height: 24px;
 }
-.nwis-map-grid {
-  background-image:
-    linear-gradient(rgba(30, 58, 95, 0.25) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 58, 95, 0.25) 1px, transparent 1px);
-  background-size: 48px 48px;
+.maplibregl-marker {
+  will-change: transform;
 }
 
-/* well markers */
-.well-marker {
-  position: relative;
-}
-.well-marker .dot {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 2px solid rgba(10, 14, 23, 0.9);
-}
-.well-marker .ring {
-  position: absolute;
-  inset: -6px;
-  border-radius: 9999px;
-  border: 2px solid currentColor;
-  animation: pulse-ring 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
-}
-.well-marker.active .dot {
-  background: #22d3ee;
-  box-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
+/* ------------------------------------------------------------------ reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
