@@ -2,6 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/** Width of an element (for hand-drawn SVG charts), tracked with a ResizeObserver. Returns a callback ref, so it
+ *  also works for elements that mount later (e.g. after data loads). */
+export function useWidth<T extends HTMLElement>() {
+  const [el, setEl] = useState<T | null>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.round(entry.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [el]);
+  return [setEl, width] as const;
+}
+
 /**
  * Minimal async loader keyed by `deps`: loading / error / reload, keeps the last good data
  * while a new key loads (stale-while-revalidate) so screens don't flash empty.

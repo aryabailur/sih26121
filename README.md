@@ -7,11 +7,14 @@ It connects the **active well's current depth** to what **nearby and historical 
 at that depth and formation, **why** it happened, **what worked**, and **what to check next** —
 with every insight traceable to a source document, page, well and depth.
 
-> **Synthetic demo data.** All wells, events, reports and parameters in this repository are
-> generated for the prototype and are **not** Oil India Limited operational data. The data model is
-> built so authorised OIL data can replace the demo set.
+> **Demo field, real-data proof.** The Assam field in the cockpit is illustrative — modelled on real Upper Assam
+> stratigraphy, **not** Oil India Limited operational data. The *Real data* screen runs the same pipeline on
+> **1,970 real public well histories** from the Norwegian Offshore Directorate (NLOD 2.0) — 611 drilling problems
+> found, 94 % precision on a hand-checked held-out sample.
 
 ![Command Center](docs/screenshots/02-mud-loss-alert.png)
+
+![Subsurface 3D](docs/screenshots/17-subsurface-3d.png)
 
 ---
 
@@ -53,7 +56,7 @@ npm run dev
 The frontend proxies `/api/*` to the backend (`NWIS_BACKEND_URL`, default `http://127.0.0.1:8000`), so the UI
 also works from another laptop on the same network during a live demo.
 
-Run the backend tests: `cd backend && python -m pytest -q` (10 end-to-end API tests).
+Run the backend tests: `cd backend && python -m pytest -q` (22 API tests).
 
 ---
 
@@ -76,11 +79,31 @@ Then click **Why?** on any alert: weighted factor breakdown, live signals vs bas
 offset wells with quotes, source citations that open the exact report page, recommended checks, and
 the alert's audit trail. **Reset** returns to 3,100 m and clears alerts and uploads.
 
+Two more things to try:
+
+- Flip the Command Center map to **Subsurface** (or open *Subsurface 3D*) before running the scenario: the field
+  becomes a cut-away 3D block — strata built from every offset's formation tops, true well paths, events at their
+  depth — and each alert flashes the bit's depth plane and flies the camera to the evidence.
+- Open **Brief**: the look-ahead brief for the next 150 / 300 / 500 m or to TD — hazard windows, how many offsets
+  hit each one, what worked ranked by the NPT it took, the offset-calibrated mud-weight window, a checklist and
+  sign-off, and the expected NPT in hours and ₹. Print / PDF, copy as text, or read it aloud.
+
+- Open **Real data**: the same extractor on every public well history on the Norwegian shelf (1,970 histories,
+  783k words, ~2–4 s), the offset analysis around the Volve discovery well on real formation tops, mud weights and
+  leak-off tests, and the held-out accuracy check with every miss shown.
+
+**Ctrl K** (or `/`) opens a command palette anywhere: screens, wells, depths (`3380`), hazard windows, actions,
+or a question for Ask. The speaker icon in the top bar turns on spoken alerts.
+
 The full judge script with clicks and talking points is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md);
-pitch text is in [docs/PITCH.md](docs/PITCH.md) and a 10-slide deck with speaker notes is
-[docs/NWIS_Pitch_Deck.pptx](docs/NWIS_Pitch_Deck.pptx). A recorded backup walkthrough (map → offset profile →
-source page → evidence search → scenario → Why? → acknowledge) is at
-[docs/nwis-demo-walkthrough.webm](docs/nwis-demo-walkthrough.webm) — plays in any browser.
+pitch text is in [docs/PITCH.md](docs/PITCH.md) and a 13-slide deck with speaker notes is
+[docs/NWIS_Pitch_Deck.pptx](docs/NWIS_Pitch_Deck.pptx).
+
+**Demo video (3:01, 1080p):** `docs/video/NWIS_SIH26121_demo.mp4` — Team Huzzards · SIH26121 → problem → game-changer → core innovation →
+live walkthrough → impact, narrated in the team's own (cloned) voice, with an original score and captions (`…_captioned.mp4`,
+[`.srt`](docs/video/NWIS_SIH26121_demo.srt)). The MP4s are over GitHub's 100 MB file limit, so they are not in the
+repo — rebuild them with `tools/video/` (records the live app and edits the film). Voiceover script for a human
+narrator: [docs/VIDEO_SCRIPT.md](docs/VIDEO_SCRIPT.md).
 
 ---
 
@@ -88,13 +111,13 @@ source page → evidence search → scenario → Why? → acknowledge) is at
 
 | PS requirement | Where in NWIS | Try it |
 |---|---|---|
-| **P1 / S2** nearby wells on a map, user radius | 3D field map (Command Center, Nearby Wells): satellite imagery + terrain, active well, offsets, well paths, bit position, history towers, radius 0.5–50 km | Nearby Wells → drag the radius from 25 km to 1.5 km, then 50 km |
+| **P1 / S2** nearby wells on a map, user radius | 3D field map (Command Center, Nearby Wells): satellite imagery + terrain, active well, offsets, well paths, bit position, history towers, radius 0.5–50 km; **Subsurface 3D** block with true well paths (TVD) and events at depth | Nearby Wells → drag the radius from 25 km to 1.5 km, then 50 km · Subsurface 3D |
 | **P2 / S3** instant access to historical experience | Well profile drawer, Well Intelligence, knowledge-base library, source viewer | Click OIL-AX-99 on the map |
 | **P3 / S4** correlate across wells by depth & formation | Wellbore navigator, Well Intelligence overlay, Correlate & Compare (geological cross-section with every well's **casing strings and shoes**, multi-well parameter chart, correlation table with porosity / pore pressure / fracture gradient, **mud-weight programme** and casing programme per well), and an offset-calibrated mud-weight window | Correlate & Compare · Risk Explorer → Mud-weight window |
-| **P4 / S6** proactive alerts near risky depths | Depth-aware risk engine, alert toasts, Risk Watch, acknowledge / review / dismiss, audit trail | Run historical risk scenario |
-| **S1** AI/NLP/OCR extraction from reports | Document Intelligence: text-layer PDFs and **scanned PDFs / images via Tesseract OCR** → chunking → rule-based event/entity extraction → duplicate check → human review → knowledge base | Document Intelligence → Process sample report · Process scanned report (OCR) |
+| **P4 / S6** proactive alerts near risky depths | Depth-aware risk engine, alert toasts, Risk Watch, acknowledge / review / dismiss, audit trail, spoken alerts; **Look-ahead brief** for the next N m with what worked, mud-weight window and expected NPT | Run historical risk scenario · Brief |
+| **S1** AI/NLP/OCR extraction from reports | Document Intelligence: text-layer PDFs and **scanned PDFs / images via Tesseract OCR** → chunking → rule-based event/entity extraction → duplicate check → human review → knowledge base; **proven on 1,970 real public well histories** (94 % held-out precision) | Document Intelligence → Process sample report · Process scanned report (OCR) · Real data |
 | **S5** predictive risk for losses, stuck pipe, overpressure, torque, cementing | Explainable hybrid risk score over 7 risk families, risk profile along the well path, and a **learned cross-check** (logistic model backtested leave-one-well-out on the offsets) | Risk Explorer → How the score works · ML chip on every risk card |
-| **S7** dashboard for field & office | Welcome + role select, six workspaces, daylight and night-shift themes, 3D satellite field map | Welcome → pick *Drilling engineer*, *Office analyst* or *Drilling manager* |
+| **S7** dashboard for field & office | Welcome + role select, nine workspaces, Ctrl K command palette, daylight and night-shift themes, 3D satellite field map, printable brief | Welcome → pick *Drilling engineer*, *Office analyst* or *Drilling manager* |
 
 ---
 
@@ -174,8 +197,12 @@ something, and motion that explains what changed.
 - **Real 3D map** — MapLibre GL with Esri World Imagery, reference labels and AWS terrain (no keys); globe fly-in on
   first visit, radar sweep around the active well, extruded history towers (height = NPT + events, colour = worst
   event), animated evidence links to the offsets that saw this depth, 2D/3D, satellite/street and orbit modes.
+- **Subsurface 3D** — three.js cut-away block: strata walls and wireframe formation surfaces interpolated from every
+  offset's tops, true well paths (TVD) that "drill" in on load, event gems at depth with halos near the bit, hazard
+  sleeves on the active plan, a depth plane that follows the bit, and particles streaming from the offsets' events to
+  the bit. Alerts flash the plane and fly the camera to the evidence.
 - **Alerts that land** — severity-graded toasts, a screen-edge flash, the camera framing the supporting wells, and a
-  *Why?* view whose score bar builds factor by factor.
+  *Why?* view whose score bar builds factor by factor; optional spoken callouts.
 - **Engineered geometry** — near-square corners (4 px panels, 3 px controls, 2 px tags), flat brand colour instead
   of gradients, no glow; circles only where something is a point (status dots, map pins, gauges).
 - **Logo** — an "N" drawn from wells: offset well, deviated path and the active well, whose amber bit sits in the
@@ -194,6 +221,9 @@ something, and motion that explains what changed.
 | ![](docs/screenshots/10-risk-explorer.png) **Risk Explorer** — profile, alert log, model card | ![](docs/screenshots/11-document-review.png) **Document Intelligence** — extraction & human review |
 | ![](docs/screenshots/13-mud-weight-window.png) **Mud-weight window** — live ECD meets the offset-calibrated Barail fracture gradient | ![](docs/screenshots/09-source-viewer.png) **Source viewer** — every citation opens the report page |
 | ![](docs/screenshots/15-scanned-report-ocr.png) **Scanned report** — an image-only PDF read by Tesseract OCR | ![](docs/screenshots/16-learned-model.png) **Learned cross-check** — backtested weights vs hand-set |
+| ![](docs/screenshots/17-subsurface-3d.png) **Subsurface 3D** — strata, true well paths, events at depth, the bit's plane | ![](docs/screenshots/18-look-ahead-brief.png) **Look-ahead brief** — next 300 m for the shift handover |
+| ![](docs/screenshots/19-brief-hazard.png) **Brief hazard card** — what happened, what worked, checks, mud window | ![](docs/screenshots/20-command-palette.png) **Command palette** — Ctrl K to any well, depth or hazard |
+| ![](docs/screenshots/21-real-data-proof.png) **Real-data proof** — 1,970 public well histories, the shelf map, offsets around Volve | ![](docs/screenshots/22-real-data-offsets.png) **Real offsets on one depth axis** — real groups + extracted problems |
 
 ---
 
@@ -239,12 +269,13 @@ backend/
   models.py · schemas.py  SQLAlchemy models · Pydantic contracts
   seed_data.py            builds the demo knowledge base
   seed/                   field definition, report corpus, parameter generator, sample PDF
-  services/               risk_engine · search_engine · document_processor · similarity · nlp · llm (optional)
+  services/               risk_engine · briefing · search_engine · document_processor · similarity · nlp · llm (optional)
   routers/                wells · events · formations · risk · search · documents · simulation
-  tests/                  test_api.py · test_pressure.py (+ scenario_sweep / search_debug / answer_preview dev tools)
+  opendata/               Sodir FactPages importer (python -m opendata.sodir) · spotcheck.json (held-out labels)
+  tests/                  test_api · test_intelligence · test_pressure · test_brief · test_opendata (+ scenario_sweep / requirements_check)
 frontend/
-  app/dashboard/          6 screens + Correlate & Compare
-  components/             map · dashboard · risk · search · well · documents · shared · ui
+  app/dashboard/          Command · Subsurface · Brief · Nearby · Well intel · Compare · Ask · Risk · Docs
+  components/             map · subsurface (three.js) · brief · dashboard · risk · search · well · documents · layout · ui
   lib/                    api client · Zustand store · types (API contract) · utils
 docs/                     architecture · demo script · pitch · assumptions · screenshots · deck · video
 tools/                    dev tooling: screenshots, demo video, E2E scenario check, deck build

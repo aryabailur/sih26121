@@ -90,7 +90,7 @@ def trajectories(db: Session = Depends(get_db)):
     for w in db.scalars(select(Well)).all():
         pts = db.scalars(select(SurveyPoint).where(SurveyPoint.well_id == w.id).order_by(SurveyPoint.md)).all()
         sel = [p for i, p in enumerate(pts) if i % 3 == 0 or i == len(pts) - 1]
-        out[w.id] = [dict(md=p.md, lat=p.latitude, lon=p.longitude, planned=bool(p.is_planned)) for p in sel]
+        out[w.id] = [dict(md=p.md, tvd=p.tvd, lat=p.latitude, lon=p.longitude, planned=bool(p.is_planned)) for p in sel]
     return {"trajectories": out}
 
 

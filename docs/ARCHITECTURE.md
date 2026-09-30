@@ -4,7 +4,7 @@
 
 | Layer | Technology | Responsibility |
 |---|---|---|
-| UI | Next.js 16 (App Router), React 19, Tailwind 4, MapLibre GL 6, Motion, Recharts 3, Zustand | Welcome + six workspaces in two themes; one global store holds bit depth, radius, latest evaluation, alerts, scenario state |
+| UI | Next.js 16 (App Router), React 19, Tailwind 4, MapLibre GL 6, three.js, Motion, Recharts 3, Zustand | Welcome + nine workspaces in two themes (incl. Subsurface 3D and the Look-ahead brief), Ctrl K palette, spoken alerts; one global store holds bit depth, radius, latest evaluation, alerts, scenario state |
 | API | FastAPI, Pydantic v2 | REST contract (`/api/wells`, `/events`, `/formations`, `/risk`, `/search`, `/documents`, `/simulation`) — OpenAPI at `/docs` |
 | Persistence | SQLAlchemy 2 → SQLite (demo) / PostgreSQL | Knowledge schema (below); list fields use portable JSON columns |
 | Intelligence | Pure-Python services | Risk engine, hybrid retrieval, document pipeline, similarity, drilling NLP |
@@ -93,6 +93,38 @@ The hand-set score drives alerts; a learned model checks it against history:
    learned` returns the coefficients, AUCs and per-family results. On synthetic data it proves the method; the same
    pipeline recalibrates on authorised OIL history.
 
+### Look-ahead brief (`backend/services/briefing.py`, `GET /api/risk/brief`)
+
+For every risk zone whose offset envelope overlaps `[depth, depth + horizon]` (and is not already passed):
+
+- **projected** — `assess_zone` with the bit at the window top and **no parameters** (live factor = 0): what the
+  history alone says before any live confirmation; **now** — the same zone scored at the current depth with the
+  live reading;
+- **likelihood** = offsets that hit the window ÷ offsets drilled to its top; **expected NPT** = likelihood × mean
+  NPT per affected offset; **worst** = the largest per-offset NPT;
+- **what worked** — the evidence events' mitigations ranked by the NPT they took; lessons; `event_params` stated as
+  numbers ("ECD at loss onset 1.51 sg — OIL-AX-55");
+- **mud window** — max offset-calibrated pore / min frac gradient over the window (from `pressure.py`) → minimum
+  MW and ECD limit; programme breaches that overlap it;
+- formations and casing shoes in the interval, the distinct cited source pages, and a one-line headline.
+
+It is a pure read: no alerts are recorded. The Brief screen prices NPT at an editable spread rate (₹ lakh/day).
+
+### Real-data proof (`backend/opendata/sodir.py`, `backend/services/opendata.py`, `/api/opendata/*`)
+
+- **Import** (`python -m opendata.sodir [--refresh]`): five FactPages CSV tables (wellbore histories, exploration
+  wellbores, formation tops, mud weights, casing & leak-off tests) → `data/opendata/sodir_shelf.json.gz` (every
+  history + position) and `data/opendata/sodir_area.json` (the Sleipner–Volve–Johan Sverdrup study area with tops,
+  mud, casing/LOT and history paragraphs). The raw cache is git-ignored; the two bundles are committed (offline demo).
+- **Extraction**: each history paragraph → `parse_text` (drops TVD/feet conversions and export-mangled volumes so
+  MD is the only depth) → `extract_events(narrative=True)`; the formation comes from that well's real tops at the
+  event depth (or a unit named in the sentence). *Testing* sections are skipped (flow is intentional there).
+- **Offset analysis**: `offsets(name, radius)` = offsets by haversine distance, their events on MD, a 250 m
+  profile, their mud weights and leak-off tests; the UI draws the common window per 500 m (heaviest mud needed →
+  weakest leak-off).
+- **Accuracy**: `spotcheck()` joins `opendata/spotcheck.json` (50 held-out labels keyed by sha1(well|sentence))
+  with the current extraction; `test_opendata.py` fails if any label no longer matches.
+
 ## 4. Evidence search (`backend/services/search_engine.py`)
 
 - **Units**: report pages (chunks) and structured events. An event hit is displayed as its source page with the
@@ -136,6 +168,14 @@ human review → commit`.
 → KPI strip, map highlights, Risk Watch, timeline context and toasts all render from the same evaluation, so
 every panel is always consistent with one depth. The scenario runner lives in the store, so it keeps running
 while you switch screens.
+
+**Subsurface 3D** (`components/subsurface/`, three.js, client-only): built once from `/wells/trajectories` (MD, TVD,
+lat/lon → local km, depth ×0.6), `/formations/correlate` for the wells within 5 km (tops → IDW-interpolated
+surfaces on a 32×32 grid), store events and risk zones. Strata walls use outward-wound faces drawn `BackSide`, so
+only the far walls render from any orbit angle (a cut-away "tank"). The frame loop reads the store directly
+(`useNWIS.getState()`): the bit glides to `depth`, context events come from `evaluation.context.nearby_events`,
+and a newer toast flashes the depth plane and flies the camera to the alert's evidence. Labels are CSS2D DOM
+elements; picking is a raycast (well → profile drawer, event → source page).
 
 ## 7. Production integration points
 

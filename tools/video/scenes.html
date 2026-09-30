@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>NWIS video scenes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet" />
+<style>
+  /* Editorial package: paper, ink, one hi-vis accent. Hard rules and offset shadows, square corners, no gradients. */
+  :root {
+    --paper: #efece3; --card: #f8f6f0; --ink: #111111; --ink2: #3d3c38; --ink3: #615f57;
+    --yellow: #ffcc1a; --red: #d62839; --loss: #2a78b5; --stuck: #a93f8c; --kick: #d62839;
+    --dark: #121212; --onDark: #f3f1ea; --onDark2: #b4b1a7; --onDark3: #8f8c83;
+    --sans: "Archivo", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", Consolas, monospace;
+    --stripes: repeating-linear-gradient(-45deg, #111 0 7px, #ffcc1a 7px 19px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  html.dark, html.dark body { background: var(--dark); color: var(--onDark); }
+  html.transparent, html.transparent body { background: transparent; }
+  #root { transform-origin: 50% 50%; }
+  .abs { position: absolute; }
+  .h1 { font-weight: 800; font-size: 86px; line-height: 1.02; letter-spacing: -.025em; font-stretch: 90%; }
+  .box { background: var(--card); border: 3px solid var(--ink); }
+  .mask { overflow: hidden; padding-bottom: .09em; margin-bottom: -.09em; }
+  .mk { position: relative; z-index: 0; white-space: nowrap; }
+  .mk > i { position: absolute; left: -.07em; right: -.07em; top: .1em; bottom: .02em; background: var(--yellow); z-index: -1; transform-origin: 0 50%; transform: scaleX(0); }
+  .st { position: relative; white-space: nowrap; }
+  .st > b { position: absolute; left: -.03em; right: -.03em; top: 50%; height: .085em; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+  svg text { font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div id="root" class="abs" style="inset:0"></div>
+<script>
+// ---------------------------------------------------------------- helpers
+const C = window.CONFIG || { scene: new URLSearchParams(location.search).get("scene") || "problem", V: {}, W: {}, D: 20, P: {} };
+const root = document.getElementById("root");
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, d) => clamp((t - a) / d);
+const ex = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x)); // expo out: fast in, long settle
+const qio = (x) => (x < 0.5 ? 16 * x ** 5 : 1 - Math.pow(-2 * x + 2, 5) / 2); // quint in-out: wipes
+const cio = (x) => (x < 0.5 ? 4 * x ** 3 : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const bo = (x) => { const k = 1.25; return 1 + (k + 1) * Math.pow(x - 1, 3) + k * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+const fmt = (n) => Math.round(n).toLocaleString("en-IN");
+function h(tag, style = {}, html = "", cls = "") {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  Object.assign(e.style, style);
+  if (html) e.innerHTML = html;
+  return e;
+}
+const add = (parent, ...kids) => { kids.forEach((k) => parent.appendChild(k)); return kids[0]; };
+const svgNS = "http://www.w3.org/2000/svg";
+function s(tag, attrs = {}, parent) {
+  const e = document.createElementNS(svgNS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+/** Voice-line start (s) and the time of the n-th word matching `w` (prefix, case-insensitive). */
+const V = (id) => C.V[id] ?? 0;
+function W(id, w, n = 0, off = 0) {
+  const list = C.W[id];
+  if (!list || !list.length) return V(id) + off; // human narration: no word timings
+  let k = 0;
+  for (const [word, t] of list) if (word.toLowerCase().startsWith(w.toLowerCase())) { if (k === n) return V(id) + t + off; k++; }
+  return V(id) + off;
+}
+
+/** Text set line by line (breaks chosen by hand); each line sits in a mask so it can rise into place. */
+function lines(parent, arr, style = {}, cls = "") {
+  const el = add(parent, h("div", style, "", cls));
+  const rows = arr.map((l) => add(add(el, h("div", {}, "", "mask")), h("div", {}, l)));
+  return { el, rows };
+}
+/** Lines rise in (staggered) at t0 and lift out at t1. */
+function rise(L, t, t0, t1 = 1e9, { st = 0.07, d = 0.8, dout = 0.42 } = {}) {
+  (L.rows || L).forEach((r, i) => {
+    const k = ex(prog(t, t0 + i * st, d));
+    const o = cio(prog(t, t1 + i * 0.035, dout));
+    r.style.transform = `translateY(${(1 - k) * 112 - o * 112}%)`;
+  });
+}
+/** Yellow marker sweeping behind a phrase / an ink strike through it. */
+const sweep = (el, t, t0, d = 0.5) => { if (el) el.style.transform = `scaleX(${ex(prog(t, t0, d))})`; };
+/** Card entrance: it rises onto the page and its hard shadow grows under it. */
+function lift(el, t, t0, { d = 0.7, off = 8, t1 = 1e9 } = {}) {
+  const k = ex(prog(t, t0, d)), sh = ex(prog(t, t0 + 0.1, d)), o = cio(prog(t, t1, 0.35));
+  el.style.opacity = clamp(prog(t, t0, 0.14)) * (1 - o);
+  el.style.transform = `translate(${-off * sh}px, ${36 * (1 - k) - off * sh}px)`;
+  el.style.boxShadow = `${off * sh}px ${off * sh}px 0 var(--ink)`;
+}
+/** Hard-edged reveal from the left; exits by clearing to the right. */
+function wipe(el, t, t0, d = 0.5, t1 = 1e9, dout = 0.35) {
+  const k = ex(prog(t, t0, d)), o = cio(prog(t, t1, dout));
+  el.style.clipPath = `inset(0 ${(1 - k) * 100}% 0 ${o * 100}%)`;
+}
+const fade = (el, t, t0, d = 0.3, t1 = 1e9, dout = 0.3) => (el.style.opacity = clamp(prog(t, t0, d)) * (1 - clamp(prog(t, t1, dout))));
+/** A slow camera push, so held frames still breathe. */
+const drift = (amt = 0.012) => (t) => (root.style.transform = `scale(${1 + amt * clamp(t / C.D)})`);
+
+const LOGO = `<svg viewBox="0 0 48 48" width="100%" height="100%"><rect width="48" height="48" rx="3" fill="#11131a"/><rect y="28" width="48" height="7" fill="#2f9fc2"/><rect y="35" width="48" height="6" fill="#8d68d6"/><rect y="41" width="48" height="7" fill="#1fae86"/><path d="M13 7.5 V48" stroke="#fff" stroke-width="4.4"/><path d="M13.6 8.2 L33.4 31.8" stroke="#fff" stroke-width="4.4" stroke-linecap="square"/><path d="M34.5 7.5 V33" stroke="#fff" stroke-width="4.4"/><path d="M34.5 32.6 L39 37.1 L34.5 41.6 L30 37.1 Z" fill="#f2a60c" stroke="#11131a" stroke-width="1.3"/></svg>`;
+
+/** Running header: section number, section name, wordmark, and a rule that draws across. */
+function header(n, label) {
+  const g = add(root, h("div", { left: "96px", top: "56px", width: "1728px", height: "60px", zIndex: 5 }, "", "abs"));
+  const num = add(g, h("div", { left: 0, top: 0, background: "var(--ink)", color: "var(--paper)", font: "600 21px/1 var(--mono)", padding: "8px 10px 7px" }, n, "abs"));
+  const lab = lines(g, [label], { left: "62px", top: "4px", font: "700 27px/1 var(--sans)" }, "abs");
+  const brand = lines(g, ["NWIS"], { right: 0, top: "4px", font: "800 27px/1 var(--sans)", letterSpacing: "-.01em" }, "abs");
+  const rule = add(g, h("div", { left: 0, top: "54px", width: "1728px", height: "3px", background: "var(--ink)", transformOrigin: "0 50%" }, "", "abs"));
+  return (t, t0 = 0.05) => {
+    wipe(num, t, t0, 0.35);
+    rise(lab, t, t0 + 0.08);
+    rise(brand, t, t0 + 0.14);
+    rule.style.transform = `scaleX(${ex(prog(t, t0, 1.0))})`;
+  };
+}
+
+/** Lithology fills (sandstone dots, shale dashes, limestone brick) and the hazard stripe, as SVG patterns. */
+function lithology(svg) {
+  const defs = s("defs", {}, svg);
+  const pat = (id, w, ht, bg, draw) => {
+    const p = s("pattern", { id, width: w, height: ht, patternUnits: "userSpaceOnUse" }, defs);
+    s("rect", { width: w, height: ht, fill: bg }, p);
+    draw(p);
+  };
+  const o = { stroke: "#111", "stroke-width": 1.8, opacity: 0.3 };
+  pat("sand", 20, 20, "#e8dcb6", (p) => { s("circle", { cx: 5, cy: 5, r: 1.8, fill: "#111", opacity: 0.3 }, p); s("circle", { cx: 15, cy: 15, r: 1.8, fill: "#111", opacity: 0.3 }, p); });
+  pat("shale", 40, 16, "#ccc8bd", (p) => { s("line", { x1: 3, y1: 5, x2: 19, y2: 5, ...o, "stroke-width": 2.2 }, p); s("line", { x1: 23, y1: 13, x2: 39, y2: 13, ...o, "stroke-width": 2.2 }, p); });
+  pat("lime", 48, 24, "#d8ddd0", (p) => { s("line", { x1: 0, y1: 1, x2: 48, y2: 1, ...o }, p); s("line", { x1: 0, y1: 13, x2: 48, y2: 13, ...o }, p); s("line", { x1: 1, y1: 1, x2: 1, y2: 13, ...o }, p); s("line", { x1: 25, y1: 13, x2: 25, y2: 25, ...o }, p); });
+  const hz = s("pattern", { id: "hazard", width: 26, height: 26, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, defs);
+  s("rect", { width: 26, height: 26, fill: "#ffcc1a" }, hz);
+  s("rect", { width: 9, height: 26, fill: "#111" }, hz);
+}
+
+// ================================================================= 01 PROBLEM (P1 · P2 · P3)
+function problem() {
+  const cam = drift();
+  const hdr = header("01", "The problem");
+  const a = V("P1"), b = V("P2"), c = V("P3");
+  const tBuried = W("P2", "buried");
+
+  // ---- part A: headline column + cross-section figure
+  const A = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px" }, "", "abs"));
+  const hl = { left: "96px", top: "318px", width: "800px" };
+  const T1 = lines(A, ["At the bit,", "you have", `<span class="mk"><i></i>minutes</span> to decide.`], hl, "abs h1");
+  const T2 = lines(A, ["Nearby wells", "have drilled this", "depth before."], hl, "abs h1");
+  const T3 = lines(A, ["What they learned", `is <span class="mk"><i></i>buried</span> in`, "their reports."], hl, "abs h1");
+  const m1 = T1.el.querySelector(".mk>i"), m3 = T3.el.querySelector(".mk>i");
+
+  const FX = 900, FY = 150, FW = 924, FH = 800, X0 = 96, YT = 70;
+  const y = (d) => YT + ((d - 2900) * (FH - YT)) / 800;
+  const fig = add(A, h("div", { left: FX + "px", top: FY + "px", width: FW + "px", height: FH + "px", overflow: "hidden" }, "", "abs box"));
+  const figCap = add(A, h("div", { left: FX + "px", top: FY + FH + 18 + "px", font: "500 20px/1 var(--sans)", color: "var(--ink3)" }, "Illustrative section, Upper Assam formations. Depths in metres.", "abs"));
+  const svg = s("svg", { width: FW, height: FH, viewBox: `0 0 ${FW} ${FH}` });
+  fig.appendChild(svg);
+  lithology(svg);
+  const clip = s("clipPath", { id: "draw" }, svg.querySelector("defs"));
+  const clipR = s("rect", { x: 0, y: 0, width: FW, height: 0 }, clip);
+  const geo = s("g", { "clip-path": "url(#draw)" }, svg);
+  const BANDS = [["Barail Group", "sandstone", 2900, 3290, "sand"], ["Kopili Shale", "shale", 3290, 3575, "shale"], ["Sylhet Limestone", "limestone", 3575, 3700, "lime"]];
+  BANDS.forEach(([, , d0, d1, p]) => {
+    s("rect", { x: X0, y: y(d0), width: FW - X0, height: y(d1) - y(d0), fill: `url(#${p})` }, geo);
+    s("line", { x1: X0, x2: FW, y1: y(d0), y2: y(d0), stroke: "#111", "stroke-width": 2 }, geo);
+  });
+  s("line", { x1: X0, x2: X0, y1: YT, y2: FH, stroke: "#111", "stroke-width": 2 }, geo);
+  for (let d = 3000; d <= 3600; d += 100) {
+    s("line", { x1: X0 - 10, x2: X0, y1: y(d), y2: y(d), stroke: "#111", "stroke-width": 2 }, geo);
+    const tx = s("text", { x: X0 - 16, y: y(d) + 6, fill: "#615f57", "font-size": 17, "font-weight": 500, "text-anchor": "end" }, geo);
+    tx.textContent = fmt(d);
+  }
+  const bandLbl = BANDS.map(([name, rock, d0]) =>
+    add(fig, h("div", { left: X0 + 18 + "px", top: y(d0) + 14 + "px" }, `<div style="font:700 21px/1.1 var(--sans)">${name}</div><div style="font:500 18px/1.2 var(--sans);color:var(--ink2)">${rock}</div>`, "abs")),
+  );
+  // wells
+  const AX = 330;
+  const OFF = [[470, "AX-99"], [560, "AX-55"], [680, "AX-88"], [770, "AX-66"], [860, "AX-33"]];
+  const offEls = OFF.map(([x, name]) => {
+    const ln = s("line", { x1: x, x2: x, y1: YT, y2: YT, stroke: "#111", "stroke-width": 3, opacity: 0.8 }, svg);
+    const tx = s("text", { x, y: 46, fill: "#111", "font-size": 15, "font-weight": 600, "text-anchor": "middle", opacity: 0 }, svg);
+    tx.textContent = name;
+    return { ln, tx };
+  });
+  const actName = s("text", { x: AX, y: 46, fill: "#111", "font-size": 17, "font-weight": 700, "text-anchor": "middle" }, svg);
+  actName.textContent = "OIL-AX-102";
+  const ahead = s("line", { x1: AX, x2: AX, y1: 0, y2: FH, stroke: "#111", "stroke-width": 2, "stroke-dasharray": "6 9", opacity: 0.45 }, svg);
+  const pipe = s("line", { x1: AX, x2: AX, y1: YT, y2: YT, stroke: "#111", "stroke-width": 7 }, svg);
+  const bit = s("rect", { x: -12, y: -12, width: 24, height: 24, fill: "#ffcc1a", stroke: "#111", "stroke-width": 3 }, svg);
+  const tag = add(fig, h("div", { left: 0, top: 0, background: "var(--ink)", color: "var(--paper)", font: "600 22px/1 var(--mono)", padding: "8px 10px 7px", whiteSpace: "nowrap" }, "", "abs"));
+  // incidents at depth, stamped in on the words that name them
+  const EV = [[0, 3160, "loss", null, "losses", 0], [1, 3185, "loss", "Lost returns", "losses", 1], [2, 3400, "stuck", "Stuck pipe", "stuck", -1], [3, 3410, "stuck", null, "stuck", 0], [4, 3590, "kick", "Kick", "kicks", -1]];
+  const evEls = EV.map(([wi, d, fam, label, , side]) => {
+    const cx = OFF[wi][0], cy = y(d);
+    const m = s("rect", { x: -11, y: -11, width: 22, height: 22, fill: `var(--${fam})`, stroke: "#111", "stroke-width": 3 }, svg);
+    let lb = null;
+    if (label) {
+      lb = add(fig, h("div", { top: cy - 30 + "px", background: "var(--card)", border: "2px solid var(--ink)", padding: "6px 10px 7px", whiteSpace: "nowrap" }, `<div style="font:700 20px/1.1 var(--sans)">${label}</div><div style="font:500 17px/1.2 var(--mono);color:var(--ink3)">${fmt(d)} m</div>`, "abs"));
+      if (side > 0) lb.style.left = cx + 22 + "px";
+      else lb.style.right = FW - cx + 22 + "px";
+    }
+    return { m, lb, cx, cy };
+  });
+  // the reports that bury it
+  const pile = add(A, h("div", { left: 0, top: 0, width: "1920px", height: "1080px" }, "", "abs"));
+  const DT = ["Daily drilling report", "Well completion report", "Mud log", "NPT report", "Cementing report", "Casing programme"];
+  const WELLS = ["OIL-AX-99", "OIL-AX-55", "OIL-AX-88", "OIL-AX-66", "OIL-AX-33", "OIL-AX-11", "OIL-AX-22", "OIL-AX-05", "OIL-AX-77", "OIL-AX-44"];
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const sheets = [];
+  for (let r = 0; r < 6; r++)
+    for (let q = 0; q < 5; q++) {
+      const i = r * 5 + q;
+      const el = add(pile, h("div", { left: 0, top: 0, width: "214px", height: "154px", padding: "14px 16px", background: "var(--card)", border: "2px solid var(--ink)", boxShadow: "5px 5px 0 var(--ink)" }, `
+        <div style="font:800 16px/1.15 var(--sans)">${DT[i % DT.length]}</div>
+        <div style="margin-top:6px;font:500 13px/1.3 var(--mono);color:var(--ink3)">${WELLS[(i * 3) % WELLS.length]} · Day ${8 + ((i * 7) % 61)} · p.${1 + (i % 9)}</div>
+        <div style="height:6px;background:#d9d4c7;margin-top:14px;width:92%"></div><div style="height:6px;background:#d9d4c7;margin-top:8px;width:74%"></div><div style="height:6px;background:#d9d4c7;margin-top:8px;width:84%"></div>`, "abs"));
+      sheets.push({ el, x: 890 + q * 186 + (rnd() - 0.5) * 40, y: 140 + r * 134 + (rnd() - 0.5) * 30, rot: (rnd() - 0.5) * 7, spin: (rnd() - 0.5) * 16, delay: rnd() * 0.85 + r * 0.05, drop: 180 + rnd() * 240 });
+    }
+
+  // ---- part B: the cost (P3)
+  const B = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px" }, "", "abs"));
+  // "10" lands on "ten", "–20%" on "twenty": two masks on one line
+  const num = add(B, h("div", { left: "88px", top: "166px", font: "900 272px/1 var(--sans)", fontStretch: "85%", letterSpacing: "-.045em", whiteSpace: "nowrap" },
+    `<span class="mask" style="display:inline-block"><span style="display:inline-block">10</span></span><span class="mask" style="display:inline-block"><span style="display:inline-block">–20%</span></span>`, "abs"));
+  const [numA, numB] = [...num.querySelectorAll(".mask > span")];
+  const rt = lines(B, ["of a well's time can go", "to unplanned events."], { left: "1096px", top: "214px", font: "800 46px/1.12 var(--sans)", fontStretch: "92%", letterSpacing: "-.015em" }, "abs");
+  const rs = lines(B, ["Stuck pipe and lost circulation", "cause most of it."], { left: "1096px", top: "352px", font: "500 30px/1.3 var(--sans)", color: "var(--ink2)" }, "abs");
+  const barLbl = lines(B, ["One well, from spud to rig release"], { left: "96px", top: "556px", font: "600 24px/1 var(--sans)", color: "var(--ink3)" }, "abs");
+  const bar = add(B, h("div", { left: "96px", top: "596px", width: "1728px", height: "74px", border: "3px solid var(--ink)", background: "var(--card)", transformOrigin: "0 50%" }, "", "abs"));
+  add(bar, h("div", { left: "22px", top: "22px", font: "600 24px/1 var(--sans)" }, "Planned work", "abs"));
+  const seg10 = add(bar, h("div", { left: "80%", top: 0, bottom: 0, width: "10%", background: "var(--yellow)", borderLeft: "3px solid var(--ink)", transformOrigin: "0 50%" }, "", "abs"));
+  const seg20 = add(bar, h("div", { left: "90%", top: 0, bottom: 0, width: "10%", background: "var(--stripes)", borderLeft: "3px solid var(--ink)", transformOrigin: "0 50%" }, "", "abs"));
+  const lab10 = lines(B, ["10%"], { left: `${96 + 1728 * 0.8 + 4}px`, top: "688px", font: "600 22px/1 var(--mono)" }, "abs");
+  const lab20 = lines(B, ["up to 20%"], { left: `${96 + 1728 * 0.9 + 4}px`, top: "688px", font: "600 22px/1 var(--mono)" }, "abs");
+  const rep = add(B, h("div", { left: 0, top: 0 }, "", "abs"));
+  const rsvg = s("svg", { width: 620, height: 1080, viewBox: "0 0 620 1080" });
+  rep.appendChild(rsvg);
+  const repLine = s("line", { x1: 80, x2: 80, y1: 872, y2: 872, stroke: "#111", "stroke-width": 2.5, "stroke-dasharray": "8 8" }, rsvg);
+  const repW = [];
+  for (let i = 0; i < 7; i++) {
+    const x = 110 + i * 62;
+    const ln = s("line", { x1: x, x2: x, y1: 790, y2: 790, stroke: "#111", "stroke-width": 3 }, rsvg);
+    const m = s("rect", { x: x - 10, y: 862, width: 20, height: 20, fill: "var(--stuck)", stroke: "#111", "stroke-width": 2.5, opacity: 0 }, rsvg);
+    repW.push({ ln, m });
+  }
+  const repT = lines(B, ["The same trouble,", "well after well."], { left: "600px", top: "800px", font: "800 54px/1.06 var(--sans)", fontStretch: "90%", letterSpacing: "-.02em" }, "abs");
+  const src = lines(B, ["Source: Elsevier, ScienceDirect Topics, “Loss of Circulation”."], { left: "96px", top: "1010px", font: "500 19px/1 var(--sans)", color: "var(--ink3)" }, "abs");
+  // the wipe between A and B
+  const WB = 300;
+  const wbar = add(root, h("div", { left: 0, top: 0, width: WB + "px", height: "1080px", background: "var(--ink)", zIndex: 4 }, "", "abs"));
+
+  const tW = c - 0.35;
+  return (t) => {
+    cam(t);
+    hdr(t);
+    // headlines
+    rise(T1, t, a - 0.12, b - 0.35);
+    sweep(m1, t, W("P1", "minutes", 0, -0.05), 0.45);
+    rise(T2, t, b - 0.02, tBuried - 0.6);
+    rise(T3, t, tBuried - 0.34, 1e9);
+    sweep(m3, t, tBuried + 0.02, 0.4);
+    // figure
+    lift(fig, t, 0.2, { d: 0.8 });
+    fade(figCap, t, 0.9, 0.4);
+    clipR.setAttribute("height", ex(prog(t, 0.35, 1.3)) * FH);
+    bandLbl.forEach((l, i) => fade(l, t, 0.8 + i * 0.12, 0.35));
+    const dep = lerp(2960, 3100, cio(prog(t, a, b - a - 0.2)));
+    const by = y(dep);
+    pipe.setAttribute("y2", by);
+    ahead.setAttribute("y1", by);
+    bit.setAttribute("transform", `translate(${AX} ${by}) rotate(${45 + t * 90} 0 0)`);
+    tag.textContent = `${fmt(dep)} m`;
+    tag.style.transform = `translate(${AX + 24}px, ${by - 18}px)`;
+    tag.style.opacity = clamp(prog(t, 0.7, 0.3));
+    offEls.forEach(({ ln, tx }, i) => {
+      const k = ex(prog(t, b + 0.05 + i * 0.09, 0.9));
+      ln.setAttribute("y2", lerp(YT, FH, k));
+      tx.setAttribute("opacity", clamp(k * 3));
+    });
+    EV.forEach(([, , , , word], i) => {
+      const t0 = W("P2", word, 0, -0.1) + (i % 2 ? 0.1 : 0);
+      const k = bo(prog(t, t0, 0.34));
+      const { m, lb, cx, cy } = evEls[i];
+      m.setAttribute("transform", `translate(${cx} ${cy}) scale(${Math.max(0.001, k)})`);
+      if (lb) lift(lb, t, t0 + 0.08, { d: 0.5, off: 4 });
+    });
+    sheets.forEach((S) => {
+      const t0 = tBuried - 0.45 + S.delay;
+      const k = ex(prog(t, t0, 0.55));
+      S.el.style.opacity = clamp(prog(t, t0, 0.08));
+      S.el.style.transform = `translate(${S.x}px, ${S.y - S.drop * (1 - k)}px) rotate(${S.rot + S.spin * (1 - k)}deg)`;
+    });
+    // wipe to part B
+    const xb = lerp(1920, -WB, qio(prog(t, tW, 0.75)));
+    wbar.style.transform = `translateX(${xb}px)`;
+    A.style.clipPath = `inset(0 ${1920 - clamp(xb, 0, 1920)}px 0 0)`;
+    B.style.clipPath = `inset(0 0 0 ${clamp(xb + WB, 0, 1920)}px)`;
+    // part B
+    const tTen = W("P3", "ten", 0, -0.18), tTw = W("P3", "twenty", 0, -0.12);
+    rise(barLbl, t, c + 0.3);
+    bar.style.transform = `scaleX(${ex(prog(t, c + 0.3, 0.9))})`;
+    rise([numA], t, tTen);
+    seg10.style.transform = `scaleX(${ex(prog(t, tTen + 0.1, 0.6))})`;
+    rise(lab10, t, tTen + 0.2);
+    rise([numB], t, tTw);
+    seg20.style.transform = `scaleX(${ex(prog(t, tTw + 0.1, 0.6))})`;
+    rise(lab20, t, tTw + 0.2);
+    rise(rt, t, tTw + 0.3);
+    rise(rs, t, tTw + 0.75);
+    rise(src, t, tTw + 0.6);
+    const tR = W("P3", "repeat", 0, -0.5);
+    repLine.setAttribute("x2", lerp(80, 560, ex(prog(t, tR, 1.0))));
+    repW.forEach(({ ln, m }, i) => {
+      ln.setAttribute("y2", lerp(790, 960, ex(prog(t, tR - 0.2 + i * 0.05, 0.7))));
+      const k = bo(prog(t, tR + 0.15 + i * 0.07, 0.3));
+      m.setAttribute("opacity", k > 0 ? 1 : 0);
+      m.setAttribute("transform", `translate(${110 + i * 62} 872) scale(${Math.max(0.001, k)}) translate(${-(110 + i * 62)} -872)`);
+    });
+    rise(repT, t, tR + 0.25);
+  };
+}
+
+// ================================================================= 03 EXPLAIN (I3)
+function explain() {
+  const cam = drift();
+  const hdr = header("03", "Core innovation");
+  const t0 = V("I3");
+  const tE = W("I3", "explainable", 0, -0.3), tC = W("I3", "cited", 0, -0.55), tL = W("I3", "learned", 0, -0.4), tO = W("I3", "without", 0, -0.15);
+
+  // left: the score, taken apart
+  const L = add(root, h("div", { left: "96px", top: "168px", width: "800px", height: "800px", padding: "34px 40px" }, "", "abs box"));
+  add(L, h("div", { font: "600 24px/1 var(--sans)", color: "var(--ink3)" }, "Why this alert fired"));
+  add(L, h("div", { marginTop: "16px", font: "800 54px/1.04 var(--sans)", fontStretch: "90%", letterSpacing: "-.02em" }, "Stuck pipe at 3,380 m"));
+  add(L, h("div", { marginTop: "8px", font: "500 26px/1.2 var(--sans)", color: "var(--ink2)" }, "Kopili Shale, well OIL-AX-102"));
+  const F = [["Depth proximity", 0.3, 1.0], ["Offset event frequency", 0.2, 0.6], ["Well similarity", 0.1, 0.94], ["Formation match", 0.1, 1.0], ["Live parameter anomaly", 0.25, 0.67], ["Trajectory match", 0.05, 0.94]];
+  const rows = F.map(([name, w, v]) => {
+    const r = add(L, h("div", { marginTop: "20px", display: "flex", alignItems: "center", height: "36px" }));
+    add(r, h("div", { width: "318px", font: "600 25px/1 var(--sans)" }, name));
+    const tr = add(r, h("div", { width: "170px", height: "18px", border: "2px solid var(--ink)", background: "var(--paper)" }));
+    const fill = add(tr, h("div", { height: "100%", width: "0%", background: "var(--ink)" }));
+    add(r, h("div", { marginLeft: "18px", font: "500 21px/1 var(--mono)", color: "var(--ink3)", whiteSpace: "nowrap" }, `${w.toFixed(2)} × ${v.toFixed(2)}`));
+    const val = add(r, h("div", { marginLeft: "auto", font: "600 25px/1 var(--mono)" }, "0.00"));
+    return { r, fill, w, v, val };
+  });
+  add(L, h("div", { marginTop: "28px", height: "3px", background: "var(--ink)" }));
+  const totRow = add(L, h("div", { marginTop: "18px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }));
+  add(totRow, h("div", { font: "700 28px/1 var(--sans)", paddingBottom: "10px" }, "Risk score"));
+  const scoreBox = add(totRow, h("div", { display: "flex", alignItems: "center", gap: "16px" }));
+  const crit = add(scoreBox, h("div", { background: "var(--red)", color: "#fff", font: "700 22px/1 var(--sans)", padding: "8px 11px 7px" }, "Critical"));
+  const score = add(scoreBox, h("div", { font: "700 76px/1 var(--mono)", letterSpacing: "-.03em" }, "0.00"));
+  const stackWrap = add(L, h("div", { marginTop: "40px", position: "relative", height: "34px" }));
+  const stack = add(stackWrap, h("div", { left: 0, top: 0, width: "720px", height: "34px", border: "3px solid var(--ink)", background: "var(--paper)", display: "flex", overflow: "hidden" }, "", "abs"));
+  const segs = F.map((_, i) => add(stack, h("div", { height: "100%", width: "0px", background: i % 2 ? "#4a4944" : "var(--ink)" })));
+  const thr = add(stackWrap, h("div", { left: `${0.75 * 720 - 2}px`, top: "-14px", width: "4px", height: "62px", background: "var(--red)" }, "", "abs"));
+  const thrL = add(stackWrap, h("div", { left: `${0.75 * 720 + 10}px`, top: "-32px", font: "600 18px/1 var(--mono)", color: "var(--red)" }, "alert at 0.75", "abs"));
+
+  // right top: the sentence it came from
+  const R1 = add(root, h("div", { left: "980px", top: "168px", width: "844px", height: "344px", padding: "30px 36px" }, "", "abs box"));
+  add(R1, h("div", { display: "flex", justifyContent: "space-between", alignItems: "baseline" }, `<div style="font:700 25px/1 var(--sans)">Daily drilling report</div><div style="font:500 20px/1 var(--mono);color:var(--ink3)">OIL-AX-88 · Day 55 · p. 7</div>`));
+  add(R1, h("div", { marginTop: "18px", height: "2px", background: "var(--ink)" }));
+  const quote = add(R1, h("div", { marginTop: "24px", font: "500 28px/1.55 var(--mono)" }, `“<span class="mk"><i></i>Pipe stuck at 3,400 m</span> during connection. Hole left open 45 min during BHA change; KCl 4% vs 7% programme.”`));
+  const qm = quote.querySelector(".mk>i");
+  const qnote = add(R1, h("div", { marginTop: "20px", font: "600 23px/1.3 var(--sans)", color: "var(--ink2)" }, "Each sentence in an alert links to the page it came from."));
+
+  // right bottom: the learned model, kept in its place
+  const R2 = add(root, h("div", { left: "980px", top: "572px", width: "844px", height: "396px", padding: "30px 36px" }, "", "abs box"));
+  add(R2, h("div", { display: "flex", justifyContent: "space-between", alignItems: "baseline" }, `<div style="font:700 25px/1 var(--sans)">Learned cross-check</div><div style="font:500 20px/1 var(--mono);color:var(--ink3)">Backtest AUC, 12 offset wells</div>`));
+  add(R2, h("div", { marginTop: "18px", height: "2px", background: "var(--ink)" }));
+  const bars = [["Learned model", 0.86, "var(--yellow)"], ["Rule-based score", 0.76, "var(--ink)"]].map(([n, v, col]) => {
+    const r = add(R2, h("div", { marginTop: "32px", display: "flex", alignItems: "center" }));
+    add(r, h("div", { width: "250px", font: "600 25px/1 var(--sans)" }, n));
+    const tr = add(r, h("div", { width: "330px", height: "34px", border: "2px solid var(--ink)", background: "var(--paper)" }));
+    const f = add(tr, h("div", { height: "100%", width: "0%", background: col, borderRight: "2px solid var(--ink)" }));
+    add(r, h("div", { marginLeft: "20px", font: "600 26px/1 var(--mono)" }, v.toFixed(2)));
+    return { f, v };
+  });
+  const note = add(R2, h("div", { marginTop: "40px", display: "inline-block", background: "var(--ink)", color: "var(--paper)", font: "700 25px/1.2 var(--sans)", padding: "13px 18px 14px" }, "Advisory only. It never changes an alert."));
+
+  return (t) => {
+    cam(t);
+    hdr(t);
+    lift(L, t, t0 - 0.2);
+    let total = 0;
+    rows.forEach((r, i) => {
+      const k = ex(prog(t, tE + i * 0.13, 0.6));
+      r.fill.style.width = `${k * r.v * 100}%`;
+      r.r.style.opacity = 0.32 + 0.68 * clamp(k * 2.5);
+      r.val.textContent = (k * r.w * r.v).toFixed(2);
+      segs[i].style.width = `${k * r.w * r.v * 714}px`;
+      total += k * r.w * r.v;
+    });
+    score.textContent = total.toFixed(2);
+    const over = total >= 0.75;
+    score.style.color = over ? "var(--red)" : "var(--ink)";
+    crit.style.visibility = over ? "visible" : "hidden";
+    fade(thr, t, tE - 0.1, 0.3);
+    fade(thrL, t, tE, 0.3);
+    lift(R1, t, tC - 0.25);
+    sweep(qm, t, tC + 0.1, 0.6);
+    fade(qnote, t, tC + 0.5, 0.35);
+    lift(R2, t, tL - 0.2);
+    bars.forEach((b, i) => (b.f.style.width = `${ex(prog(t, tL + 0.15 + i * 0.22, 0.8)) * b.v * 100}%`));
+    wipe(note, t, tO, 0.45);
+  };
+}
+
+// ================================================================= 05 IMPACT (V1 · V2 · V3)
+function impact() {
+  const cam = drift(0.01);
+  const hdr = header("05", "Impact");
+  const a = V("V1"), b = V("V2"), c = V("V3");
+
+  // ---- part 1: what the three windows cost the offsets
+  const P1 = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px" }, "", "abs"));
+  const cnt = lines(P1, [`<span class="n">0</span><span style="font-size:.4em;letter-spacing:0;margin-left:.1em">h</span>`], { left: "88px", top: "150px", font: "900 290px/1 var(--sans)", fontStretch: "85%", letterSpacing: "-.045em" }, "abs");
+  const cntN = cnt.el.querySelector(".n");
+  const lbl = lines(P1, ["of non-productive time lost", "by nearby wells in the next", "500 m of this well."], { left: "96px", top: "470px", font: "800 44px/1.12 var(--sans)", fontStretch: "92%", letterSpacing: "-.015em" }, "abs");
+  const foot = lines(P1, ["Demo field. At an assumed ₹30 lakh per rig-day,", "that is about ₹1.4 crore."], { left: "96px", top: "668px", font: "500 26px/1.3 var(--sans)", color: "var(--ink3)" }, "abs");
+
+  const card = add(P1, h("div", { left: "980px", top: "168px", width: "844px", height: "730px", overflow: "hidden" }, "", "abs box"));
+  add(card, h("div", { left: "36px", top: "30px", right: "36px", display: "flex", justifyContent: "space-between", alignItems: "baseline" }, `<div style="font:700 25px/1 var(--sans)">OIL-AX-102, the next 500 m</div><div style="font:500 20px/1 var(--mono);color:var(--ink3)">demo field</div>`, "abs"));
+  add(card, h("div", { left: "36px", right: "36px", top: "74px", height: "2px", background: "var(--ink)" }, "", "abs"));
+  const svg = s("svg", { width: 844, height: 800, viewBox: "0 0 844 800" });
+  svg.style.position = "absolute";
+  card.appendChild(svg);
+  lithology(svg);
+  const SX = 150, SW = 90, D0 = 3100, D1 = 3650, Y0 = 130, Y1 = 700; // card ends at y 898: clear of the burned captions
+  const y = (d) => Y0 + ((d - D0) * (Y1 - Y0)) / (D1 - D0);
+  const strip = s("g", {}, svg);
+  [[3100, 3290, "sand"], [3290, 3575, "shale"], [3575, 3650, "lime"]].forEach(([d0, d1, p]) => s("rect", { x: SX, y: y(d0), width: SW, height: y(d1) - y(d0), fill: `url(#${p})` }, strip));
+  s("rect", { x: SX, y: Y0, width: SW, height: Y1 - Y0, fill: "none", stroke: "#111", "stroke-width": 3 }, strip);
+  for (let d = 3100; d <= 3600; d += 100) {
+    s("line", { x1: SX - 10, x2: SX, y1: y(d), y2: y(d), stroke: "#111", "stroke-width": 2 }, strip);
+    const tx = s("text", { x: SX - 16, y: y(d) + 6, fill: "#615f57", "font-size": 17, "font-weight": 500, "text-anchor": "end" }, strip);
+    tx.textContent = fmt(d);
+  }
+  const stripClip = s("clipPath", { id: "stripc" }, svg.querySelector("defs"));
+  const stripR = s("rect", { x: 0, y: 0, width: 844, height: 0 }, stripClip);
+  strip.setAttribute("clip-path", "url(#stripc)");
+  const bitM = s("rect", { x: -12, y: -12, width: 24, height: 24, fill: "#ffcc1a", stroke: "#111", "stroke-width": 3, transform: `translate(${SX + SW / 2} ${Y0}) rotate(45)` }, svg);
+  const WIN = [["Mud losses", "Barail Group", 3150, 3220, 25, "3,150 m"], ["Stuck pipe", "Kopili Shale", 3350, 3450, 63, "3,380 m"], ["Kick and losses", "Sylhet Limestone", 3560, 3620, 22, "3,580 m"]];
+  const winEls = WIN.map(([name, fm, d0, d1, hrs, flag]) => {
+    const band = s("rect", { x: SX, y: y(d0), width: SW, height: y(d1) - y(d0), fill: "url(#hazard)", stroke: "#111", "stroke-width": 3 }, svg);
+    const lead = s("line", { x1: SX + SW, x2: SX + SW, y1: y(d0) + 2, y2: y(d0) + 2, stroke: "#111", "stroke-width": 2.5 }, svg);
+    const row = add(card, h("div", { left: "300px", top: `${y(d0) - 6}px`, width: "508px" }, "", "abs"));
+    const top = add(row, h("div", { display: "flex", justifyContent: "space-between", alignItems: "baseline" }, `<div style="font:800 32px/1 var(--sans);font-stretch:92%">${name}</div><div style="font:600 30px/1 var(--mono)">${hrs} h</div>`));
+    add(row, h("div", { marginTop: "6px", font: "500 21px/1.2 var(--sans)", color: "var(--ink3)" }, `${fm}, ${fmt(d0)}–${fmt(d1)} m`));
+    const fl = add(row, h("div", { marginTop: "12px", display: "inline-block", background: "var(--ink)", color: "var(--paper)", font: "700 21px/1 var(--sans)", padding: "8px 12px 8px 10px" }, `<span style="display:inline-block;width:12px;height:12px;background:var(--yellow);margin-right:10px"></span>Flagged at ${flag}`));
+    void top;
+    return { band, lead, row, fl, hrs };
+  });
+
+  // ---- part 2: where it goes
+  const P2 = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px" }, "", "abs"));
+  const inp = [["eRTMAC", "Live drilling data from the rig", 196], ["OIL report archive", "DDRs, WCRs, mud logs, NPT", 406]].map(([t1, t2, top]) =>
+    add(P2, h("div", { left: "96px", top: top + "px", width: "470px", height: "160px", padding: "30px 30px" }, `<div style="font:800 40px/1 var(--sans);font-stretch:92%;letter-spacing:-.01em">${t1}</div><div style="margin-top:14px;font:500 24px/1.25 var(--sans);color:var(--ink2)">${t2}</div>`, "abs box")),
+  );
+  const hub = add(P2, h("div", { left: "700px", top: "276px", width: "320px", height: "220px", background: "var(--ink)", color: "var(--paper)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px" }, `<div style="width:84px;height:84px">${LOGO}</div><div style="font:800 50px/1 var(--sans);letter-spacing:-.01em">NWIS</div>`, "abs"));
+  const OUT = [["Every rig", "The memory of the field, at the bit", "rig", 150], ["Every handover", "A cited look-ahead brief", "handover", 322], ["Every new engineer", "The experience of every well before", "engineer", 494]].map(([t1, t2, w, top]) => ({
+    el: add(P2, h("div", { left: "1180px", top: top + "px", width: "644px", height: "150px", padding: "28px 30px" }, `<div style="font:800 40px/1 var(--sans);font-stretch:92%;letter-spacing:-.01em">${t1}</div><div style="margin-top:14px;font:500 25px/1.25 var(--sans);color:var(--ink2)">${t2}</div>`, "abs box")),
+    w, top,
+  }));
+  const wsvg = s("svg", { width: 1920, height: 1080, viewBox: "0 0 1920 1080" });
+  wsvg.style.position = "absolute";
+  P2.insertBefore(wsvg, P2.firstChild);
+  const arrow = s("marker", { id: "ah", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 5, markerHeight: 5, orient: "auto" }, s("defs", {}, wsvg));
+  s("path", { d: "M0 0 L10 5 L0 10 Z", fill: "#111" }, arrow);
+  const wire = (d) => s("path", { d, fill: "none", stroke: "#111", "stroke-width": 3.5, "marker-end": "url(#ah)" }, wsvg);
+  // cards sit lifted by their shadow offset (8 px, hub 10 px): wires meet the visible edges
+  const wires = [wire("M566 268 H628 V356 H684"), wire("M566 478 H628 V396 H684"), ...OUT.map((o) => wire(`M1020 376 H1096 V${o.top + 67} H1166`))];
+  wires.forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = `${L} ${L}`; p.dataset.len = L; });
+  const facts = add(P2, h("div", { left: "96px", top: "690px", width: "1728px", height: "170px", display: "flex" }, "", "abs"));
+  const factRule = add(facts, h("div", { left: 0, top: 0, width: "1728px", height: "3px", background: "var(--ink)", transformOrigin: "0 50%" }, "", "abs"));
+  // what the prototype already proves, at scale — every number is checked (tests.requirements_check, /api/opendata)
+  const FACTS = [["20/20", "SIH26121 requirements met"], ["1,970", "real well histories read"], ["611", "drilling problems found in seconds"], ["100%", "of alerts cite a source page"]];
+  const factEls = FACTS.map(([n, l], i) => {
+    const cell = add(facts, h("div", { flex: "1", position: "relative", padding: "10px 0 0 28px", marginTop: "28px" }));
+    const div = i ? add(cell, h("div", { left: 0, top: 0, width: "2px", height: "132px", background: "var(--ink)", transformOrigin: "50% 0" }, "", "abs")) : null;
+    const N = lines(cell, [n], { font: "800 66px/1 var(--sans)", fontStretch: "90%", letterSpacing: "-.02em" });
+    const Lb = lines(cell, [l], { marginTop: "12px", font: "500 24px/1.2 var(--sans)", color: "var(--ink2)" });
+    return { N, Lb, div };
+  });
+
+  // ---- part 3: end card
+  const E = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px", background: "var(--dark)", color: "var(--onDark)", zIndex: 6 }, "", "abs"));
+  const col = add(E, h("div", { left: 0, top: "0", width: "1920px", height: "1080px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }, "", "abs"));
+  const eLogo = add(col, h("div", { width: "128px", height: "128px" }, LOGO));
+  const eWord = lines(col, ["NWIS"], { marginTop: "30px", font: "900 184px/0.92 var(--sans)", fontStretch: "88%", letterSpacing: "-.04em", textAlign: "center" });
+  const eName = lines(col, ["Nearby Wells Intelligence System"], { marginTop: "20px", font: "600 30px/1.2 var(--sans)", color: "var(--onDark2)", textAlign: "center" });
+  const eTag = lines(col, [`Know what's below <span class="mk" style="color:var(--ink)"><i></i>before you drill it.</span>`], { marginTop: "56px", font: "800 64px/1.1 var(--sans)", fontStretch: "92%", letterSpacing: "-.02em", textAlign: "center" });
+  const eMk = eTag.el.querySelector(".mk>i");
+  const black = add(root, h("div", { left: 0, top: 0, width: "1920px", height: "1080px", background: "#000", zIndex: 9, opacity: 0 }, "", "abs"));
+  const eFoot = lines(col, [`Smart India Hackathon 2026 · Problem statement SIH26121 · Oil India Limited`, ...(C.P.team ? [C.P.team] : [])], { marginTop: "76px", font: "500 24px/1.45 var(--sans)", color: "var(--onDark3)", textAlign: "center" });
+
+  const n0 = W("V1", "hundred", 0, -0.25);
+  const rowsAt = WIN.map((_, i) => Math.max(a + 0.2 + i * 0.3, n0 - 0.9 + i * 0.35));
+  const tFlag = W("V1", "flagged", 0, -0.15);
+  return (t) => {
+    cam(t);
+    hdr(t);
+    // part 1
+    const out1 = cio(prog(t, b - 0.45, 0.5));
+    P1.style.opacity = 1 - out1;
+    P1.style.transform = `translateY(${-out1 * 36}px)`;
+    lift(card, t, a - 0.25);
+    stripR.setAttribute("height", ex(prog(t, a - 0.05, 1.1)) * 800);
+    bitM.style.opacity = clamp(prog(t, a + 0.3, 0.2));
+    let hrs = 0;
+    winEls.forEach((w, i) => {
+      const t0 = rowsAt[i];
+      const k = ex(prog(t, t0, 0.5));
+      w.band.style.opacity = clamp(prog(t, t0 - 0.05, 0.1));
+      w.band.style.transformOrigin = `${SX}px 0`;
+      w.band.style.transform = `scaleX(${k})`;
+      w.lead.setAttribute("x2", lerp(SX + SW, 292, ex(prog(t, t0 + 0.1, 0.45))));
+      fade(w.row, t, t0 + 0.2, 0.25);
+      w.row.style.transform = `translateX(${(1 - ex(prog(t, t0 + 0.2, 0.6))) * 24}px)`;
+      const f = tFlag + i * 0.4;
+      w.fl.style.opacity = clamp(prog(t, f, 0.08));
+      w.fl.style.transform = `scale(${1 + 0.18 * (1 - ex(prog(t, f, 0.35)))})`;
+      w.fl.style.transformOrigin = "0 50%";
+      hrs += w.hrs * cio(prog(t, t0 + 0.2, 0.5));
+    });
+    rise(cnt, t, rowsAt[0] + 0.1);
+    cntN.textContent = fmt(hrs);
+    rise(lbl, t, rowsAt[2] + 0.35);
+    rise(foot, t, rowsAt[2] + 1.3);
+    // part 2
+    P2.style.opacity = t < b - 0.2 ? 0 : 1;
+    inp.forEach((e, i) => lift(e, t, b + 0.05 + i * 0.18));
+    lift(hub, t, b + 0.55, { off: 10 });
+    wires.forEach((p, i) => {
+      const t0 = i < 2 ? b + 0.4 + i * 0.12 : W("V2", OUT[i - 2].w, 0, -0.55);
+      p.style.strokeDashoffset = p.dataset.len * (1 - ex(prog(t, t0, 0.55)));
+      p.style.opacity = t > t0 ? 1 : 0;
+    });
+    OUT.forEach((o) => lift(o.el, t, W("V2", o.w, 0, -0.35)));
+    const tF = W("V2", "rig", 0, 0.1); // facts land while the outcomes build
+    factRule.style.transform = `scaleX(${ex(prog(t, tF - 0.2, 0.9))})`;
+    factEls.forEach((f, i) => {
+      if (f.div) f.div.style.transform = `scaleY(${ex(prog(t, tF + i * 0.12, 0.5))})`;
+      rise(f.N, t, tF + i * 0.12);
+      rise(f.Lb, t, tF + 0.1 + i * 0.12);
+    });
+    // part 3 — the end card rises over everything
+    const eIn = qio(prog(t, c - 0.35, 0.6));
+    E.style.clipPath = `inset(${(1 - eIn) * 100}% 0 0 0)`;
+    const tk = W("V3", "know", 0, -0.12);
+    eLogo.style.opacity = clamp(prog(t, c + 0.05, 0.1));
+    eLogo.style.transform = `scale(${lerp(0.6, 1, bo(prog(t, c + 0.05, 0.5)))})`;
+    rise(eWord, t, c + 0.12);
+    rise(eName, t, c + 0.35);
+    rise(eTag, t, tk);
+    sweep(eMk, t, W("V3", "before", 0, -0.1), 0.6);
+    rise(eFoot, t, c + 2.1);
+    black.style.opacity = cio(prog(t, C.D - 0.8, 0.8)); // the film ends on black
+  };
+}
+
+// ================================================================= CHAPTER SLATE
+function chapter() {
+  document.documentElement.classList.add("dark");
+  const { n, title, sub } = C.P;
+  const g = add(root, h("div", { left: "120px", top: sub ? "352px" : "392px" }, "", "abs"));
+  const num = add(g, h("div", { display: "inline-block", background: "var(--yellow)", color: "var(--ink)", font: "700 34px/1 var(--mono)", padding: "10px 14px 9px" }, n));
+  const T = lines(g, [title], { marginTop: "28px", font: "900 172px/0.95 var(--sans)", fontStretch: "85%", letterSpacing: "-.035em", color: "var(--onDark)" });
+  const S = sub ? lines(g, [sub], { marginTop: "30px", font: "500 32px/1.2 var(--sans)", color: "var(--onDark2)" }) : null;
+  return (t) => {
+    wipe(num, t, 0.02, 0.32);
+    rise(T, t, 0.06, 1e9, { d: 0.75 });
+    if (S) rise(S, t, 0.24);
+    g.style.transform = `translateX(${-16 * (t / C.D)}px)`;
+  };
+}
+
+// ================================================================= OVERLAYS (transparent)
+function statement() {
+  document.documentElement.classList.add("transparent");
+  const P = add(root, h("div", { left: 0, top: 0, width: "1010px", height: "1080px", background: "var(--paper)", borderRight: "4px solid var(--ink)", boxShadow: "14px 0 0 var(--ink)" }, "", "abs"));
+  const big = { font: "800 86px/1.04 var(--sans)", fontStretch: "90%", letterSpacing: "-.025em" };
+  const L1 = lines(P, [`Not a <span class="st">dashboard.<b></b></span>`], { left: "112px", top: "292px", ...big }, "abs");
+  const L2 = lines(P, [`Not a <span class="st">chatbot.<b></b></span>`], { left: "112px", top: "396px", ...big }, "abs");
+  const L3 = lines(P, ["The memory of the field,", `<span class="mk"><i></i>when it matters.</span>`], { left: "112px", top: "566px", font: "900 80px/1.06 var(--sans)", fontStretch: "88%", letterSpacing: "-.03em" }, "abs");
+  const s1 = L1.el.querySelector(".st>b"), s2 = L2.el.querySelector(".st>b"), m = L3.el.querySelector(".mk>i");
+  const t1 = W("G3", "not", 0, -0.12), t2 = W("G3", "not", 1, -0.12), t3 = W("G3", "the", 0, -0.14), tw = W("G3", "when", 0, -0.05);
+  return (t) => {
+    P.style.transform = `translateX(${-(1 - ex(prog(t, 0, 0.6))) * 1040}px)`;
+    rise(L1, t, t1);
+    rise(L2, t, t2);
+    sweep(s1, t, t2 - 0.02, 0.35);
+    sweep(s2, t, t3 - 0.04, 0.35);
+    L1.el.style.color = t > t2 + 0.2 ? "var(--ink3)" : "var(--ink)";
+    L2.el.style.color = t > t3 + 0.16 ? "var(--ink3)" : "var(--ink)";
+    rise(L3, t, t3);
+    sweep(m, t, tw, 0.7);
+  };
+}
+
+function lowerThird() {
+  document.documentElement.classList.add("transparent");
+  const { kicker: k, title, sub } = C.P;
+  const wrap = add(root, h("div", { left: "48px", bottom: "44px", paddingRight: "14px", paddingBottom: "14px" }, "", "abs"));
+  add(wrap, h("div", { display: "inline-block", background: "var(--yellow)", border: "3px solid var(--ink)", borderBottom: "0", font: "700 21px/1 var(--sans)", padding: "9px 14px 8px" }, k));
+  const box = add(wrap, h("div", { background: "var(--card)", border: "3px solid var(--ink)", boxShadow: "8px 8px 0 var(--ink)", padding: "15px 24px 18px", maxWidth: "1040px" }));
+  const T = lines(box, [title], { font: "800 40px/1.1 var(--sans)", fontStretch: "92%", letterSpacing: "-.015em" });
+  const S = sub ? lines(box, [sub], { marginTop: "6px", font: "500 24px/1.25 var(--sans)", color: "var(--ink2)" }) : null;
+  return (t) => {
+    wipe(wrap, t, 0, 0.5, C.D - 0.42, 0.42);
+    rise(T, t, 0.12, C.D - 0.55);
+    if (S) rise(S, t, 0.2, C.D - 0.55);
+  };
+}
+
+// ================================================================= 00 OPENING TITLE (T1): team + problem statement
+function title() {
+  document.documentElement.classList.add("dark");
+  const g = add(root, h("div", { left: "120px", top: "318px" }, "", "abs"));
+  const tag = add(g, h("div", { display: "inline-block", background: "var(--yellow)", color: "var(--ink)", font: "700 30px/1 var(--mono)", padding: "10px 14px 9px" }, "SIH 2026"));
+  const T = lines(g, [C.P.team || "Team"], { marginTop: "30px", font: "900 184px/0.94 var(--sans)", fontStretch: "85%", letterSpacing: "-.035em", color: "var(--onDark)" });
+  const rule = add(g, h("div", { marginTop: "40px", width: "760px", height: "3px", background: "var(--onDark)", transformOrigin: "0 50%" }));
+  const S = lines(g, ["Problem statement SIH26121", "Oil India Limited"], { marginTop: "26px", font: "600 38px/1.28 var(--sans)", color: "var(--onDark2)" });
+  const tTeam = W("T1", "team", 0, -0.12), tPs = W("T1", "answer", 0, -0.2);
+  return (t) => {
+    wipe(tag, t, 0.1, 0.32);
+    rise(T, t, tTeam, 1e9, { d: 0.75 });
+    rule.style.transform = `scaleX(${ex(prog(t, tTeam + 0.2, 0.9))})`;
+    rise(S, t, tPs);
+    g.style.transform = `translateX(${-14 * (t / C.D)}px)`;
+  };
+}
+
+const SCENES = { problem, explain, impact, chapter, statement, lowerThird, title };
+window.render = SCENES[C.scene]();
+window.__ready = document.fonts.ready.then(() => true);
+window.render(0);
+</script>
+</body>
+</html>

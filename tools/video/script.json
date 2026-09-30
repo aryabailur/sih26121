@@ -1,0 +1,234 @@
+{
+  "voice": "en-IN-PrabhatNeural",
+  "rate": "+4%",
+  "clone": {
+    "sample": "voice/sample.wav",
+    "engine": "chatterbox"
+  },
+  "team": "Team Huzzards",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Team and problem statement"
+    },
+    {
+      "id": "problem",
+      "title": "Problem & core challenge"
+    },
+    {
+      "id": "gamechanger",
+      "title": "Why NWIS is a game-changer"
+    },
+    {
+      "id": "innovation",
+      "title": "Core innovation"
+    },
+    {
+      "id": "walkthrough",
+      "title": "Prototype walkthrough"
+    },
+    {
+      "id": "impact",
+      "title": "Long-term impact"
+    }
+  ],
+  "lines": [
+    {
+      "id": "T1",
+      "section": "intro",
+      "text": "We are Team Huzzards, and this is our answer to SIH26121.",
+      "tts": "We are Team Huzzards, and this is our answer to S I H two six one two one.",
+      "expect": [
+        "we are"
+      ]
+    },
+    {
+      "id": "P1",
+      "section": "problem",
+      "text": "Drilling engineers make decisions at the bit — in minutes."
+    },
+    {
+      "id": "P2",
+      "section": "problem",
+      "text": "But what nearby wells faced at this exact depth — losses, stuck pipe, kicks — is buried in thousands of reports."
+    },
+    {
+      "id": "P3",
+      "section": "problem",
+      "text": "Unplanned events like these can eat ten to twenty percent of a well's time — and they repeat."
+    },
+    {
+      "id": "G1",
+      "section": "gamechanger",
+      "text": "Meet NWIS — the Nearby Wells Intelligence System.",
+      "tts": "Meet En-wiss — the Nearby Wells Intelligence System."
+    },
+    {
+      "id": "G2",
+      "section": "gamechanger",
+      "text": "It sits beside eRTMAC and connects the bit's depth to what nearby wells learned there: what happened, why, what worked — and the report page that proves it.",
+      "tts": "It sits beside E R T MAC and connects the bit's depth to what nearby wells learned there: what happened, why, what worked — and the report page that proves it."
+    },
+    {
+      "id": "G3",
+      "section": "gamechanger",
+      "text": "Not a dashboard. Not a chatbot. The memory of the field — when it matters.",
+      "tts": "Not a dashboard. Not a chatbot. The memory of the field — when it matters.",
+      "expect": [
+        "field"
+      ]
+    },
+    {
+      "id": "I1",
+      "section": "innovation",
+      "text": "The core innovation is a depth-aware link.",
+      "tts": "The core innovation is a depth-aware link.",
+      "expect": [
+        "depth"
+      ]
+    },
+    {
+      "id": "I2",
+      "section": "innovation",
+      "text": "As the bit drills, NWIS finds the offset wells that had trouble at that depth, and streams their evidence to the active well.",
+      "tts": "As the bit drills, En-wiss finds the offset wells that had trouble at that depth, and streams their evidence to the active well."
+    },
+    {
+      "id": "I3",
+      "section": "innovation",
+      "text": "Every alert is explainable, every sentence is cited — and a learned model cross-checks each score, without ever overriding the engineer."
+    },
+    {
+      "id": "W1",
+      "section": "walkthrough",
+      "text": "This is the Command Center: well OIL-AX-102, drilling the Barail Group at 3,100 metres.",
+      "tts": "This is the Command Center: well oil A X one-oh-two, drilling the Ba-rail Group at thirty-one hundred metres."
+    },
+    {
+      "id": "W2",
+      "section": "walkthrough",
+      "text": "Wellbore, live parameters, field map and risk radar — all driven by one depth."
+    },
+    {
+      "id": "W3",
+      "section": "walkthrough",
+      "text": "Let's start drilling.",
+      "tts": "Let's start drilling.",
+      "expect": [
+        "drill"
+      ]
+    },
+    {
+      "id": "W4",
+      "section": "walkthrough",
+      "text": "At 3,150 metres, NWIS raises a mud-loss alert — before the losses begin.",
+      "tts": "At thirty-one fifty metres, Enwiss raises a mud-loss alert — before the losses begin.",
+      "expect": [
+        "wis|vis"
+      ]
+    },
+    {
+      "id": "W5",
+      "section": "walkthrough",
+      "text": "Two offsets lost returns right here, and the ECD is climbing toward their loss point.",
+      "tts": "Two offsets lost returns right here, and the E C D is climbing toward their loss point."
+    },
+    {
+      "id": "W6",
+      "section": "walkthrough",
+      "text": "Switch to Subsurface: the rock layers come from every offset's formation tops, with true well paths and past incidents glowing at their depth.",
+      "tts": "Switch to Subsurface: the rock layers come from every offset's formation tops, with true well paths and past incidents glowing at their depth.",
+      "expect": [
+        "switch",
+        "layer"
+      ]
+    },
+    {
+      "id": "W7",
+      "section": "walkthrough",
+      "text": "At 3,380 metres, the stuck-pipe alert fires — and the evidence streams to the bit.",
+      "tts": "At thirty-three eighty metres, the stuck-pipe alert fires — and the evidence streams to the bit.",
+      "expect": [
+        "3380|3,380|thirty-three eighty|33 80|3 380"
+      ]
+    },
+    {
+      "id": "W8",
+      "section": "walkthrough",
+      "text": "Click Why, and the alert shows its working: every factor, every signal, every supporting well — and what to check next."
+    },
+    {
+      "id": "W9",
+      "section": "walkthrough",
+      "text": "The Well Intelligence page opens any offset: its drilling parameters against ours, depth for depth, beside every event and lesson.",
+      "expect": [
+        "well intel"
+      ],
+      "tts": "The Well Intelligence page opens any offset: its drilling parameters against ours, depth for depth, beside every event and lesson."
+    },
+    {
+      "id": "W10",
+      "section": "walkthrough",
+      "text": "Compare correlates formation tops, casing and mud weights across the offsets — so the differences stand out."
+    },
+    {
+      "id": "W11",
+      "section": "walkthrough",
+      "text": "Ask in plain English — every sentence of the answer is cited, and one click opens the original report page."
+    },
+    {
+      "id": "W12",
+      "section": "walkthrough",
+      "text": "For the shift handover, the look-ahead brief turns the next 300 metres into one page:",
+      "tts": "For the shift handover, the look-ahead brief turns the next three hundred metres into one page:"
+    },
+    {
+      "id": "W13",
+      "section": "walkthrough",
+      "text": "hazards, what worked fastest, the mud-weight window — and 8.8 hours of expected NPT, about eleven lakh rupees at stake.",
+      "tts": "hazards, what worked fastest, the mud-weight window — and eight point eight hours of expected N P T, about eleven lakh rupees at stake."
+    },
+    {
+      "id": "W14",
+      "section": "walkthrough",
+      "text": "Even scanned reports are read with OCR and turned into events — and nothing is saved until an engineer approves it.",
+      "tts": "Even scanned reports are read with O C R and turned into events — and nothing is saved until an engineer approves it."
+    },
+    {
+      "id": "W15",
+      "section": "walkthrough",
+      "text": "And it's not just a demo: we ran the same pipeline on 1,970 real well histories from the Norwegian shelf —",
+      "tts": "And it's not just a demo: we ran the same pipeline on nineteen hundred and seventy real well histories from the Norwegian shelf —"
+    },
+    {
+      "id": "W16",
+      "section": "walkthrough",
+      "text": "611 drilling problems found in seconds, 94 percent correct on wells it had never seen.",
+      "tts": "six hundred and eleven drilling problems found in seconds, ninety-four percent correct on wells it had never seen."
+    },
+    {
+      "id": "V1",
+      "section": "impact",
+      "text": "In our demo field, the offsets lost 110 hours in the three windows ahead — NWIS flagged every one before the bit got there.",
+      "tts": "In our demo field, the offsets lost a hundred and ten hours in the three windows ahead — En-wiss flagged every one before the bit got there."
+    },
+    {
+      "id": "V2",
+      "section": "impact",
+      "text": "Connected to eRTMAC and Oil India's archive, every rig, every handover and every new engineer gets the field's memory.",
+      "tts": "Connected to E R T MAC and Oil India's archive, every rig, every handover and every new engineer gets the feelds memory.",
+      "expect": [
+        "field"
+      ]
+    },
+    {
+      "id": "V3",
+      "section": "impact",
+      "text": "NWIS. Know what's below — before you drill it.",
+      "tts": "Enwiss. Know what's below — before you drill it.",
+      "expect": [
+        "wis|vis"
+      ]
+    }
+  ]
+}

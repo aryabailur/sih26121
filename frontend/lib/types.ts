@@ -496,6 +496,8 @@ export interface ModelCard {
 
 export interface Trajectory {
   md: number;
+  /** True vertical depth (m); older payloads may omit it — fall back to MD. */
+  tvd?: number;
   lat: number;
   lon: number;
   planned: boolean;
@@ -594,6 +596,182 @@ export interface PressureWindow {
   calibrations: { kind: "frac_cap" | "pore_floor"; start: number; end: number; value: number; event_id: string; well: string; note: string }[];
   casing: { name: string; size: string; top_md: number; shoe_md: number; planned: boolean }[];
   breaches: { kind: "kick" | "losses"; start: number; end: number; message: string }[];
+}
+
+export interface BriefCite {
+  well_name: string;
+  text: string;
+  event_id: string;
+  document_id: string | null;
+  document_title: string | null;
+  page: number | null;
+}
+
+export interface BriefHazard {
+  zone_id: string;
+  risk_type: RiskFamily;
+  risk_label: string;
+  formation: string;
+  window: { start: number; end: number };
+  distance_m: number;
+  position: "inside" | "ahead";
+  historical_severity: Severity;
+  projected: { score: number; severity: Severity; alert_eligible: boolean; alert_threshold: number; confidence: number; factors: Factor[] };
+  now: { score: number; severity: Severity; status: "alert" | "watch" } | null;
+  offsets_hit: number;
+  offsets_reached: number;
+  likelihood: number;
+  npt: { total: number; mean_per_well: number; worst: number; expected: number };
+  reasons: string[];
+  evidence: EvidenceEvent[];
+  what_worked: (BriefCite & { npt_hours: number })[];
+  lessons: BriefCite[];
+  checks: string[];
+  offset_numbers: { key: string; label: string; value: number; unit: string; well_name: string; event_id: string }[];
+  mud_window: { pore_max: number | null; frac_min: number | null; mw_plan: number[]; ecd_limit: number | null; mw_min: number | null; margin: number | null; note: string } | null;
+  breaches: { kind: "kick" | "losses"; start: number; end: number; message: string }[];
+}
+
+export interface LookAheadBrief {
+  well: { id: string; name: string; rig: string; field: string; total_depth_md: number };
+  generated_at: string;
+  depth: number;
+  horizon_m: number;
+  window: { start: number; end: number };
+  radius_km: number;
+  offsets_in_radius: number;
+  current_formation: string | null;
+  headline: string;
+  hazards: BriefHazard[];
+  formations: {
+    name: string;
+    top_md: number;
+    base_md: number;
+    lithology: string;
+    risk_tags: string[];
+    prognosed: boolean;
+    pore_pressure_sg: number | null;
+    frac_gradient_sg: number | null;
+    mw_plan: number | null;
+    enters_in_window: boolean;
+  }[];
+  casing: { name: string; size: string; top_md: number; shoe_md: number; planned: boolean; in_window: boolean }[];
+  npt: { expected_hours: number; worst_case_hours: number; offset_total_hours: number };
+  sources: { document_id: string; title: string | null; doc_type: string | null; well_name: string; pages: number[] }[];
+  method: string;
+}
+
+// ------------------------------------------------------------------ real-data proof (Sodir FactPages, NLOD 2.0)
+export interface OpenSource {
+  name: string;
+  url: string;
+  licence: string;
+  licence_url: string;
+  attribution: string;
+  retrieved: string;
+}
+
+export interface OpenEvent {
+  key: string;
+  well: string;
+  type: string;
+  label: string;
+  family: RiskFamily;
+  family_label: string;
+  depth_start: number | null;
+  depth_end: number | null;
+  formation: string | null;
+  severity: Severity;
+  confidence: number;
+  sentence: string;
+  evidence: string;
+  paragraph: number;
+  section: string;
+  distance_km?: number;
+  verdict?: "correct" | "depth_off" | "not_event";
+  note?: string;
+}
+
+export interface OpenWellCard {
+  name: string;
+  operator: string | null;
+  purpose: string | null;
+  content: string | null;
+  field: string | null;
+  entry_year: number | null;
+  total_depth_md: number | null;
+  water_depth: number | null;
+  latitude: number;
+  longitude: number;
+  fact_page_url: string | null;
+  events: number;
+  families: RiskFamily[];
+  worst: Severity | null;
+  has_mud: boolean;
+  has_lot: boolean;
+  distance_km?: number;
+  groups?: { name: string; top_md: number; base_md: number | null }[];
+}
+
+export interface ShelfScan {
+  source: OpenSource;
+  histories: number;
+  paragraphs: number;
+  words: number;
+  events: number;
+  wells_with_events: number;
+  by_family: Record<string, number>;
+  seconds: number;
+  years: [number, number];
+  wells?: { name: string; lat: number; lon: number; year: number | null; events: number; families: RiskFamily[]; worst: RiskFamily | null }[];
+}
+
+export interface SpotCheckSummary {
+  n: number;
+  type_correct: number;
+  precision: number | null;
+  depth_checked: number;
+  depth_correct: number;
+  depth_accuracy: number | null;
+}
+
+export interface OpenAreaSummary {
+  source: OpenSource;
+  area: string;
+  wells: number;
+  events: number;
+  wells_with_events: number;
+  by_family: Record<string, number>;
+  with_mud: number;
+  with_lot: number;
+  with_tops: number;
+  spotcheck: SpotCheckSummary | null;
+  default_focus: string;
+}
+
+export interface OpenOffsets {
+  focus: OpenWellCard;
+  focus_events: OpenEvent[];
+  focus_mud: { md: number; mud_weight: number; mud_type: string | null; date: string | null }[];
+  focus_lot: { md: number; lot: number; casing: string | null }[];
+  focus_groups: { name: string; top_md: number; base_md: number | null }[];
+  radius_km: number;
+  offsets: OpenWellCard[];
+  events: OpenEvent[];
+  profile: { depth: number; total: number; by_family: Record<string, number> }[];
+  at_depth: OpenEvent[];
+  depth: number | null;
+  by_family: Record<string, number>;
+  offset_mud: { well: string; md: number; mud_weight: number }[];
+  offset_lot: { well: string; md: number; lot: number; casing: string | null }[];
+  headline: string;
+}
+
+export interface SpotCheck {
+  method: string;
+  labelled: number;
+  rows: OpenEvent[];
+  summary: SpotCheckSummary;
 }
 
 export interface SimState {

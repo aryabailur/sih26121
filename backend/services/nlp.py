@@ -79,6 +79,22 @@ def depths(text: str) -> list[tuple[float, float]]:
     return out
 
 
+def depth_spans(text: str) -> list[tuple[int, int, float, float]]:
+    """Like `depths`, with the character span of each mention: (start, end, top, bottom)."""
+    out: list[tuple[int, int, float, float]] = []
+    for m in _DEPTH_RANGE.finditer(text):
+        a, b = _num(m.group(1)), _num(m.group(2))
+        if 50 <= a <= 6000 and 50 <= b <= 6000:
+            out.append((m.start(), m.end(), min(a, b), max(a, b)))
+    for m in _DEPTH_SINGLE.finditer(text):
+        if any(s <= m.start() < e for s, e, _, _ in out):
+            continue
+        v = _num(m.group(1))
+        if 50 <= v <= 6000:
+            out.append((m.start(), m.end(), v, v))
+    return sorted(out)
+
+
 def query_depths(text: str) -> list[tuple[float, float]]:
     """Depth parsing for queries, where users often omit the unit ("near 3400")."""
     found = depths(text)

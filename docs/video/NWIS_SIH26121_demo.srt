@@ -1,0 +1,187 @@
+1
+00:00:00,450 --> 00:00:04,384
+We are Team Huzzards, and this is our answer to SIH26121.
+
+2
+00:00:04,984 --> 00:00:08,009
+Drilling engineers make decisions at the bit — in minutes.
+
+3
+00:00:08,109 --> 00:00:12,676
+But what nearby wells faced at this exact depth — losses, stuck pipe,
+
+4
+00:00:12,716 --> 00:00:14,668
+kicks — is buried in thousands of reports.
+
+5
+00:00:14,768 --> 00:00:19,396
+Unplanned events like these can eat ten to twenty percent of a well's time — and they repeat.
+
+6
+00:00:21,159 --> 00:00:24,224
+Meet NWIS — the Nearby Wells Intelligence System.
+
+7
+00:00:24,312 --> 00:00:27,822
+It sits beside eRTMAC and connects the bit's depth to what nearby wells learned there:
+
+8
+00:00:27,862 --> 00:00:32,566
+what happened, why, what worked — and the report page that proves it.
+
+9
+00:00:32,646 --> 00:00:36,922
+Not a dashboard. Not a chatbot. The memory of the field — when it matters.
+
+10
+00:00:38,222 --> 00:00:40,516
+The core innovation is a depth-aware link.
+
+11
+00:00:41,077 --> 00:00:45,085
+As the bit drills, NWIS finds the offset wells that had trouble at that depth,
+
+12
+00:00:45,125 --> 00:00:47,199
+and streams their evidence to the active well.
+
+13
+00:00:48,227 --> 00:00:51,133
+Every alert is explainable, every sentence is cited
+
+14
+00:00:51,173 --> 00:00:55,272
+and a learned model cross-checks each score, without ever overriding the engineer.
+
+15
+00:00:56,824 --> 00:00:58,486
+This is the Command Center: well OIL-AX-102,
+
+16
+00:00:58,526 --> 00:01:02,219
+drilling the Barail Group at 3,100 metres.
+
+17
+00:01:03,747 --> 00:01:08,419
+Wellbore, live parameters, field map and risk radar — all driven by one depth.
+
+18
+00:01:09,588 --> 00:01:10,855
+Let's start drilling.
+
+19
+00:01:12,823 --> 00:01:17,176
+At 3,150 metres, NWIS raises a mud-loss alert — before the losses begin.
+
+20
+00:01:17,982 --> 00:01:19,847
+Two offsets lost returns right here,
+
+21
+00:01:19,887 --> 00:01:22,362
+and the ECD is climbing toward their loss point.
+
+22
+00:01:22,441 --> 00:01:26,550
+Switch to Subsurface: the rock layers come from every offset's formation tops,
+
+23
+00:01:26,590 --> 00:01:30,007
+with true well paths and past incidents glowing at their depth.
+
+24
+00:01:32,469 --> 00:01:37,111
+At 3,380 metres, the stuck-pipe alert fires — and the evidence streams to the bit.
+
+25
+00:01:37,192 --> 00:01:40,925
+Click Why, and the alert shows its working: every factor, every signal,
+
+26
+00:01:40,965 --> 00:01:43,362
+every supporting well — and what to check next.
+
+27
+00:01:43,566 --> 00:01:47,882
+The Well Intelligence page opens any offset: its drilling parameters against ours,
+
+28
+00:01:47,922 --> 00:01:50,581
+depth for depth, beside every event and lesson.
+
+29
+00:01:50,682 --> 00:01:52,527
+Compare correlates formation tops,
+
+30
+00:01:52,567 --> 00:01:56,266
+casing and mud weights across the offsets — so the differences stand out.
+
+31
+00:01:56,370 --> 00:01:59,734
+Ask in plain English — every sentence of the answer is cited,
+
+32
+00:01:59,774 --> 00:02:01,987
+and one click opens the original report page.
+
+33
+00:02:05,442 --> 00:02:06,404
+For the shift handover,
+
+34
+00:02:06,444 --> 00:02:09,679
+the look-ahead brief turns the next 300 metres into one page:
+
+35
+00:02:09,754 --> 00:02:12,940
+hazards, what worked fastest, the mud-weight window
+
+36
+00:02:12,980 --> 00:02:17,197
+and 8.8 hours of expected NPT, about eleven lakh rupees at stake.
+
+37
+00:02:17,458 --> 00:02:19,562
+Even scanned reports are read with OCR and turned into events
+
+38
+00:02:19,602 --> 00:02:22,498
+and nothing is saved until an engineer approves it.
+
+39
+00:02:27,956 --> 00:02:29,099
+And it's not just a demo:
+
+40
+00:02:29,139 --> 00:02:33,501
+we ran the same pipeline on 1,970 real well histories from the Norwegian shelf
+
+41
+00:02:33,573 --> 00:02:35,178
+611 drilling problems found in seconds,
+
+42
+00:02:35,218 --> 00:02:39,319
+94 percent correct on wells it had never seen.
+
+43
+00:02:41,669 --> 00:02:44,575
+In our demo field, the offsets lost 110 hours in the three windows ahead
+
+44
+00:02:44,615 --> 00:02:48,332
+NWIS flagged every one before the bit got there.
+
+45
+00:02:48,432 --> 00:02:50,396
+Connected to eRTMAC and Oil India's archive, every rig,
+
+46
+00:02:50,436 --> 00:02:54,934
+every handover and every new engineer gets the field's memory.
+
+47
+00:02:55,084 --> 00:02:58,295
+NWIS. Know what's below — before you drill it.

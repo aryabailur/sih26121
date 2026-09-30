@@ -10,7 +10,13 @@ import type {
   ExtractionResult,
   Formation,
   FormationCorrelation,
+  LookAheadBrief,
   ModelCard,
+  OpenAreaSummary,
+  OpenOffsets,
+  OpenWellCard,
+  ShelfScan,
+  SpotCheck,
   Parameters,
   PressureWindow,
   ProcessingStatus,
@@ -114,6 +120,8 @@ export const api = {
   profile: (radius_km: number, step = 10) =>
     request<{ profile: RiskProfilePoint[] }>(`/api/risk/profile${qs({ radius_km, step })}`),
   clusters: (radius_km: number) => request<{ clusters: EventCluster[] }>(`/api/risk/clusters${qs({ radius_km })}`),
+  brief: (depth: number, horizon_m: number, radius_km: number, well_id = "W001") =>
+    request<LookAheadBrief>(`/api/risk/brief${qs({ depth: Math.round(depth), horizon_m, radius_km, well_id })}`),
   modelCard: () => request<ModelCard>("/api/risk/model"),
 
   search: (query: string, filters: SearchFilters, context: { well_id: string; depth?: number; formation?: string | null; radius_km?: number } | null, top_k = 6) =>
@@ -141,6 +149,12 @@ export const api = {
       body: JSON.stringify({ decisions, well_id }),
     }),
   deleteDocument: (id: string) => request<{ success: boolean }>(`/api/documents/${id}`, { method: "DELETE" }),
+
+  openSummary: () => request<{ area: OpenAreaSummary; shelf: ShelfScan }>("/api/opendata/summary"),
+  openShelf: (fresh = false) => request<ShelfScan>(`/api/opendata/shelf${qs({ fresh: fresh || undefined })}`),
+  openWells: () => request<{ wells: OpenWellCard[] }>("/api/opendata/wells"),
+  openOffsets: (name: string, radius_km: number) => request<OpenOffsets>(`/api/opendata/offsets${qs({ name, radius_km })}`),
+  openSpotcheck: () => request<SpotCheck>("/api/opendata/spotcheck"),
 
   scenario: (scenario: "full" | "mud_loss" | "stuck_pipe" | "kick" = "full") =>
     request<ScenarioPlan>("/api/simulation/demo-scenario", { method: "POST", body: JSON.stringify({ scenario }) }),

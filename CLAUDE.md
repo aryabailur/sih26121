@@ -30,6 +30,12 @@ Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that tab
   `scripts/copy-maplibre-worker.mjs`, git-ignored) and wired with `setWorkerUrl`. `maplibre-gl.css` sets
   `.maplibregl-map { position: relative }` — the map container needs `!absolute inset-0` or it collapses to 0 px.
   Paint properties need literal colours (no CSS vars); markers are portal-rendered React (`WellPin`).
+- **three.js (Subsurface 3D)**: import it only through `components/subsurface/index.tsx` (`next/dynamic`, no SSR);
+  never import `Subsurface3D.tsx` / `geometry.ts` statically from a page — use `focus.ts` to talk to the view.
+  Switching Surface ↔ Subsurface creates/destroys WebGL contexts, so unmount disposes everything and calls
+  `forceContextLoss()`. CSS2D label classes are Tailwind strings: `calc()` inside arbitrary values needs `_` for
+  spaces (`[transform:translateX(calc(50%_+_26px))]`). The Command Center map title reads "10 offsets · 25 km"
+  (with the view switch) — `tools/verify_scenario.mjs` matches that text.
 - **Motion**: springs support only two keyframes — give multi-keyframe values a tween transition. Avoid
   `<AnimatePresence mode="wait">` for fast-changing keys (it got stuck mid-scenario); use enter-only keyed elements.
 - **Theme tokens**: colours come from CSS variables in `app/globals.css` (`bg-surface`, `text-ink-2`, `brand`, …);
@@ -44,6 +50,11 @@ Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that tab
   and corrupt `–`, `·`, `≥`). Git-Bash needs `MSYS_NO_PATHCONV=1` when passing `/dashboard`-style args.
   Don't patch files through a Bash heredoc'd Python script when the text has backslashes (`\t`, `\n`, Windows
   paths): the escapes get interpreted and corrupt the file — use the Edit/Write tools.
+- **Open data** (`/api/opendata`, *Real data* screen): bundles in `backend/data/opendata/` are committed; rebuild with
+  `cd backend && python -m opendata.sodir [--refresh]` (raw CSV cache is git-ignored). Changing the extractor can
+  invalidate the held-out labels in `backend/opendata/spotcheck.json` — `tests/test_opendata.py` checks every key
+  still exists; re-label honestly (never tune on the held-out wells). `extract_events(narrative=True)` is prose
+  mode; uploads use the default mode.
 - The risk scenario is tuned: changing weights, event depths or `seed/parameters.py` precursors can move alert
   depths — re-run `tests.scenario_sweep` and `pytest`.
 - Scenario runner (`lib/store.ts`): a fresh run clears alerts (`POST /api/risk/alerts/clear`) and restores the
@@ -57,6 +68,7 @@ Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that tab
 - Colour is for status/identity only; values and labels use text tokens. Multi-well series use `SERIES_COLORS`
   (active well = brand indigo first). Severity colours: `SEVERITY_STYLE` (`hex` fills, `ink` text, `gradient`
   for toasts/hero cards); risk families: `FAMILY_META` + `FamilyIcon`; strata: `FORMATION_COLORS`.
-- Synthetic data is disclosed, not repeated: welcome screen, rail "Demo data" chip, deck title,
-  API disclaimer. Never present it as OIL data; don't re-add per-card "synthetic" badges.
+- The demo field is disclosed once, not repeated: welcome screen ("Demo field modelled on real Upper Assam geology —
+  illustrative wells, not Oil India records"), rail "Demo field" chip, deck title, API disclaimer. Never present it as
+  OIL data; don't re-add per-card badges. The *Real data* screen is the only real (public) data — keep it separate.
 - The learned model (`services/risk_model.py`) is a cross-check only — it must never change scores or alerts.

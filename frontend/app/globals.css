@@ -395,6 +395,22 @@ input[type="range"].nwis-range::-moz-range-thumb {
   will-change: transform;
 }
 
+/* ------------------------------------------------------------------ print (look-ahead brief) */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+}
+
 /* ------------------------------------------------------------------ reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

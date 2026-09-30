@@ -45,8 +45,9 @@ with TestClient(main.app) as c:
     near = c.get("/api/wells/nearby", params=dict(radius_km=25)).json()["wells"]
     traj = c.get("/api/wells/trajectories").json()["trajectories"]
     check("Problem", "i. Nearby wells on a geospatial map relative to the active well",
-          len(near) == 10 and all("distance_km" in w for w in near) and len(traj) == 15,
-          f"{len(near)} offsets within 25 km with distance/bearing; {len(traj)} well paths; 3D satellite map (Command Center, Nearby Wells)")
+          len(near) == 10 and all("distance_km" in w for w in near) and len(traj) == 15 and all("tvd" in p for p in traj["W001"]),
+          f"{len(near)} offsets within 25 km with distance/bearing; {len(traj)} well paths with TVD; 3D satellite map + "
+          f"subsurface 3D block (Command Center, Nearby Wells, Subsurface)")
 
     events = c.get("/api/events").json()["events"]
     w2 = c.get("/api/wells/W002").json()
@@ -68,9 +69,12 @@ with TestClient(main.app) as c:
 
     a3100 = {a["risk_type"]: a for a in ev(3100)["assessments"]}
     a3150 = {a["risk_type"]: a for a in ev(3150)["assessments"]}
+    brief = c.get("/api/risk/brief", params=dict(depth=3100, horizon_m=300)).json()
     check("Problem", "iv. Proactive alerts when approaching depths/formations with offset problems",
-          not a3100["mud_loss"]["alert_eligible"] and a3100["mud_loss"]["lead_depth"] == 50 and a3150["mud_loss"]["alert_eligible"],
-          "3,100 m: mud-loss watch, 50 m lead · 3,150 m: alert raised; scenario alerts at 3,150 / 3,380 / 3,580 m")
+          not a3100["mud_loss"]["alert_eligible"] and a3100["mud_loss"]["lead_depth"] == 50 and a3150["mud_loss"]["alert_eligible"]
+          and len(brief["hazards"]) == 2,
+          f"3,100 m: mud-loss watch, 50 m lead · 3,150 m: alert raised; scenario alerts at 3,150 / 3,380 / 3,580 m; "
+          f"look-ahead brief lists {len(brief['hazards'])} windows in the next 300 m ({brief['npt']['expected_hours']} h expected NPT)")
 
     # ---------------------------------------------------------------- expected solution
     ocr_ok = None
@@ -83,6 +87,11 @@ with TestClient(main.app) as c:
         conf = [p.get("ocr_confidence") or 0 for p in ex["pages"]]
         ocr_ev = (f"scanned PDF → {OCR.name} ({min(conf) * 100:.0f}–{max(conf) * 100:.0f}% word confidence) → "
                   f"{len(ex['events'])} events, {len(ex['entities'])} entities, well {ex['detected']['well_id']} detected → human review")
+    od = c.get("/api/opendata/summary")
+    if od.status_code == 200:
+        sh, sc = od.json()["shelf"], od.json()["area"]["spotcheck"]
+        ocr_ev += (f"; on real public records: {sh['histories']:,} Norwegian well histories → {sh['events']} drilling problems "
+                   f"in {sh['seconds']:.1f} s, {sc['precision'] * 100:.0f}% held-out precision ({sc['type_correct']}/{sc['n']})")
     check("Solution", "i. AI, NLP, OCR and analytics extract & structure reports", ocr_ok, ocr_ev)
 
     radii = {r: len(c.get("/api/wells/nearby", params=dict(radius_km=r)).json()["wells"]) for r in (1.5, 25, 50)}
@@ -110,12 +119,15 @@ with TestClient(main.app) as c:
 
     feed = c.get("/api/simulation/ertmac").json()
     rec = a3150["mud_loss"]
+    worked = brief["hazards"][0]["what_worked"] if brief["hazards"] else []
     check("Solution", "vi. Real-time alerts and recommendations",
-          bool(feed["parameters"]) and bool(rec["recommended_checks"]) and bool(rec["offset_practice"]),
-          f"live eRTMAC-style feed; alert carries {len(rec['recommended_checks'])} checks + what worked offset ({rec['offset_practice'][0][:60]}…)")
+          bool(feed["parameters"]) and bool(rec["recommended_checks"]) and bool(rec["offset_practice"]) and bool(worked),
+          f"live eRTMAC-style feed; alert carries {len(rec['recommended_checks'])} checks + what worked offset "
+          f"({rec['offset_practice'][0][:60]}…); brief ranks {len(worked)} offset mitigations by NPT")
 
     check("Solution", "vii. User-friendly dashboard for field and office personnel", True,
-          "role select (drilling engineer / office analyst / manager), 7 workspaces, daylight & night themes, legibility-audited")
+          "role select (drilling engineer / office analyst / manager), 9 workspaces incl. Subsurface 3D and a printable "
+          "look-ahead brief, Ctrl-K command palette, spoken alerts, daylight & night themes, legibility-audited")
 
     # ---------------------------------------------------------------- data sources
     docs = c.get("/api/documents").json()["documents"]

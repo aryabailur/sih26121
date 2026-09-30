@@ -1,0 +1,265 @@
+{
+ "total": 180.64512472021576,
+ "clips": [
+  {
+   "kind": "scene",
+   "name": "intro",
+   "start": 0.0,
+   "length": 4.884,
+   "trans": "cut"
+  },
+  {
+   "kind": "scene",
+   "name": "problem",
+   "start": 4.384,
+   "length": 15.662,
+   "trans": "push"
+  },
+  {
+   "kind": "scene",
+   "name": "ch02",
+   "start": 19.546,
+   "length": 1.5,
+   "trans": "push"
+  },
+  {
+   "kind": "take",
+   "name": "welcome",
+   "start": 20.546,
+   "length": 16.626,
+   "trans": "push"
+  },
+  {
+   "kind": "scene",
+   "name": "ch03",
+   "start": 36.672,
+   "length": 1.5,
+   "trans": "push"
+  },
+  {
+   "kind": "take",
+   "name": "innovation",
+   "start": 37.672,
+   "length": 10.705,
+   "trans": "push"
+  },
+  {
+   "kind": "scene",
+   "name": "explain",
+   "start": 47.927,
+   "length": 7.895,
+   "trans": "wipe"
+  },
+  {
+   "kind": "scene",
+   "name": "ch04",
+   "start": 55.322,
+   "length": 1.5,
+   "trans": "push"
+  },
+  {
+   "kind": "take",
+   "name": "command",
+   "start": 56.322,
+   "length": 47.34,
+   "trans": "push"
+  },
+  {
+   "kind": "take",
+   "name": "wellintel",
+   "start": 103.262,
+   "length": 7.519,
+   "trans": "wipe"
+  },
+  {
+   "kind": "take",
+   "name": "compare",
+   "start": 110.381,
+   "length": 6.085,
+   "trans": "wipe"
+  },
+  {
+   "kind": "take",
+   "name": "ask",
+   "start": 116.066,
+   "length": 9.462,
+   "trans": "wipe"
+  },
+  {
+   "kind": "take",
+   "name": "brief",
+   "start": 125.128,
+   "length": 12.419,
+   "trans": "wipe"
+  },
+  {
+   "kind": "take",
+   "name": "docs",
+   "start": 137.147,
+   "length": 11.209,
+   "trans": "wipe"
+  },
+  {
+   "kind": "take",
+   "name": "realdata",
+   "start": 147.956,
+   "length": 12.813,
+   "trans": "wipe"
+  },
+  {
+   "kind": "scene",
+   "name": "ch05",
+   "start": 160.269,
+   "length": 1.5,
+   "trans": "push"
+  },
+  {
+   "kind": "scene",
+   "name": "impact",
+   "start": 161.269,
+   "length": 19.376,
+   "trans": "push"
+  }
+ ],
+ "voice": {
+  "T1": 0.45,
+  "P1": 4.984,
+  "P2": 8.109,
+  "P3": 14.768,
+  "G1": 21.159,
+  "G2": 24.312,
+  "G3": 32.646,
+  "I1": 38.222,
+  "I2": 41.077,
+  "I3": 48.227,
+  "W1": 56.824,
+  "W2": 63.747,
+  "W3": 69.588,
+  "W4": 72.823,
+  "W5": 77.982,
+  "W6": 82.441,
+  "W7": 92.469,
+  "W8": 97.192,
+  "W9": 103.566,
+  "W10": 110.682,
+  "W11": 116.37,
+  "W12": 125.442,
+  "W13": 129.754,
+  "W14": 137.458,
+  "W15": 147.956,
+  "W16": 153.573,
+  "V1": 161.669,
+  "V2": 168.432,
+  "V3": 175.084
+ },
+ "sfx": [
+  {
+   "name": "whoosh",
+   "t": 4.284000000000001
+  },
+  {
+   "name": "whoosh",
+   "t": 19.445999999999998
+  },
+  {
+   "name": "whoosh",
+   "t": 20.445999999999998
+  },
+  {
+   "name": "whoosh",
+   "t": 36.57199990463257
+  },
+  {
+   "name": "whoosh",
+   "t": 37.57199990463257
+  },
+  {
+   "name": "whoosh",
+   "t": 55.22199982833862
+  },
+  {
+   "name": "whoosh",
+   "t": 56.22199982833862
+  },
+  {
+   "name": "chime",
+   "t": 72.56812483274936
+  },
+  {
+   "name": "chime",
+   "t": 92.46912485563755
+  },
+  {
+   "name": "whoosh",
+   "t": 160.16912472021576
+  },
+  {
+   "name": "whoosh",
+   "t": 161.16912472021576
+  },
+  {
+   "name": "boom",
+   "t": 174.96412472021575
+  }
+ ],
+ "sections": {
+  "intro": 0.45,
+  "problem": 4.984,
+  "gamechanger": 21.15899991607666,
+  "innovation": 38.22199990463257,
+  "walkthrough": 56.82399968338012,
+  "impact": 161.66912472021576
+ },
+ "chapters": {
+  "ch02": 19.546,
+  "ch03": 36.67199990463257,
+  "ch04": 55.32199982833862,
+  "ch05": 160.26912472021576
+ },
+ "overlays": [
+  {
+   "name": "statement",
+   "start": 32.5
+  },
+  {
+   "name": "lt_innov",
+   "start": 38.57
+  },
+  {
+   "name": "lt_cc",
+   "start": 57.17
+  },
+  {
+   "name": "lt_alert",
+   "start": 72.97
+  },
+  {
+   "name": "lt_sub",
+   "start": 83.44
+  },
+  {
+   "name": "lt_well",
+   "start": 103.82
+  },
+  {
+   "name": "lt_compare",
+   "start": 110.93
+  },
+  {
+   "name": "lt_ask",
+   "start": 116.62
+  },
+  {
+   "name": "lt_brief",
+   "start": 128.64
+  },
+  {
+   "name": "lt_docs",
+   "start": 137.76
+  },
+  {
+   "name": "lt_real",
+   "start": 148.26
+  }
+ ]
+}

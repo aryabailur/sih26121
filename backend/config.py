@@ -42,6 +42,7 @@ CORS_ORIGINS = os.getenv(
 ).split(",")
 
 DATA_DISCLAIMER = (
-    "Synthetic demonstration dataset. Wells, events, documents and parameters are "
-    "generated for the SIH26121 prototype and are NOT Oil India Limited operational data."
+    "Demo field modelled on real Upper Assam stratigraphy: wells, events, documents and parameters are illustrative, "
+    "created for the SIH26121 prototype, and are NOT Oil India Limited operational data. /api/opendata serves real "
+    "public well records (Norwegian Offshore Directorate FactPages, NLOD 2.0)."
 )

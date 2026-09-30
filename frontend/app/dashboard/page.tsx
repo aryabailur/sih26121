@@ -9,16 +9,21 @@ import { StatusHero } from "@/components/dashboard/StatusHero";
 import { WellboreNavigator } from "@/components/dashboard/WellboreNavigator";
 import { FamilyFilter } from "@/components/shared/FilterBar";
 import { FieldMap } from "@/components/map";
+import { ViewSwitch, type FieldView } from "@/components/map/ViewSwitch";
+import { Subsurface3D } from "@/components/subsurface";
 import { Panel } from "@/components/ui/card";
 import { Tabs } from "@/components/ui/misc";
 import { useNWIS } from "@/lib/store";
 
-/** Screen A — Operations command center: wellbore · live parameters · 3D field map · risk radar. */
+/** Screen A — Operations command center: wellbore · live parameters · field map / subsurface 3D · risk radar. */
 export default function CommandCenterPage() {
   const [tab, setTab] = useState<"risk" | "feed">("risk");
+  const [view, setView] = useState<FieldView>("surface");
   const familyFilter = useNWIS((s) => s.familyFilter);
   const setFamilyFilter = useNWIS((s) => s.setFamilyFilter);
   const { alertItems, watch } = useRiskStack();
+  const filter = <FamilyFilter compact dense value={familyFilter} onChange={setFamilyFilter} className="justify-end" />;
+  const toggle = <ViewSwitch value={view} onChange={setView} />;
 
   return (
     <div className="grid h-full grid-cols-1 gap-3 overflow-y-auto p-3 xl:grid-cols-[212px_minmax(0,1fr)_372px] xl:overflow-hidden 2xl:grid-cols-[236px_minmax(0,1fr)_396px]">
@@ -27,7 +32,7 @@ export default function CommandCenterPage() {
       <div className="flex min-h-[640px] flex-col gap-3 xl:min-h-0">
         <KPIStrip />
         <div className="relative min-h-0 flex-1 overflow-hidden rounded-[4px] border border-line shadow-md">
-          <FieldMap overlay={<FamilyFilter compact dense value={familyFilter} onChange={setFamilyFilter} className="justify-end" />} />
+          {view === "surface" ? <FieldMap overlay={filter} modeSwitch={toggle} /> : <Subsurface3D compact overlay={filter} modeSwitch={toggle} />}
         </div>
       </div>
 

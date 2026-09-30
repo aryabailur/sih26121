@@ -25,8 +25,10 @@ available at the moment it matters.
 - In the three windows OIL-AX-102 is about to drill (Barail losses, Kopili stuck pipe, Sylhet kick), offsets
   recorded **8 events and 110 hours of NPT**. NWIS surfaces each one before the bit gets there, with the
   mitigation that worked.
+- The look-ahead brief for the next 300 m (from 3,100 m): 2 hazard windows, **8.8 h expected NPT ≈ ₹11 lakh**,
+  worst case 54 h ≈ ₹68 lakh at an assumed ₹30 lakh/day spread rate (editable).
 
-## 10-slide deck outline
+## 13-slide deck outline
 
 | # | Slide | Content | Speaker note |
 |---|---|---|---|
@@ -35,11 +37,14 @@ available at the moment it matters.
 | 3 | Insight | "This depth, right now ↔ what happened here before" | The one idea everything is built on |
 | 4 | Solution | Workflow: active well → depth → nearby wells → events → correlation → evidence → risk → alert → checks | Show the chain as one line |
 | 5 | Live demo | Scenario run + Why? (see DEMO_SCRIPT.md) | Trigger one alert live |
-| 6 | Explainable risk | Six weighted factors, thresholds, alert policy, confidence; "not a black box" | Show the Why? screenshot |
-| 7 | Evidence-first AI | Hybrid retrieval, cited answers, insufficient-evidence behaviour; optional LLM grounded on the same evidence | "No answer without a source page" |
-| 8 | Document intelligence | PDF/OCR → extraction → dedupe → human review → knowledge base | Engineers stay the gatekeepers of what becomes knowledge |
-| 9 | Architecture & integration | FastAPI + Next.js; eRTMAC/WITSML, OIL archive, PostgreSQL/pgvector, SSO — plug-in points | Standalone layer beside eRTMAC, not a replacement |
-| 10 | Impact & next steps | Faster offset review, fewer repeated NPT events, onboarding of new engineers; next: real data, calibrated weights, closed-loop lessons | End: "decision support — the engineer decides" |
+| 6 | See below the surface | Subsurface 3D: strata from every offset's tops, true well paths, events at depth, the bit's depth plane | "Every gem is an event from a report, at the depth it happened" |
+| 7 | Look-ahead brief | Next 300 m for the shift handover / DWOP: hazards, what worked ranked by NPT, mud window, expected NPT in ₹ | "The field's memory, cited, priced and printable" |
+| 8 | Explainable risk | Six weighted factors, thresholds, alert policy, confidence; "not a black box" | Show the Why? screenshot |
+| 9 | Evidence-first AI | Hybrid retrieval, cited answers, insufficient-evidence behaviour; optional LLM grounded on the same evidence | "No answer without a source page" |
+| 10 | Document intelligence | PDF/OCR → extraction → dedupe → human review → knowledge base | Engineers stay the gatekeepers of what becomes knowledge |
+| 11 | Proven on real records | Same pipeline on 1,970 public Norwegian well histories: 611 problems, 94 % held-out precision, real tops / mud / LOT offset analysis | "Give us three anonymised OIL DDR pages and we run them live" |
+| 12 | Architecture & integration | FastAPI + Next.js; eRTMAC/WITSML, OIL archive, PostgreSQL/pgvector, SSO — plug-in points | Standalone layer beside eRTMAC, not a replacement |
+| 13 | Impact & next steps | Faster offset review, fewer repeated NPT events, onboarding of new engineers; next: real data, calibrated weights, closed-loop lessons | End: "decision support — the engineer decides" |
 
 ## What makes it stand out
 
@@ -49,11 +54,24 @@ available at the moment it matters.
 4. **Not just GIS** — map, depth correlation, documents and risk are synchronised on one depth.
 5. **Not just document search** — unstructured reports become structured events and lessons.
 6. **A standalone intelligence layer** that sits beside eRTMAC rather than replacing it.
+7. **Built for how rigs actually work** — a printable look-ahead brief for the 12-hour handover and DWOP sessions,
+   spoken alerts for the driller's cabin, and a 3D view that shows *where* in the ground the history sits.
 
 ## Anticipated judge questions
 
-- *Is this real OIL data?* No — realistic synthetic wells on real Upper Assam stratigraphy, shaped like OIL's WCRs,
-  DDRs and eRTMAC stream. Swap in the archive and the same pipeline runs (the live upload demo proves ingestion).
+- *Is the 3D block a geological model?* No — it interpolates the formation tops the offsets actually picked
+  (inverse-distance weighting) and draws the real survey paths. It is a correlation aid; a production version would
+  read the asset team's structural surfaces instead.
+- *Where does "8.8 h ≈ ₹11 lakh" come from?* For each window: offsets that hit it ÷ offsets that drilled that deep,
+  × their mean NPT — summed over the windows ahead. The spread rate is an editable assumption on the Brief.
+
+- *Is this real OIL data?* No — the Assam field is an illustrative demo on real Upper Assam stratigraphy, shaped like
+  OIL's WCRs, DDRs and eRTMAC stream, because OIL's records are confidential. The *Real data* screen runs the same
+  pipeline on 1,970 real public well histories (Norwegian Offshore Directorate): 611 problems, 94 % precision on a
+  held-out hand check. Give us three anonymised DDR pages and we ingest them live.
+- *How did you measure accuracy?* Tuned the prose rules on one area, froze them, hand-checked 50 extractions from
+  other wells against their sentences: 47 real incidents of the right type, 29/31 right depths. Precision only —
+  recall not measured; every miss is shown on the page.
 - *How accurate is the prediction?* Alerts use a transparent score. A logistic model backtested leave-one-well-out
   on the offset wells ranks risk better (AUC ≈ 0.86 vs 0.76) and learned that live parameter anomalies matter most.
   On synthetic data that proves the method; recalibrating on OIL's NPT history is the first production step.

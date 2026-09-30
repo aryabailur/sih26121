@@ -2,7 +2,7 @@
 
 > Snapshot for a new Claude session. Last updated **2026-09-29 (session 3)**.
 > Repo: **https://github.com/aryabailur/sih26121** (branch `main`). `CLAUDE.md` = short technical gotchas;
-> this file = the full picture. Session 2's work is **committed and pushed** — see §2.
+> this file = the full picture. Session 2 is pushed (`2a61a13`); the session-3 features (§3) are **uncommitted** — see §2.
 
 ## 1. What this is
 
@@ -20,13 +20,16 @@ pages) and raises explainable risk alerts.
 
 ## 2. Current state (important)
 
-- **Committed and pushed** (session 3, at the user's request) after re-running every check in §4: pytest 14/14,
-  scenario sweep = §6, requirements 20/20, tsc/eslint/build clean, E2E verify (alerts 3,150 / 3,380 / 3,580).
-  Ask before future commits. Push with `git -c credential.helper= -c "credential.helper=!gh auth git-credential" push`
+- Session 2 was **committed and pushed** as `2a61a13` (session 3, at the user's request) after re-running every check.
+- **Uncommitted:** the session-3 features (Subsurface 3D, Look-ahead brief, command palette, spoken alerts, Real-data
+  proof — §3). All checks in §4 pass: pytest 22/22, scenario sweep = §6, requirements 20/20, tsc/eslint/build clean, E2E verify.
+  Ask before committing. Push with `git -c credential.helper= -c "credential.helper=!gh auth git-credential" push`
   (plain `git push` → 403: cached creds belong to another account). Commit messages end with the co-author trailer.
-- **Deferred by the user:** re-recording the demo video (“make video later”). `docs/nwis-demo-walkthrough.webm`
-  is **stale** (pre-legibility pass). Re-record with `cd tools && npm run video` only when asked.
-- Everything else is verified (§4) and the docs, screenshots (`docs/screenshots/00…16`) and deck are regenerated.
+- **Demo film done (session 3):** `docs/video/NWIS_SIH26121_demo.mp4` (3:01, 1080p30, Team Huzzards' cloned narrator voice via `clone.py` + original score +
+  captions) built by `tools/video/` (see its README). Script for a human narrator: `docs/VIDEO_SCRIPT.md`. The old
+  `docs/nwis-demo-walkthrough.webm` is superseded. The MP4/WAV renders are git-ignored (> GitHub's 100 MB limit);
+  only the `.srt` and `timeline.json` are committed — share the film via a release asset / YouTube.
+- Everything else is verified (§4); docs, screenshots (`docs/screenshots/00…22`) and the 13-slide deck are regenerated.
 
 ## 3. What was done (session log)
 
@@ -63,10 +66,46 @@ document pipeline, pressure window, similarity), Next.js cockpit, seed data, tes
 
 **Session 3** — committed and pushed session 2. Fix: `tests.requirements_check` crashed with `UnicodeEncodeError`
 when its output was piped/redirected on Windows (cp1252 can't print `✓`); it now forces UTF-8 stdout.
+Then *"make the UI/UX better, crazy animation, SIH-winning stuff, think of something that is needed"* →
+1. **Subsurface 3D** (`components/subsurface/`, three.js 0.186): cut-away block of the wells ≤ 5 km — strata walls
+   + wireframe formation surfaces IDW-interpolated from every offset's tops, true well paths (TVD, added to
+   `/wells/trajectories`), event gems at depth (halo when near the bit), hazard sleeves on the active plan, amber bit +
+   depth plane that follows it, particle "evidence links" from context events to the bit, Esri imagery on an x-ray
+   ground plane. Intro: strata extrude, wells drill in, events pop. A newer toast flashes the plane and flies the
+   camera to the evidence. Own page `/dashboard/subsurface` (bit slider, events near the bit → fly-to, hazards,
+   strata) **and** a Surface / Subsurface switch on the Command Center map panel (`components/map/ViewSwitch.tsx`).
+2. **Look-ahead brief** (the "something needed" idea — rigs hand over every 12 h and run DWOP sessions):
+   `services/briefing.py` + `GET /api/risk/brief` + `/dashboard/brief` — hazards in the next 150/300/500 m or to TD,
+   projected severity from history only, offsets hit / reached, expected & worst NPT (₹ at an editable 30 lakh/day),
+   what worked ranked by NPT, offset numbers, mud-weight gauge + programme breaches, checklist + sign-off (per-viewer
+   localStorage), Print/PDF (print CSS, forces light theme), Copy text (WhatsApp), Read aloud. `tests/test_brief.py`.
+3. **Ctrl K command palette** (`components/layout/CommandPalette.tsx`): screens, wells, depth jump (≥ 100 m), hazard
+   windows, actions, "Ask: …" → search. **Spoken alerts** (`lib/voice.ts`, `components/risk/VoiceCallouts.tsx`),
+   off by default, speaker toggle in the top bar.
+4. Deck → 12 slides (new 6 "See below the surface", 7 "Look-ahead brief"; ₹ number on Impact); screenshots 17–20;
+   README / DEMO_SCRIPT / PITCH / ARCHITECTURE / ASSUMPTIONS updated; requirements check cites the new features.
 
-**Advice already given to the user** (don't repeat unprompted): keep realistic synthetic data but say so once;
-real public drilling data = Equinor **Volve** (North Sea; user must register/download — then build an importer);
-ask OIL mentors for 2–3 anonymised DDR/WCR pages to ingest live; to win: official SIH PPT template + team names,
+Then *"remove the word synthetic or keep it? add more data?"* → advised: keep the disclosure but reword; prove the
+pipeline on real public data; ask OIL for pages. Built:
+5. **Wording**: "Demo field modelled on real Upper Assam geology — illustrative wells, not Oil India records" +
+   "Proven on 1,970 real well histories →" link (welcome); rail chip "DEMO FIELD"; API `DATA_DISCLAIMER`; deck title.
+6. **Real-data proof** (`backend/opendata/sodir.py` importer, `services/opendata.py`, `routers/opendata.py`,
+   `/dashboard/opendata` "Real data"): Norwegian Offshore Directorate FactPages (NLOD 2.0, retrieved 2026-09-30) —
+   1,970 exploration-wellbore histories run through the same extractor → 611 drilling problems in ~2–4 s; study area
+   quadrants 15–16 (241 wells: tops, mud weights, casing/LOT) with offset analysis around the Volve discovery well
+   15/9-19 SR (shelf map, real-group depth chart, real mud-weight window, events table with FactPages links).
+7. **Extractor improved from real text** (`document_processor.py`): kick-off ≠ kick (all modes), negation (all
+   modes), new loss/flow phrasings, and `narrative=True` prose mode (trigger-sentence depth nearest the trigger,
+   same-family grouping, planning/tool/pressure-survey guards, depth-less back-reference dedupe). Upload mode and the
+   tuned scenario are unaffected (pytest, sweep, requirements all unchanged).
+8. **Held-out accuracy**: rules tuned on quadrants 15–16 then frozen; 50 extractions from other wells hand-checked →
+   **94 % precision (47/50), 94 % depth (29/31)**; labels `backend/opendata/spotcheck.json`; `tests/test_opendata.py`
+   (4 tests) guards label drift. Deck → **13 slides** (new 11 "Proven on real records"); screenshots 21–22.
+9. `docs/OIL_DATA_REQUEST.md` — the e-mail for the OIL SPOC asking for 2–3 anonymised DDR/WCR pages (user sends it).
+
+**Advice already given to the user** (don't repeat unprompted): keep the demo-field disclosure (done, reworded);
+real public data = Sodir FactPages (done) / Equinor **Volve** DDRs (needs sign-up — not built);
+ask OIL mentors for 2–3 anonymised DDR/WCR pages to ingest live (draft in docs/); to win: official SIH PPT template + team names,
 one NPT-cost number, rehearse the 3-min demo (`docs/DEMO_SCRIPT.md`), stress on-prem integration beside eRTMAC,
 protect the demo against venue Wi-Fi (offline map tiles not built yet).
 
@@ -85,7 +124,7 @@ survive a closed session — check `curl http://127.0.0.1:8000/api/health` and `
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe -m pytest -q                  # 14 tests (resets live DB state)
+.venv\Scripts\python.exe -m pytest -q                  # 22 tests (resets live DB state)
 .venv\Scripts\python.exe -m tests.scenario_sweep       # must match §6
 .venv\Scripts\python.exe -m tests.requirements_check   # 20/20 PASS vs the official SIH text
 cd ..\frontend; npx tsc --noEmit; npx eslint .; npm run build
@@ -111,29 +150,35 @@ backend/
   seed/sample_docs.py  text sample PDF (OIL-AX-22) + copies seed/assets/ scanned sample (OIL-AX-44)
   seed/make_scanned_sample.py  renders the image-only scanned PDF (dev tool; output committed in seed/assets/)
   services/risk_engine.py      explainable score, alert policy/persistence/escalation/audit, profile, clusters
+  services/briefing.py         look-ahead brief (hazards ahead, what worked, mud window, expected NPT) — read-only
   services/risk_model.py       learned cross-check (pure-Python logistic regression, backtest, LOWO AUC)
   services/search_engine.py    BM25 + concept embedding + metadata retrieval; extractive cited answers
   services/document_processor.py  upload → text layer / Tesseract OCR → chunk → extract → review → commit
   services/pressure.py · similarity.py · nlp.py · taxonomy.py · ingest.py · pdf_writer.py · geo.py · llm.py
-  routers/             wells · events · formations (correlate incl. casing + mud_program) · risk · search · documents · simulation
-  tests/               test_api.py · test_intelligence.py · test_pressure.py · scenario_sweep · requirements_check
+  routers/             wells · events · formations (correlate incl. casing + mud_program) · risk · search · documents · simulation · opendata
+  opendata/sodir.py    Sodir FactPages importer → data/opendata/sodir_shelf.json.gz + sodir_area.json (committed); spotcheck.json
+  services/opendata.py real-data proof: shelf scan, area extraction, offsets, held-out spot-check
+  tests/               test_api · test_intelligence · test_pressure · test_brief · scenario_sweep · requirements_check
 frontend/              Next.js 16 · React 19 · Tailwind 4 · MapLibre GL 6 · Motion · Recharts 3 · Zustand
   app/page.tsx         welcome (globe + role select) · app/globals.css = theme tokens + radius/type scale
   app/icon.svg · favicon.ico   logo
-  app/dashboard/       page (Command Center) · nearby · well/[wellId] · compare · search · risk · documents
-  components/map/      FieldMap (MapLibre, portal markers) · WellPin · mapStyle · MapLegend · landing/GlobeHero
+  app/dashboard/       page (Command Center) · subsurface · brief · nearby · well/[wellId] · compare · search · risk · documents
+  components/map/      FieldMap (MapLibre, portal markers) · WellPin · mapStyle · MapLegend · ViewSwitch · landing/GlobeHero
+  components/subsurface/  Subsurface3D (three.js scene) · geometry (paths, IDW, textures, Esri mosaic) · focus · index (dynamic)
+  components/brief/    IntervalStrip · HazardSection (+ MudWindowGauge)
   components/dashboard/  WellboreNavigator · KPIStrip · StatusHero · RiskWatch · LiveFeed
   components/risk/     RiskCard · WhyExplainer · LearnedOpinion · AlertToaster · RiskProfileChart · PressureWindowChart
   components/…         search/(EvidenceCard, SourceViewer) · well/(EventTimeline, ParameterChart, WellProfileDrawer)
                        documents/(UploadZone, ProcessingStepper, ExtractedEvents) · shared/(DepthScrubber, FamilyIcon, …)
-                       layout/(CommandCenter + ScenarioDock, Sidebar, TopNav, Logo) · ui/(primitives, animated)
+                       layout/(CommandCenter + ScenarioDock, Sidebar, TopNav, CommandPalette, Logo) · risk/VoiceCallouts · ui/(primitives, animated)
   lib/                 store.ts (state + scenario runner) · api.ts · types.ts · utils.ts (palettes, SEVERITY_STYLE,
-                       FAMILY_META, FORMATION_COLORS) · prefs.ts (theme/role/intro) · hooks.ts
+                       FAMILY_META, FORMATION_COLORS) · prefs.ts (theme/role/intro) · voice.ts · brief.ts (₹, text) · hooks.ts
   scripts/copy-maplibre-worker.mjs
 tools/                 shot.mjs · docs_shots.mjs · pw_shot.mjs · record_video.mjs · verify_scenario.mjs ·
-                       audit_text.mjs · build_deck.js · render_pptx.ps1 (see tools/README.md)
+                       audit_text.mjs · build_deck.js · render_pptx.ps1 · sih_deck/ (SIH idea deck) (see tools/README.md)
 docs/                  ARCHITECTURE · DEMO_SCRIPT · PITCH (incl. judge Q&A) · ASSUMPTIONS · BUILD_GUIDANCE ·
-                       screenshots/00–16 · NWIS_Pitch_Deck.pptx · nwis-demo-walkthrough.webm (stale) · nwis-logo.png
+                       screenshots/00–22 · NWIS_Pitch_Deck.pptx (13 slides) · video/ (demo film) · VIDEO_SCRIPT.md · nwis-logo.png
+                       SIH2026-IDEA-Presentation-Format.pptx (official template) → NWIS_SIH2026_Idea_Presentation.pptx/.pdf (6 slides)
 ```
 
 ## 6. The demo scenario (tuned — protect it)
@@ -168,14 +213,15 @@ thresholds 0.35/0.55/0.75; high/critical-history zones alert at ≥ 0.55, medium
 
 ## 8. API (under `/api`; OpenAPI at `http://127.0.0.1:8000/docs`)
 
-wells: `/wells`, `/wells/active`, `/wells/nearby`, `/wells/trajectories`, `/wells/{id}` (incl. casing),
+wells: `/wells`, `/wells/active`, `/wells/nearby`, `/wells/trajectories` (MD, TVD, lat/lon), `/wells/{id}` (incl. casing),
 `/wells/{id}/similarity`, `/wells/{id}/pressure-window`, `/wells/{id}/parameters` · events: `/events`,
 `/events/at-depth`, `/events/timeline`, `/events/{id}` · formations: `/formations`, `/formations/correlate`
 (+ `casing`, `mud_program`) · risk: `POST /risk/evaluate` (assessments carry `ml`), `/risk/zones`, `/risk/alerts`,
 `POST /risk/acknowledge`, `POST /risk/alerts/clear`, `/risk/alerts/{id}/audit`, `/risk/profile`, `/risk/clusters`,
-`/risk/model` (+ `learned`) · search: `POST /search/evidence`, `/search/suggestions` · documents: list, samples,
+`/risk/model` (+ `learned`), `/risk/brief?depth=&horizon_m=` (look-ahead brief, read-only) · search: `POST /search/evidence`, `/search/suggestions` · documents: list, samples,
 `POST /documents/upload`, `POST /documents/upload-sample?name=`, status, extracted (pages carry `ocr_confidence`),
-commit, delete, file · simulation: `/simulation/ertmac`, `POST /simulation/demo-scenario`, `POST /simulation/reset`
+commit, delete, file · opendata: `/opendata/summary`, `/opendata/shelf?fresh=`, `/opendata/wells`, `/opendata/well?name=`,
+`/opendata/offsets?name=&radius_km=`, `/opendata/spotcheck` · simulation: `/simulation/ertmac`, `POST /simulation/demo-scenario`, `POST /simulation/reset`
 (clears alerts **and uploads**, retrains the model if uploads existed), `/simulation/state` · `/health`.
 
 ## 9. Frontend architecture
@@ -188,6 +234,10 @@ commit, delete, file · simulation: `/simulation/ertmac`, `POST /simulation/demo
   `fitBounds`; selected well → ease; `window.__nwisMap` for E2E. Globe fly-in once per session.
 - Themes: `<html data-theme>` set before paint; `lib/prefs.ts` stores theme/role. Design rules: radius scale
   4/3/2 px, no gradients/glows/pills, legibility floor (see CLAUDE.md), colour only for status/identity.
+- `Subsurface3D` builds its scene once per data change and reads the store in its frame loop (no React re-render
+  per frame); `focusSubsurfaceEvent(id)` (window event) flies the camera from side panels. Command Center keeps the
+  MapLibre map as the default view (E2E + `window.__nwisMap` rely on it).
+- Overlays + palette sit in a `print:hidden` wrapper; Sidebar/TopNav are `print:hidden`; the Brief prints alone.
 
 ## 10. User preferences learned
 
@@ -199,13 +249,17 @@ commit, delete, file · simulation: `/simulation/ertmac`, `POST /simulation/demo
 
 ## 11. Open items / next steps
 
-1. ~~Commit and push session 2~~ — done in session 3.
-2. **Re-record the video** when the user asks (`npm run video`; currently stale).
+1. ~~Commit and push session 2~~ — done. **Commit and push the session-3 features** (ask first).
+2. ~~Re-record the video~~ — done: `tools/video/` pipeline → `docs/video/`. Re-run it after visible UI changes (the
+   takes follow the live UI; takes whose selectors changed need a tweak in record.mjs).
 3. **Offline map fallback** for the venue (cache Esri/terrain tiles for the field area) — offered, not built.
 4. **Real-data proof**: Volve importer once the user downloads the data; or ingest OIL sample pages if obtained.
-5. Deck: official SIH template + team names (team task); impact number (NPT hours × rig day rate).
+5. ~~Deck on the official SIH template~~ — done (session 4): `docs/NWIS_SIH2026_Idea_Presentation.pptx/.pdf`, 6 slides,
+   built by `tools/sih_deck/build.py` (industry NPT stats, OIL 70 wells/yr, ₹21 crore/yr illustration, 16 cited refs).
+   **Team still fills in:** team name, team ID, theme (as on the SIH portal), verify the official PS title, deployed
+   prototype URL and demo-video URL — pass them as flags and rebuild with `--pdf`.
 6. Nice-to-haves: evidence graph view (Well → Report → Event → Formation → Risk → Mitigation), well-log track,
-   mobile layout (< 1280 px stacks but isn't tuned), cloud deployment.
+   mobile layout (< 1280 px stacks but isn't tuned), cloud deployment, Hindi/Assamese voice + brief.
 
 ## 12. Commit history (pushed)
 

@@ -43,7 +43,7 @@ const depthText = await page.locator("header >> text=/\\d,\\d{3} m/").first().te
 console.log(JSON.stringify({
   sawToastAt3150: sawToast, resumeVisible: resumeVisible > 0, finalDepth: depthText,
   alerts: alerts.alerts.map((a) => `${a.risk_type}@${a.triggered_at_depth}:${a.severity}`),
-  radiusChip: await page.locator("text=/offset wells within \\d+ km/").first().textContent(),
+  radiusChip: await page.locator("text=/\\d+ offsets · \\d+ km/").first().textContent(),
   errors,
 }, null, 1));
 await browser.close();

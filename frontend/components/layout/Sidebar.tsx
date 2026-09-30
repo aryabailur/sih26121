@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, FileStack, GitCompare, LayoutDashboard, MapPinned, Moon, ShieldAlert, Sparkles, Sun, type LucideIcon } from "lucide-react";
+import { Activity, BadgeCheck, ClipboardList, FileStack, GitCompare, Layers3, LayoutDashboard, MapPinned, Moon, ShieldAlert, Sparkles, Sun, type LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,12 +11,15 @@ import { LogoMark } from "./Logo";
 
 export const NAV: { href: string; match?: string; label: string; title: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard", label: "Command", title: "Command center", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/subsurface", label: "Subsurface", title: "Subsurface 3D", icon: Layers3 },
+  { href: "/dashboard/brief", label: "Brief", title: "Look-ahead brief", icon: ClipboardList },
   { href: "/dashboard/nearby", label: "Nearby", title: "Nearby wells", icon: MapPinned },
   { href: "/dashboard/well/W002", match: "/dashboard/well", label: "Well intel", title: "Well intelligence", icon: Activity },
   { href: "/dashboard/compare", label: "Compare", title: "Correlate & compare", icon: GitCompare },
   { href: "/dashboard/search", label: "Ask", title: "Evidence search", icon: Sparkles },
   { href: "/dashboard/risk", label: "Risk", title: "Risk explorer", icon: ShieldAlert },
   { href: "/dashboard/documents", label: "Docs", title: "Document intelligence", icon: FileStack },
+  { href: "/dashboard/opendata", label: "Real data", title: "Real-data proof", icon: BadgeCheck },
 ];
 
 export function pageTitle(path: string) {
@@ -47,11 +50,11 @@ export function Sidebar() {
   const alerts = useNWIS((s) => s.evaluation?.active_alerts.filter((a) => a.status === "active").length ?? 0);
   const compare = useNWIS((s) => s.compareIds.length);
   return (
-    <nav className="relative z-[900] flex w-[84px] shrink-0 flex-col items-center border-r border-line bg-surface/80 py-3 backdrop-blur-xl" aria-label="Main">
+    <nav className="relative z-[900] flex w-[84px] shrink-0 flex-col items-center border-r border-line bg-surface/80 py-3 backdrop-blur-xl print:hidden" aria-label="Main">
       <Link href="/" title="NWIS home" className="mb-3">
         <LogoMark size={44} />
       </Link>
-      <ul className="flex w-full flex-1 flex-col items-center gap-1 px-2">
+      <ul className="no-scrollbar flex min-h-0 w-full flex-1 flex-col items-center gap-0.5 overflow-y-auto px-2">
         {NAV.map((n) => {
           const active = n.exact ? path === n.href : path.startsWith(n.match ?? n.href);
           const Icon = n.icon;
@@ -61,7 +64,7 @@ export function Sidebar() {
               <Link
                 href={n.href}
                 title={n.title}
-                className={cn("group relative flex w-full flex-col items-center gap-1 rounded-[3px] py-2 transition-colors", active ? "text-brand-ink" : "text-ink-3 hover:text-ink")}
+                className={cn("group relative flex w-full flex-col items-center gap-1 rounded-[3px] py-[7px] transition-colors", active ? "text-brand-ink" : "text-ink-3 hover:text-ink")}
               >
                 {active && (
                   <motion.span layoutId="rail-active" className="absolute inset-0 rounded-[3px] bg-brand-soft" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
@@ -94,13 +97,13 @@ export function Sidebar() {
         <div className="group relative">
           <div className="flex h-10 w-10 cursor-help flex-col items-center justify-center rounded-[3px] bg-surface-3 text-[11px] font-extrabold leading-tight tracking-wide text-ink-3">
             <span>DEMO</span>
-            <span className="font-semibold opacity-80">DATA</span>
+            <span className="font-semibold opacity-80">FIELD</span>
           </div>
           <div className="pointer-events-none absolute bottom-0 left-full z-50 ml-3 w-64 translate-x-1 rounded-[3px] border border-line bg-surface p-3 text-[12.5px] text-ink-2 opacity-0 shadow-lg transition-all group-hover:translate-x-0 group-hover:opacity-100">
-            <div className="font-bold text-ink">Demo dataset</div>
+            <div className="font-bold text-ink">Demo field</div>
             <p className="mt-1 leading-snug text-ink-3">
-              Realistic synthetic wells on real Upper Assam stratigraphy, shaped like OIL&apos;s WCRs, DDRs and eRTMAC stream — not Oil India operational records.
-              Swap in the archive and the same pipeline runs.
+              Modelled on real Upper Assam stratigraphy and shaped like OIL&apos;s WCRs, DDRs and eRTMAC stream; the wells themselves are illustrative, not Oil India
+              records. Connect OIL&apos;s archive and the same pipeline runs — <b className="text-ink-2">Real data</b> shows it on 1,970 public well histories.
             </p>
             {sim && (
               <div className="mt-2 grid grid-cols-2 gap-1.5 text-[12.5px]">

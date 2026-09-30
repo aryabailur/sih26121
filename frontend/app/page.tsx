@@ -3,6 +3,7 @@
 import { ArrowRight, BriefcaseBusiness, Droplets, Flame, HardHat, LineChart, Lock, ShieldCheck, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LogoMark } from "@/components/layout/Logo";
@@ -128,8 +129,11 @@ export default function Welcome() {
             </span>
           ))}
           <span className="flex items-center gap-1.5">
-            <ShieldCheck size={14} /> Demo dataset: realistic synthetic wells on real Upper Assam stratigraphy — not Oil India records
+            <ShieldCheck size={14} /> Demo field modelled on real Upper Assam geology — illustrative wells, not Oil India records.
           </span>
+          <Link href="/dashboard/opendata" className="flex items-center gap-1 font-semibold text-[#ffc24d] hover:text-white">
+            Proven on 1,970 real well histories <ArrowRight size={13} />
+          </Link>
         </motion.div>
       </div>
     </div>

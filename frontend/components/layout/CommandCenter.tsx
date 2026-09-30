@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { AlertToaster } from "@/components/risk/AlertToaster";
+import { VoiceCallouts } from "@/components/risk/VoiceCallouts";
 import { WhyExplainer } from "@/components/risk/WhyExplainer";
 import { SourceViewer } from "@/components/search/SourceViewer";
 import { WellProfileDrawer } from "@/components/well/WellProfileDrawer";
 import { Button } from "@/components/ui/button";
 import { useNWIS } from "@/lib/store";
 import { cn, FAMILY_META, fmtDepth, SEVERITY_STYLE } from "@/lib/utils";
+import { CommandPalette } from "./CommandPalette";
 import { LogoMark } from "./Logo";
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
@@ -149,15 +151,15 @@ uvicorn main:app --port 8000`}
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden print:block print:h-auto print:overflow-visible">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopNav />
-        <main className="relative min-h-0 flex-1 overflow-hidden">
+        <main className="relative min-h-0 flex-1 overflow-hidden print:overflow-visible">
           {ready ? (
             <motion.div
               key={path}
-              className="h-full"
+              className="h-full print:h-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
@@ -169,12 +171,16 @@ uvicorn main:app --port 8000`}
           )}
         </main>
       </div>
-      <AlertToaster />
-      <WhyExplainer />
-      <SourceViewer />
-      <WellProfileDrawer />
-      <ScenarioDock />
+      <div className="print:hidden">
+        <AlertToaster />
+        <WhyExplainer />
+        <SourceViewer />
+        <WellProfileDrawer />
+        <ScenarioDock />
+        <CommandPalette />
+      </div>
       <LiveTicker />
+      <VoiceCallouts />
     </div>
   );
 }

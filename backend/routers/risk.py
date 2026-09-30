@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -10,7 +10,7 @@ from config import ACTIVE_WELL_ID
 from database import get_db
 from models import Alert, AlertAudit, RiskZone
 from schemas import AcknowledgeRequest, RiskEvaluateRequest, RiskZoneOut
-from services import risk_engine, risk_model
+from services import briefing, risk_engine, risk_model
 from services.taxonomy import RISK_LABELS
 
 router = APIRouter(prefix="/api/risk", tags=["risk"])
@@ -77,6 +77,16 @@ def clusters(well_id: str = ACTIVE_WELL_ID, radius_km: float = 25.0, db: Session
     return {"clusters": risk_engine.event_clusters(db, well_id, radius_km)}
 
 
+@router.get("/brief")
+def brief(depth: float, well_id: str = ACTIVE_WELL_ID, horizon_m: float = Query(300.0, ge=50, le=1500),
+          radius_km: float = 25.0, db: Session = Depends(get_db)):
+    """Look-ahead brief for the next `horizon_m` metres (shift handover / drill-the-well-on-paper)."""
+    try:
+        return briefing.look_ahead_brief(db, well_id, depth, horizon_m, radius_km)
+    except KeyError:
+        raise HTTPException(404, f"Well {well_id} not found")
+
+
 @router.get("/model")
 def model_card():
     return {
@@ -97,7 +107,7 @@ def model_card():
                         "(live signal confirmation). Below that, the assessment is shown as a watch card.",
         "limitations": [
             "Rule-weighted — scores rank risk, they are not probabilities. The learned model below is a cross-check, not the alert driver.",
-            "Demo data is synthetic; weights must be tuned on authorised OIL history before operational use.",
+            "The demo field is illustrative; weights must be tuned on authorised OIL history before operational use.",
             "Decision support only — the engineer remains the decision maker.",
         ],
         "learned": risk_model.card(),

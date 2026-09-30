@@ -9,6 +9,7 @@ backend/.venv/
 backend/data/nwis.db
 backend/data/nwis.db-journal
 backend/data/uploads/
+backend/data/opendata/cache/
 
 # Node / Next.js
 node_modules/
@@ -28,5 +29,19 @@ Thumbs.db
 
 # tools/ (dev tooling)
 tools/node_modules/
+tools/sih_deck/.icons/
+tools/sih_deck/.render/
+tools/sih_deck/__pycache__/
 tools/.video-tmp/
 tools/.why-crop.png
+tools/video/.venv/
+tools/video/build/
+
+# demo film renders: the MP4s exceed GitHub's 100 MB file limit — publish them as a release asset / YouTube instead
+docs/video/*.mp4
+docs/video/*.wav
+
+# voice-cloning sample + env: a person's voice stays on this machine
+tools/sample audio for sih.mpeg
+tools/video/voice/
+tools/video/.venv-clone/

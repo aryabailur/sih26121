@@ -36,6 +36,25 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
   } catch {
     /* backend not running — keep the fallback */
   }
+  // Look-ahead brief numbers (next 300 m from 3,100 m) straight from the API; ₹30 lakh/day spread rate (assumption).
+  let BR = { exp: 8.8, worst: 54, hazards: 2 };
+  try {
+    const b = await (await fetch("http://127.0.0.1:8000/api/risk/brief?depth=3100&horizon_m=300")).json();
+    BR = { exp: b.npt.expected_hours, worst: b.npt.worst_case_hours, hazards: b.hazards.length };
+  } catch {
+    /* backend not running — keep the fallback */
+  }
+  const lakh = (h) => Math.round((h / 24) * 30);
+  // Real-data proof numbers (Sodir FactPages) straight from the API.
+  let OD = { histories: 1970, words: 783, events: 611, wells: 475, seconds: 2.3, precision: 94, depth: 94, n: 50 };
+  try {
+    const o = await (await fetch("http://127.0.0.1:8000/api/opendata/summary")).json();
+    const sc = o.area.spotcheck;
+    OD = { histories: o.shelf.histories, words: Math.round(o.shelf.words / 1000), events: o.shelf.events, wells: o.shelf.wells_with_events,
+      seconds: o.shelf.seconds, precision: Math.round(sc.precision * 100), depth: Math.round(sc.depth_accuracy * 100), n: sc.n };
+  } catch {
+    /* backend not running — keep the fallback */
+  }
   // The Why? screenshot is cropped to the dialog so it reads at slide size.
   await sharp(SHOT("04-why-explainer.png")).extract({ left: 240, top: 45, width: 1120, height: 810 }).toFile(WHY_CROP);
   const pres = new pptxgen();
@@ -52,6 +71,9 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     ["git", lu.LuGitCompare, C.cyan], ["check", lu.LuCircleCheck, C.green], ["brain", lu.LuBrainCircuit, C.violet],
     ["gauge", lu.LuGauge, C.amber], ["book", lu.LuBookOpenCheck, C.green], ["link", lu.LuLink, C.bg],
     ["target", lu.LuCrosshair, C.cyan], ["layers", lu.LuLayers, C.sky], ["user", lu.LuUserCheck, C.cyan],
+    ["layers3", lu.LuLayers3, C.amber], ["trophy", lu.LuTrophy, C.green], ["printer", lu.LuPrinter, C.cyan],
+    ["clip", lu.LuClipboardList, C.cyan], ["mic", lu.LuMic, C.amber],
+    ["badge", lu.LuBadgeCheck, C.green], ["flask", lu.LuFlaskConical, C.green], ["globe", lu.LuGlobe, C.cyan],
   ]) ic[k] = await icon(comp, col);
 
   // ---------- helpers (fresh option objects every call) ----------
@@ -90,7 +112,7 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, "Institutional memory beside the active well — what nearby wells experienced at this depth, why, and what to check next.",
       { x: 0.8, y: 4.35, w: 5.4, h: 1.0, fontSize: 15, color: C.muted });
     text(s, "SIH 2026  ·  Problem statement SIH26121  ·  Oil India Limited", { x: 0.8, y: 6.2, w: 5.6, h: 0.3, fontSize: 12, color: C.dim });
-    text(s, "Working prototype · realistic synthetic data on real Upper Assam stratigraphy (not OIL records)", { x: 0.8, y: 6.5, w: 5.6, h: 0.3, fontSize: 10, color: C.amber });
+    text(s, "Working prototype · demo field modelled on real Upper Assam geology (illustrative wells, not OIL records) · proven on 1,970 real public well histories", { x: 0.8, y: 6.5, w: 5.6, h: 0.45, fontSize: 10, color: C.amber });
     s.addNotes("Open with the operational problem, not technology. NWIS gives every drilling engineer institutional memory — connecting the active well's current depth to what nearby and historical wells experienced, why it happened, and what to check next.");
   }
 
@@ -116,7 +138,7 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
       { x: 3.45, y: 5.28, w: 8.9, h: 0.75, fontSize: 17 });
     text(s, "Demo field — the pattern NWIS is built to break.", { x: 3.45, y: 6.05, w: 8.9, h: 0.3, fontSize: 11, color: C.dim });
     footer(s, 2);
-    s.addNotes("Critical knowledge is distributed across completion reports, daily reports, databases and individual experience. In our synthetic demo field, the next 500 m of the active well cross three windows where offsets lost 110 hours of NPT.");
+    s.addNotes("Critical knowledge is distributed across completion reports, daily reports, databases and individual experience. In our demo field, the next 500 m of the active well cross three windows where offsets lost 110 hours of NPT.");
   }
 
   // =====================================================================================
@@ -190,7 +212,52 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
   }
 
   // =====================================================================================
-  // 6 — Explainable risk
+  // 6 — Subsurface 3D
+  {
+    const s = pres.addSlide(); bg(s); header(s, "See below the surface", "The whole field as a cut-away 3D block");
+    shot(s, "17-subsurface-3d.png", 0.66, 1.75, 8.1);
+    const pts = [
+      ["layers3", "Strata from every offset", "Formation tops interpolated between the wells; true well paths in TVD; Esri imagery on top."],
+      ["target", "The bit's depth plane", "Slices the field at the bit — offsets that saw trouble at this depth glow, and evidence streams to the bit."],
+      ["shield", "Hazards on the plan", "Risk windows wrap the active path; an alert flashes the plane and flies the camera to the evidence."],
+    ];
+    pts.forEach(([k, t, d], i) => {
+      const y = 1.8 + i * 1.5;
+      badge(s, k, 9.1, y, 0.6);
+      text(s, t, { x: 9.85, y, w: 2.9, h: 0.35, fontSize: 15, bold: true });
+      text(s, d, { x: 9.85, y: y + 0.38, w: 2.9, h: 1.05, fontSize: 11.5, color: C.muted });
+    });
+    text(s, "Same evaluation as the map, alerts and Why? — click any event to open its source report page.", { x: 0.66, y: 6.55, w: 11.9, h: 0.3, fontSize: 12, color: C.dim });
+    footer(s, 6);
+    s.addNotes("Switch the Command Center to Subsurface (or open Subsurface 3D). The block is built from the offsets' own formation tops and surveys. Run the scenario: the amber bit drills down, the depth plane follows it, and at 3,150 m the plane flashes, the camera flies to OIL-AX-99 and OIL-AX-55, and particles stream from their loss events to the bit.");
+  }
+
+  // =====================================================================================
+  // 7 — Look-ahead brief
+  {
+    const s = pres.addSlide(); bg(s); header(s, "Look-ahead brief", "Shift handover and drill-the-well-on-paper in one click");
+    shot(s, "18-look-ahead-brief.png", 0.66, 1.75, 8.1);
+    card(s, 9.1, 1.72, 3.6, 1.55, C.elevated);
+    text(s, `${BR.exp} h`, { x: 9.35, y: 1.85, w: 3.2, h: 0.6, fontSize: 30, bold: true, color: C.amber, fontFace: MONO });
+    text(s, `expected NPT in the next 300 m ≈ ₹${lakh(BR.exp)} lakh · worst case ${BR.worst} h ≈ ₹${lakh(BR.worst)} lakh`, { x: 9.35, y: 2.5, w: 3.2, h: 0.7, fontSize: 11.5, color: C.muted });
+    const pts = [
+      ["trophy", "What worked, ranked", "Offset mitigations ordered by the NPT they took — fastest recovery first."],
+      ["gauge", "Mud-weight window", "Offset-calibrated pore/frac limits per window; programme breaches flagged."],
+      ["printer", "Hand it over", "Checklist + sign-off; print/PDF, copy to WhatsApp, or read it aloud."],
+    ];
+    pts.forEach(([k, t, d], i) => {
+      const y = 3.5 + i * 1.02;
+      badge(s, k, 9.1, y, 0.5);
+      text(s, t, { x: 9.75, y, w: 3.0, h: 0.3, fontSize: 13.5, bold: true });
+      text(s, d, { x: 9.75, y: y + 0.3, w: 3.0, h: 0.65, fontSize: 10.5, color: C.muted });
+    });
+    text(s, "Projected from offset history only — no future parameters; every line cited to a report page. ₹30 lakh/day spread rate is an editable assumption.", { x: 0.66, y: 6.55, w: 11.9, h: 0.3, fontSize: 11, color: C.dim });
+    footer(s, 7);
+    s.addNotes(`Open Brief. For the next 300 m NWIS lists ${BR.hazards} hazard windows, how many offsets that reached the depth hit each one, what worked fastest, the offset-calibrated mud-weight window and the checks — with an expected NPT exposure of ${BR.exp} hours. Print it for the shift handover, or copy it into the rig WhatsApp group.`);
+  }
+
+  // =====================================================================================
+  // 8 — Explainable risk
   {
     const s = pres.addSlide(); bg(s); header(s, "Explainable risk", "Every alert shows its working");
     card(s, 0.6, 1.8, 5.2, 4.85);
@@ -210,12 +277,12 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.94, y: 1.74, w: 5.72, h: 4.44, rectRadius: 0.03, fill: { color: C.surface }, line: { color: C.border, width: 1 } });
     s.addImage({ path: WHY_CROP, x: 7.0, y: 1.8, w: 5.6, h: 5.6 * 810 / 1120 });
     text(s, "WHAT · WHERE · WHEN · WHY · WHICH wells · WHAT evidence · WHAT to check · HOW confident", { x: 6.94, y: 6.3, w: 5.8, h: 0.5, fontSize: 11.5, bold: true, color: C.cyan });
-    footer(s, 6);
+    footer(s, 8);
     s.addNotes("Never a mysterious 'AI says high risk'. The Why? view lists numbered reasons, the weighted factor breakdown, live signals versus baseline, the supporting offset wells with quotes and page citations, recommended checks, and the audit trail. Scores rank risk; they are not calibrated probabilities. A logistic model on the same six factors, backtested leave-one-well-out on the offset wells, cross-checks every score (the ML chip) — and learned that live parameter anomalies matter more than our hand-set weights assumed.");
   }
 
   // =====================================================================================
-  // 7 — Evidence-first AI
+  // 9 — Evidence-first AI
   {
     const s = pres.addSlide(); bg(s); header(s, "Evidence-first AI", "No answer without a source page");
     shot(s, "08-evidence-search.png", 0.66, 1.8, 7.4);
@@ -231,12 +298,12 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
       text(s, d, { x: 9.2, y: y + 0.38, w: 3.5, h: 0.9, fontSize: 12, color: C.muted });
     });
     text(s, "Offline and deterministic for the demo; an optional Claude adapter writes the answer over the same cited evidence and is discarded if it cites nothing.", { x: 0.66, y: 6.2, w: 12, h: 0.5, fontSize: 12, color: C.dim });
-    footer(s, 7);
+    footer(s, 9);
     s.addNotes("Ask: What mitigations were used for stuck pipe in Kopili Shale? The answer names OIL-AX-88, 66 and 11 with what worked, each sentence cited to a report page. Click a citation to open the page.");
   }
 
   // =====================================================================================
-  // 8 — Document intelligence
+  // 10 — Document intelligence
   {
     const s = pres.addSlide(); bg(s); header(s, "Document intelligence", "Reports become structured, reviewed knowledge");
     const stages = ["Upload", "Text / OCR", "Chunk & tag", "Extract events", "Dedupe & provenance", "Human review", "Knowledge base"];
@@ -255,18 +322,40 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
       { text: "Duplicate check against the knowledge base — the sample report's torque rise matches an existing record", options: { bullet: true, breakLine: true } },
       { text: "Nothing is saved until an engineer approves it — then it is searchable and used by the risk engine", options: { bullet: true } },
     ], { x: 7.2, y: 3.25, w: 5.45, h: 3.2, fontSize: 13.5, paraSpaceAfter: 6 });
-    footer(s, 8);
+    footer(s, 10);
     s.addNotes("Process the sample daily drilling report for OIL-AX-22: three candidate events, one flagged as a possible duplicate, entities extracted, provenance kept. Save, then search for it. Then process the scanned OIL-AX-44 report: no text layer at all — Tesseract reads it at ~93% word confidence and the same extraction finds the differential sticking at 2,655 m.");
   }
 
   // =====================================================================================
-  // 9 — Architecture & integration
+  // 11 — Real-data proof
+  {
+    const s = pres.addSlide(); bg(s); header(s, "Proven on real records", "The same pipeline on real operator well histories");
+    shot(s, "21-real-data-proof.png", 0.66, 1.75, 8.1);
+    const nums = [
+      [OD.histories.toLocaleString("en-IN"), "public well histories read", `${OD.words}k words · ${OD.seconds.toFixed(1)} s`],
+      [String(OD.events), "drilling problems found", `in ${OD.wells} wellbores, each tied to its sentence`],
+      [`${OD.precision}%`, "held-out precision", `hand-checked on ${OD.n} wells the rules never saw · depth right ${OD.depth}%`],
+    ];
+    nums.forEach(([v, t, d], i) => {
+      const y = 1.72 + i * 1.5;
+      card(s, 9.1, y, 3.6, 1.32);
+      text(s, v, { x: 9.35, y: y + 0.12, w: 3.2, h: 0.5, fontSize: 24, bold: true, color: i === 2 ? C.green : C.amber, fontFace: MONO });
+      text(s, t, { x: 9.35, y: y + 0.62, w: 3.2, h: 0.3, fontSize: 12.5, bold: true });
+      text(s, d, { x: 9.35, y: y + 0.9, w: 3.2, h: 0.4, fontSize: 10, color: C.muted });
+    });
+    text(s, "Norwegian Offshore Directorate FactPages (NLOD 2.0): real formation tops, mud weights and leak-off tests drive the same offset analysis. Real data made the NLP better: kick-off ≠ kick, negation, depth nearest the trigger.", { x: 0.66, y: 6.45, w: 11.9, h: 0.5, fontSize: 11, color: C.dim });
+    footer(s, 11);
+    s.addNotes(`Our Assam field is an illustrative demo because OIL's records are confidential. So we proved the pipeline on the largest public archive of operator well histories: Norway publishes every exploration well. NWIS read ${OD.histories} histories in about ${OD.seconds.toFixed(0)} seconds and found ${OD.events} drilling problems with depth and sentence. We tuned the prose rules on one area and hand-checked ${OD.n} extractions from other wells: ${OD.precision}% were real incidents, ${OD.depth}% had the right depth. Give us 3 anonymised OIL DDR pages and we run them live.`);
+  }
+
+  // =====================================================================================
+  // 12 — Architecture & integration
   {
     const s = pres.addSlide(); bg(s); header(s, "Architecture & integration", "Built to plug into OIL's systems");
     const cols = [
-      ["Sources", ["DDR · WCR · mud logs", "eRTMAC parameter stream", "Surveys · formation tops", "Casing & mud programmes"], C.surface],
+      ["Sources", ["DDR · WCR · mud logs", "eRTMAC parameter stream", "Surveys · formation tops", "Casing & mud programmes", "Public: Sodir FactPages"], C.surface],
       ["NWIS services (FastAPI)", ["Document pipeline", "Knowledge base (SQL)", "Hybrid evidence search", "Explainable risk engine", "Well similarity"], C.elevated],
-      ["Cockpit (Next.js)", ["Command Center", "Well Intelligence & Compare", "Evidence Search", "Risk Explorer", "Document Intelligence"], C.surface],
+      ["Cockpit (Next.js)", ["Command Center + Subsurface 3D", "Look-ahead brief", "Well Intelligence & Compare", "Evidence Search", "Risk Explorer", "Document Intelligence"], C.surface],
     ];
     cols.forEach(([t, rows, fill], i) => {
       const x = 0.6 + i * 3.1;
@@ -280,18 +369,18 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     text(s, [
       "eRTMAC / WITSML → same parameter schema", "OIL report archive → batch ingest", "PostgreSQL + pgvector", "Sentence-embedding model", "Grounded LLM answers", "SSO + role views",
     ].map((r, j, a) => ({ text: r, options: { bullet: true, breakLine: j < a.length - 1 } })), { x: 10.2, y: 2.6, w: 2.35, h: 3.2, fontSize: 12, paraSpaceAfter: 6 });
-    text(s, "Runs offline on a laptop · deterministic demo mode · REST API with OpenAPI docs · 10 end-to-end tests", { x: 0.6, y: 5.8, w: 12.1, h: 0.35, fontSize: 13, color: C.muted });
-    footer(s, 9);
-    s.addNotes("A standalone layer beside eRTMAC. Every demo component has a named production replacement; the data model already carries provenance so authorised OIL data can replace the synthetic set.");
+    text(s, "Runs offline on a laptop · deterministic demo mode · REST API with OpenAPI docs · 22 API tests + an end-to-end scenario check", { x: 0.6, y: 5.8, w: 12.1, h: 0.35, fontSize: 13, color: C.muted });
+    footer(s, 12);
+    s.addNotes("A standalone layer beside eRTMAC. Every demo component has a named production replacement; the data model already carries provenance so authorised OIL data can replace the demo field — the Real-data page already runs it on public operator records.");
   }
 
   // =====================================================================================
-  // 10 — Impact & next steps
+  // 13 — Impact & next steps
   {
     const s = pres.addSlide(); bg(s); header(s, "Impact & next steps", "Less time between a signal and the evidence");
     const impact = [
       ["gauge", "Earlier warnings", "Alerts before the bit reaches historically difficult windows — with lead distance and confidence."],
-      ["book", "Lessons reused", "What worked on offsets is shown with every alert and answer — not rediscovered."],
+      ["book", "Lessons reused", `What worked on offsets is shown with every alert and brief — the next 300 m carries ${BR.exp} h of expected NPT (≈ ₹${lakh(BR.exp)} lakh).`],
       ["user", "Faster ramp-up", "New engineers get the field's history at the depth they are drilling, with sources."],
     ];
     impact.forEach(([k, t, d], i) => {
@@ -311,8 +400,8 @@ const WHY_CROP = path.join(__dirname, ".why-crop.png");
     card(s, 0.6, 5.95, 12.1, 0.8, C.elevated);
     text(s, "NWIS doesn’t replace the drilling engineer — it shortens the path from a signal to the evidence.",
       { x: 0.9, y: 6.1, w: 11.6, h: 0.5, fontSize: 16, bold: true, color: C.cyan, valign: "middle" });
-    footer(s, 10);
-    s.addNotes("Close: decision support — the engineer decides. Be explicit that the data is realistic synthetic data on real Assam stratigraphy, and that the hand-set weights drive alerts while a learned model cross-checks them.");
+    footer(s, 13);
+    s.addNotes("Close: decision support — the engineer decides. Be explicit that the Assam field is an illustrative demo (the Real-data slide is real public data), and that the hand-set weights drive alerts while a learned model cross-checks them.");
   }
 
   await pres.writeFile({ fileName: OUT });

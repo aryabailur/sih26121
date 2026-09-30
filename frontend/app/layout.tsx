@@ -9,7 +9,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jbm", weight
 export const metadata: Metadata = {
   title: "NWIS — Nearby Wells Intelligence",
   description:
-    "Decision-support intelligence layer beside eRTMAC: connects the active well's depth to nearby-well history, evidence and explainable risk alerts. SIH26121 prototype (synthetic demo data).",
+    "Decision-support intelligence layer beside eRTMAC: connects the active well's depth to nearby-well history, evidence and explainable risk alerts. SIH26121 prototype — illustrative demo field, proven on public well records.",
 };
 
 export const viewport: Viewport = {

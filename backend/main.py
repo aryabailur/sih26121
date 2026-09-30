@@ -12,7 +12,7 @@ from sqlalchemy import func, inspect, select
 
 from config import CORS_ORIGINS, DATA_DISCLAIMER, DEMO_MODE
 from database import SessionLocal, engine, init_db
-from routers import documents, events, formations, risk, search, simulation, wells
+from routers import documents, events, formations, opendata, risk, search, simulation, wells
 
 
 def _ensure_seeded() -> None:
@@ -54,7 +54,7 @@ app = FastAPI(
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_credentials=False,
                    allow_methods=["*"], allow_headers=["*"])
 
-for r in (wells, events, formations, risk, search, documents, simulation):
+for r in (wells, events, formations, risk, search, documents, simulation, opendata):
     app.include_router(r.router)
 
 

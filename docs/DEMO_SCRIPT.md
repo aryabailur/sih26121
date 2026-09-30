@@ -8,7 +8,9 @@
 - Press **Reset** (↻ in the top bar): bit back to 3,100 m, alerts and uploads cleared.
 - Browser at 1600×900 or larger, zoom 100%. Keep **one** NWIS tab open: alerts live on the shared backend, so
   Run / Reset in a second tab (or on a teammate's laptop pointed at the same server) clears the first tab's alerts.
-- Backup: `docs/screenshots/00…14` and `docs/nwis-demo-walkthrough.webm` walk the same flow if anything fails.
+- Optional: the speaker icon in the top bar turns on **spoken alerts** (browser voice) — only if the room audio is good.
+- Backup: `docs/screenshots/00…20` walk the same flow if anything fails (the `.webm` walkthrough predates the
+  Subsurface view and the Look-ahead brief).
 
 ---
 
@@ -24,7 +26,7 @@ Point at: the **wellbore** on the left (bit at **3,100 m** in the **Barail Group
 depths), the live KPI tiles, and the **Right now** card — *Watch closely · next: mud loss window at 3,150 m,
 50 m ahead*.
 
-### 0:20–0:55 — The map
+### 0:20–0:50 — The map
 
 1. Point at the 3D map: the active well (purple, pulsing, with the radar sweep), its drilled path and the dashed
    planned path, the bit's surface position (diamond), ten offset wells inside the **25 km** radius, and the
@@ -36,7 +38,7 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
 > "Similarity blends formation tops, depth coverage, trajectory, drilling parameters and distance — it tells
 > the engineer which offsets are worth trusting."
 
-### 0:55–1:25 — Historical intelligence
+### 0:50–1:15 — Historical intelligence
 
 4. In the drawer, the critical event **Total loss of circulation, 3,150–3,220 m, Barail Group**: cause (natural
    fractures + ECD 1.52 sg), mitigation (MW to 1.38 sg, LCM pills, 18 h NPT) and the source
@@ -48,7 +50,7 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
 > "Same depth axis, same formations — the engineer sees immediately that OIL-AX-102 is about to drill the same
 > fractured sandstone."
 
-### 1:25–1:55 — Evidence search
+### 1:15–1:35 — Evidence search
 
 6. Sidebar → **Evidence Search**, click the suggestion or type:
    **"What mitigations were used for stuck pipe in Kopili Shale?"**
@@ -59,12 +61,19 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
 > "No answer without evidence. If the knowledge base can't support it, NWIS says so." (Optional: type
 > "helicopter crew change schedule" → *Insufficient evidence*.)
 
-### 1:55–2:25 — Proactive alerts
+### 1:35–2:15 — Proactive alerts, below the surface
 
-8. Top bar → **Run historical risk scenario** (the bit advances 3,100 → 3,600 m; the replay dock at the bottom shows
+8. Back on the **Command Center**, flip the map panel to **Subsurface** (top-left switch): the field becomes a
+   cut-away 3D block — strata walls built from the offsets' own formation tops, every well's true path, offset
+   events glowing at their depth, the amber bit and its depth plane.
+
+> "This is what's under the rig. Every coloured gem is an event from a report — at the depth it happened."
+
+9. Top bar → **Run historical risk scenario** (the bit advances 3,100 → 3,600 m; the replay dock at the bottom shows
    progress, the three expected alert beats and the narration).
-   - **3,150 m — Mud Loss alert (HIGH)**: the toast slides in, the screen edge flashes, the camera frames
-     OIL-AX-99 and OIL-AX-55; the ECD tile flags an anomaly. At 3,160 m it escalates to critical.
+   - **3,150 m — Mud Loss alert (HIGH)**: the toast slides in, the screen edge flashes, the depth plane flashes and
+     the camera flies to OIL-AX-99 and OIL-AX-55 — particles stream from their loss events to the bit. The ECD
+     tile flags an anomaly. At 3,160 m it escalates to critical.
    - **3,380 m — Stuck Pipe alert**: OIL-AX-88 / 66 / 11; torque ≈1.3× baseline.
    - **3,500 m** — torque/drag stays a *watch* card: medium history, no live confirmation → no alarm fatigue.
    - **3,580 m — Kick / Overpressure alert (CRITICAL)**: OIL-AX-33 kicked at 3,590 m; SPP drop and drilling
@@ -73,16 +82,26 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
 > "It's not waiting for the problem — it raises the alert when the bit enters the depth window where similar
 > wells had trouble, and it escalates when live signals confirm."
 
-### 2:25–2:50 — Explainability
+### 2:15–2:35 — Explainability
 
-9. On the **Stuck Pipe** card click **Why?**:
+10. On the **Stuck Pipe** card click **Why?**:
    - numbered reasons, the weighted factor breakdown (`0.30 × proximity … = score`),
    - live signals vs baseline, the three supporting wells with quotes and page citations,
    - the **learned-model cross-check** ("80 % — 20× the base rate; the model agrees"),
    - recommended checks (tick them off) and what worked in offsets, and the audit trail.
-10. Type a note ("KCl verified 7 %") → **Acknowledge**. The audit trail records it.
+11. Type a note ("KCl verified 7 %") → **Acknowledge**. The audit trail records it.
 
-### 2:50–3:00 — Close
+### 2:35–2:55 — What the next shift gets
+
+12. **Ctrl K** → type `3100` → Enter (bit back to 3,100 m; the alerts stay), then sidebar → **Brief** (300 m): *"Next 300 m: 2 hazard windows — mud loss
+    at 3,150 m (2 of 10 offsets), stuck pipe at 3,380 m (3 of 10)"*, **8.8 h expected NPT ≈ ₹11 lakh**, worst case
+    54 h. Scroll one card: what worked ranked by the NPT it took, the offset-calibrated mud-weight window, the
+    checklist. **Print / PDF** or **Copy text** (WhatsApp / shift log).
+
+> "Every 12 hours a crew hands over. Today that is a verbal brief. NWIS makes it the field's memory — cited,
+> priced, and printable."
+
+### 2:55–3:00 — Close
 
 > "NWIS does not replace the drilling engineer. It reduces the time between a signal and the historical
 > evidence needed to make an informed decision."
@@ -90,6 +109,12 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
 ---
 
 ### If time allows / Q&A props
+
+- **"Is this real data?"** → sidebar **Real data**: *"The Assam field is an illustrative demo because OIL's records
+  are confidential. Here is the same pipeline on 1,970 real public well histories from Norway — 611 drilling problems
+  found, 94 % correct on wells we never tuned on."* Press **Run the scan again** (re-reads 783k words live in a few
+  seconds), click a diamond on the depth chart (the real sentence + FactPages link), point at the misses list —
+  *"this is why an engineer approves every fact"*.
 
 - **Document Intelligence → Process sample report**: an OIL-AX-22 DDR the system has never seen → 3 candidate
   events, one flagged as a possible duplicate, entities, human review → **Save to knowledge base** → then search
@@ -110,6 +135,11 @@ depths), the live KPI tiles, and the **Right now** card — *Watch closely · ne
   touch the Barail notch at ~3,160 m. "This is the physics behind the alerts."
 - **Live** toggle (top bar): the bit advances 2 m every 2 s like a live feed.
 - Map controls: **Orbit** (slow presentation spin), **2D / 3D**, **Satellite / Map**, **Towers** on/off.
+- **Subsurface 3D** screen: drag the bit slider; click an event in *Seen near this depth* → the camera flies to it;
+  click a gem → its source report page; toolbar toggles strata, surfaces, x-ray ground, events, hazards, links.
+- **Ctrl K** (or `/`) anywhere: type `3380` to move the bit, `kick` for the Sylhet window, a well name, or a
+  question → Ask.
+- **Brief → To TD**: five windows to TD, including the Sylhet programme breach (plan 1.44 sg < 1.52 sg needed).
 - Role menu (avatar, top right): switch to *Office analyst* (lands on Evidence Search) or *Drilling manager*
   (lands on Risk Explorer).
 - Be explicit: all data is synthetic; weights are transparent, not trained; decision support only.

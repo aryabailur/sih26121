@@ -184,13 +184,19 @@ def extract_pages(path: Path) -> tuple[list[dict], list[str]]:
 
 # ------------------------------------------------------------------------------ event extraction
 EVENT_PATTERNS: list[tuple[str, re.Pattern]] = [
-    ("kick", re.compile(r"\b(kick|influx|pit gain|flow check (was )?positive|shut[- ]in drill pipe|SIDPP)\b", re.I)),
+    # "kick-off" / "kicked off" (and the "kick-of" typo) is a sidetrack point, not a well-control event
+    # (found on real operator histories).
+    ("kick", re.compile(r"\b(kicks?(?![- ]?of)|influx|pit gain|flow check (was )?positive|shut[- ]in drill pipe|SIDPP|"
+                        r"observed to be flowing|started (to )?flow(ing)?)\b", re.I)),
     ("overpressure", re.compile(r"overpressur|high (background|connection) gas|pore pressure exceed", re.I)),
-    ("mud_loss", re.compile(r"loss(es)? of (circulation|returns)|lost circulation|mud loss|(partial|total|severe|seepage|static) losses|losses of \d", re.I)),
+    ("mud_loss", re.compile(r"loss(es)? of (circulation|returns)|lost (the )?circulation|circulation (was |were )?lost|lost returns|mud loss|"
+                            r"(partial|total|severe|seepage|static) losses|losses of \d|losses (occurred|were (experienced|encountered|observed|recorded))|"
+                            r"\b(mud|m3|bbls?) (was |were )?lost\b|lost to the formation", re.I)),
     ("differential_sticking", re.compile(r"differential(ly)? stuck|differential sticking", re.I)),
-    ("stuck_pipe", re.compile(r"\b(stuck pipe|pipe (was |became |got )?stuck|mechanical sticking|jarred free|worked (the )?pipe free)", re.I)),
+    ("stuck_pipe", re.compile(r"\b(stuck pipe|(pipe|bha|drill ?string|string|casing|liner) (was |became |got )?stuck|got stuck|mechanical sticking|"
+                              r"jarred free|worked (the )?pipe free)", re.I)),
     ("cementing_failure", re.compile(r"cement bond|channel(l)?ing|squeeze (cement|job)|poor bond|micro-?annulus|top of cement", re.I)),
-    ("fishing", re.compile(r"\bfishing\b|twist[- ]off|junk basket|\bovershot\b|lost .{0,30} in (the )?hole", re.I)),
+    ("fishing", re.compile(r"\bfishing\b|twist(ed)?[- ]off|junk basket|\bovershot\b|lost .{0,30} in (the )?hole", re.I)),
     ("torque_spike", re.compile(r"torque (began rising|increase|increased|rising|spike|fluctuat)|stick[- ]slip|erratic torque", re.I)),
     ("wellbore_instability", re.compile(r"tight (hole|spot)|cavings|pack[- ]off|hole instability|shale swelling", re.I)),
     ("NPT", re.compile(r"bit balling|\bfailure\b|\brepair(ed)?\b|waiting on", re.I)),
@@ -208,11 +214,54 @@ CHEMICALS = ["KCl", "LCM", "CaCO3", "calcium carbonate", "graphite", "barite", "
 EQUIPMENT = ["PDC", "tricone", "MWD", "BHA", "top drive", "jar", "overshot", "under-reamer", "mud pump", "BOP", "choke", "liner"]
 
 
-def _event_type(sentence: str) -> str | None:
+# "No kicks recorded", "without any losses", "no shallow gas" — a negated mention is not an event.
+# ("not" is deliberately excluded: "it was not possible to cure the losses" is an event.)
+NEGATION_RE = re.compile(r"\b(no|nor|without|absence of|free of)\s+(\S+\s+){0,3}$", re.I)
+# Prose-only guards (narrative mode), each learned from misreads on real well histories:
+# planning language ("to avoid losses", "risk of stuck pipe") and studies are not incidents,
+PLANNING_RE = re.compile(r"\b(avoid|prevent|minimi[sz]e|risk of|potential(ly)?|possible|anticipated|expected|prognosed)\s+(\S+\s+){0,2}$", re.I)
+# a wireline cable or a riser part getting stuck is a tool/equipment problem, not stuck pipe,
+TOOL_RE = re.compile(r"\b(wire ?line|cable|logging|tool|MDT|RFT|FMT|seat protector|riser|packer)\b[^.]{0,25}$", re.I)
+# and a formation-pressure measurement ("RFT proved 3 bar overpressured") is geology, not a well-control event.
+PRESSURE_SURVEY_RE = re.compile(r"\b(RFT|MDT|GeoTap|FMT|DST|measurements?|measured|gradient)\b", re.I)
+DRILLING_CONTEXT_RE = re.compile(r"\b(hole|drill\w*|kick|influx|well control|mud weight|pore pressure)\b", re.I)
+
+
+def _event_match(sentence: str, narrative: bool = False) -> tuple[str, int, int] | None:
+    """(event type, start, end of the triggering phrase) — or None."""
     for t, pat in EVENT_PATTERNS:
-        if pat.search(sentence):
-            return t
+        for m in pat.finditer(sentence):
+            before = sentence[max(0, m.start() - 60): m.start()]
+            if NEGATION_RE.search(before):
+                continue
+            if narrative:
+                if PLANNING_RE.search(before) or re.match(r"\s*stud(y|ies)", sentence[m.end():], re.I):
+                    continue
+                if t in ("stuck_pipe", "differential_sticking") and TOOL_RE.search(before):
+                    continue
+                if t == "overpressure" and (PRESSURE_SURVEY_RE.search(sentence) or not DRILLING_CONTEXT_RE.search(sentence)):
+                    continue
+            return t, m.start(), m.end()
     return None
+
+
+def _event_type(sentence: str, narrative: bool = False) -> str | None:
+    hit = _event_match(sentence, narrative)
+    return hit[0] if hit else None
+
+
+def _nearest_depth(sentence: str, start: int, end: int) -> tuple[float, float] | None:
+    """The depth mention closest to the triggering phrase ("pipe stuck at 3647 m" — not the TD named earlier).
+    A mention right after the trigger ("stuck at …") is preferred over one just before it."""
+    spans = nlp.depth_spans(sentence)
+    if not spans:
+        return None
+
+    def gap(sp):
+        return sp[0] - end if sp[0] >= end else (start - sp[1]) + 10 if sp[1] <= start else 0
+
+    s = min(spans, key=gap)
+    return s[2], s[3]
 
 
 def _severity(t: str, text: str, npt: float | None) -> str:
@@ -229,7 +278,11 @@ def _severity(t: str, text: str, npt: float | None) -> str:
     return "low"
 
 
-def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
+def extract_events(pages: list[dict], formation_lookup, narrative: bool = False) -> list[dict]:
+    """Candidate events per page. `narrative=True` is for prose histories (e.g. well completion summaries): the event
+    groups at most two follow-on sentences of the same risk family, takes its depth only from the triggering sentence
+    (the mention nearest the trigger — neighbouring sentences in prose describe other operations at other depths),
+    applies the prose guards above, and drops depth-less back-references to an event already found."""
     out: list[dict] = []
     doc_formation = None
     for p in pages:
@@ -241,23 +294,31 @@ def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
         sents = [" ".join(s.split()) for s in nlp.sentences(p["text"])]
         i = 0
         while i < len(sents):
-            t = _event_type(sents[i])
+            hit = _event_match(sents[i], narrative)
+            t = hit[0] if hit else None
             if t is None or (t == "NPT" and re.match(r"^NPT\b", sents[i])):
                 i += 1
                 continue
             group = [sents[i]]
             j = i + 1
-            while j < len(sents) and len(group) < 6:
+            while j < len(sents) and len(group) < (3 if narrative else 6):
                 s = sents[j]
                 if TIME_ENTRY_RE.match(s) or s.startswith("##") or BOUNDARY_RE.match(s):
                     break
-                nt = _event_type(s)
-                if nt and nt not in (t, "NPT", "wellbore_instability") and not CAUSE_RE.search(s) and not MITIGATION_RE.search(s):
+                nt = _event_type(s, narrative)
+                if narrative:
+                    if nt and EVENT_TO_FAMILY.get(nt) != EVENT_TO_FAMILY.get(t):
+                        break
+                elif nt and nt not in (t, "NPT", "wellbore_instability") and not CAUSE_RE.search(s) and not MITIGATION_RE.search(s):
                     break
                 group.append(s)
                 j += 1
             text = " ".join(group)
-            ds = nlp.depths(text)
+            if narrative:
+                near = _nearest_depth(group[0], hit[1], hit[2])
+                ds = [near] if near else []
+            else:
+                ds = nlp.depths(text)
             if ds:
                 d0 = min(a for a, _ in ds)
                 d1 = max(b for _, b in ds)
@@ -282,22 +343,29 @@ def extract_events(pages: list[dict], formation_lookup) -> list[dict]:
                 evidence_text=text, confidence=conf, needs_review=conf < 0.75,
             ))
             i = j
-    return _merge_within_document(out)
+    return _merge_within_document(out, narrative)
 
 
-def _merge_within_document(cands: list[dict]) -> list[dict]:
+def _merge_within_document(cands: list[dict], narrative: bool = False) -> list[dict]:
     """A report often mentions one event twice (24-hr summary + time log). Keep the richer
-    candidate per risk family and overlapping depth window, and note where else it appeared."""
+    candidate per risk family and overlapping depth window, and note where else it appeared.
+    Narrative histories also refer back to an incident without a depth ("apart from the shallow gas influx…"):
+    a depth-less candidate is dropped when its family is already represented."""
     kept: list[dict] = []
-    for c in sorted(cands, key=lambda c: -c["confidence"]):
+    window = 50 if narrative else 30
+    order = sorted(cands, key=lambda c: (-(c["depth_start"] is not None), -c["confidence"])) if narrative else \
+        sorted(cands, key=lambda c: -c["confidence"])
+    for c in order:
         fam = EVENT_TO_FAMILY.get(c["event_type"])
         dup = None
         if c["depth_start"] is not None:
             for k in kept:
                 if (k["depth_start"] is not None and EVENT_TO_FAMILY.get(k["event_type"]) == fam
-                        and k["depth_start"] - 30 <= c["depth_end"] and c["depth_start"] <= k["depth_end"] + 30):
+                        and k["depth_start"] - window <= c["depth_end"] and c["depth_start"] <= k["depth_end"] + window):
                     dup = k
                     break
+        elif narrative:
+            dup = next((k for k in kept if EVENT_TO_FAMILY.get(k["event_type"]) == fam), None)
         if dup:
             dup.setdefault("also_mentioned_on", []).append(c["source_page"])
             continue

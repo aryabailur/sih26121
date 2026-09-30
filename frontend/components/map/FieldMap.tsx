@@ -128,7 +128,18 @@ function addNwisLayers(map: MLMap) {
   });
 }
 
-export default function FieldMap({ className, showControls = true, overlay }: { className?: string; showControls?: boolean; overlay?: ReactNode }) {
+export default function FieldMap({
+  className,
+  showControls = true,
+  overlay,
+  modeSwitch,
+}: {
+  className?: string;
+  showControls?: boolean;
+  overlay?: ReactNode;
+  /** Optional view switch (e.g. Surface / Subsurface) rendered first in the control row. */
+  modeSwitch?: ReactNode;
+}) {
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const styleKeyRef = useRef<string>("");
@@ -543,15 +554,24 @@ export default function FieldMap({ className, showControls = true, overlay }: { 
         <>
           <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex items-start justify-between gap-3">
             <div className="glass pointer-events-auto rounded-[4px] p-1.5">
-              <div className="flex items-center gap-2 px-2 pb-1.5 pt-1">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-brand/70" />
-                  <span className="relative h-2 w-2 rounded-full bg-brand" />
-                </span>
-                <span className="text-[13px] font-bold text-ink">
-                  {inRadius} offset wells within {radiusKm} km
-                </span>
-              </div>
+              {modeSwitch ? (
+                <div className="flex items-center gap-2 pb-1.5 pr-2">
+                  {modeSwitch}
+                  <span className="whitespace-nowrap text-[12.5px] font-bold text-ink-2">
+                    {inRadius} offsets · {radiusKm} km
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 px-2 pb-1.5 pt-1">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inset-0 animate-ping rounded-full bg-brand/70" />
+                    <span className="relative h-2 w-2 rounded-full bg-brand" />
+                  </span>
+                  <span className="text-[13px] font-bold text-ink">
+                    {inRadius} offset wells within {radiusKm} km
+                  </span>
+                </div>
+              )}
               <div className="flex items-center gap-1">
                 <Seg on={basemap === "satellite"} onClick={() => setBasemap("satellite")} title="Satellite imagery (Esri World Imagery)">
                   <Satellite size={14} /> Satellite

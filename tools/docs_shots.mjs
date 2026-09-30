@@ -95,6 +95,45 @@ await page.evaluate(() =>
 await page.waitForTimeout(1200);
 await shot("16-learned-model");
 
+// Move the bit with the command palette (alerts were already raised by the scenario, so no new toasts).
+const jump = async (depth) => {
+  await page.keyboard.press("Control+k");
+  await page.waitForTimeout(400);
+  await page.fill("input[placeholder^='Jump']", String(depth));
+  await page.waitForTimeout(300);
+  await page.keyboard.press("Enter");
+};
+
+// Look-ahead brief from 3,100 m — the numbers the deck quotes (mud loss + stuck pipe ahead).
+await nav("/dashboard/brief", 1500);
+await jump(3100);
+await page.waitForTimeout(4000);
+await shot("18-look-ahead-brief");
+await page.evaluate(() => document.querySelector("main .overflow-y-auto")?.scrollTo(0, 820));
+await page.waitForTimeout(1200);
+await shot("19-brief-hazard");
+
+// Subsurface 3D with the bit inside the Kopili stuck-pipe window.
+await nav("/dashboard/subsurface", 6500);
+await jump(3395);
+await page.waitForTimeout(6000);
+await shot("17-subsurface-3d");
+
+// Command palette.
+await page.keyboard.press("Control+k");
+await page.waitForTimeout(400);
+await page.fill("input[placeholder^='Jump']", "kick");
+await page.waitForTimeout(700);
+await shot("20-command-palette");
+await page.keyboard.press("Escape");
+
+// Real-data proof: the pipeline on public Norwegian operator records.
+await nav("/dashboard/opendata", 9000);
+await shot("21-real-data-proof");
+await page.evaluate(() => document.querySelector("main .overflow-y-auto")?.scrollTo(0, 690));
+await page.waitForTimeout(2500);
+await shot("22-real-data-offsets");
+
 // Night-shift theme on the command center.
 await page.evaluate(() => localStorage.setItem("nwis-theme", "dark"));
 await page.addInitScript(() => {

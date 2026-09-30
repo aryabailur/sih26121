@@ -3,7 +3,7 @@
 import { chromium } from "playwright";
 
 const MIN_PX = Number(process.env.MIN_PX || 12);
-const ROUTES = ["/", "/dashboard", "/dashboard/nearby", "/dashboard/well/W002", "/dashboard/compare", "/dashboard/search?q=What%20caused%20mud%20loss%20in%20the%20Barail%20Group%20near%203150m%3F", "/dashboard/risk", "/dashboard/documents"];
+const ROUTES = ["/", "/dashboard", "/dashboard/subsurface", "/dashboard/brief", "/dashboard/opendata", "/dashboard/nearby", "/dashboard/well/W002", "/dashboard/compare", "/dashboard/search?q=What%20caused%20mud%20loss%20in%20the%20Barail%20Group%20near%203150m%3F", "/dashboard/risk", "/dashboard/documents"];
 const theme = process.env.THEME || "light";
 const detail = process.argv.includes("--detail");
 

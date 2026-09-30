@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown, Pause, Play, RotateCcw, ShieldCheck } from "lucide-react";
+import { Check, ChevronDown, Pause, Play, RotateCcw, Search, ShieldCheck, Volume2, VolumeX } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ROLE_META, setRole, useRole, type Role } from "@/lib/prefs";
 import { useNWIS } from "@/lib/store";
 import { cn, fieldName, formationColor, SEVERITY_STYLE } from "@/lib/utils";
+import { setVoice, speak, useVoice, voiceSupported } from "@/lib/voice";
+import { openCommandPalette } from "./CommandPalette";
 import { pageTitle } from "./Sidebar";
 
 function Freshness() {
@@ -134,6 +136,46 @@ function ScenarioControls() {
   );
 }
 
+function VoiceToggle() {
+  const on = useVoice();
+  const [supported, setSupported] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setSupported(voiceSupported()), 0);
+    return () => clearTimeout(t);
+  }, []);
+  if (!supported) return null;
+  return (
+    <Button
+      variant={on ? "soft" : "ghost"}
+      size="icon"
+      onClick={() => {
+        setVoice(!on);
+        if (!on) speak("Spoken alerts on.", { interrupt: true });
+      }}
+      title={on ? "Spoken alerts on — click to mute" : "Spoken alerts off — click to hear alerts aloud (hands-free)"}
+      aria-label="Toggle spoken alerts"
+      aria-pressed={on}
+    >
+      {on ? <Volume2 size={17} /> : <VolumeX size={17} />}
+    </Button>
+  );
+}
+
+function PaletteButton() {
+  return (
+    <button
+      onClick={openCommandPalette}
+      className="flex h-10 items-center gap-2 rounded-[3px] border border-line-2 bg-surface px-2.5 text-[12.5px] font-semibold text-ink-3 shadow-xs transition-colors hover:border-brand/50 hover:text-ink"
+      title="Search or jump anywhere (Ctrl K or /)"
+      aria-label="Open the command palette"
+    >
+      <Search size={15} />
+      <span className="hidden min-[1700px]:inline">Jump to…</span>
+      <span className="rounded-[2px] border border-line-2 bg-surface-2 px-1 font-mono text-[11px] text-ink-3">Ctrl K</span>
+    </button>
+  );
+}
+
 export function TopNav() {
   const path = usePathname();
   const well = useNWIS((s) => s.activeWell);
@@ -148,7 +190,7 @@ export function TopNav() {
   const sev = SEVERITY_STYLE[overall];
 
   return (
-    <header className="relative z-[1000] flex h-16 shrink-0 items-center gap-5 whitespace-nowrap border-b border-line bg-surface/75 px-5 backdrop-blur-xl">
+    <header className="relative z-[1000] flex h-16 shrink-0 items-center gap-5 whitespace-nowrap border-b border-line bg-surface/75 px-5 backdrop-blur-xl print:hidden">
       <div className="min-w-0">
         <div className="text-[12.5px] font-semibold text-ink-3">{fieldName(well?.field)} · Upper Assam</div>
         <h1 className="truncate text-[18px] font-extrabold leading-tight tracking-[-0.02em] text-ink">{pageTitle(path)}</h1>
@@ -174,7 +216,7 @@ export function TopNav() {
         </div>
       </div>
 
-      <div className="hidden leading-tight min-[1440px]:block">
+      <div className="hidden leading-tight min-[1700px]:block">
         <div className="text-[12.5px] font-semibold text-ink-3">Formation</div>
         <div className="flex items-center gap-1.5 text-[14px] font-bold text-ink">
           <span className="h-3 w-3 rounded-[2px]" style={{ background: formationColor(formation) }} />
@@ -203,6 +245,7 @@ export function TopNav() {
 
       <div className="ml-auto flex items-center gap-3">
         <Freshness />
+        <PaletteButton />
         <DemoModeToggle />
         {demoMode && (
           <>
@@ -222,6 +265,7 @@ export function TopNav() {
             </Button>
           </>
         )}
+        <VoiceToggle />
         <RoleMenu />
       </div>
     </header>
