@@ -4,11 +4,12 @@
 # Free plan: 512 MB / 0.1 CPU; sleeps after 15 min idle and wakes on the next request (~1 min, the cockpit
 # shows "Waking up the NWIS server" and retries by itself). The SQLite demo DB is baked into the image, so every
 # wake-up starts from the clean demo state.
+# No rootDir on purpose: with rootDir set, Render resolves dockerContext/dockerfilePath inside it
+# (backend/backend). Without it both paths are relative to the repo root.
 services:
   - type: web
     name: nwis-api
     runtime: docker
-    rootDir: backend
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
