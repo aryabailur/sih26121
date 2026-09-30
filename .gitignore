@@ -29,8 +29,9 @@ Thumbs.db
 
 # tools/ (dev tooling)
 tools/node_modules/
-tools/sih_deck/.icons/
 tools/sih_deck/.render/
+tools/sih_deck/.venv/
+tools/sih_deck/fonts/static/
 tools/sih_deck/__pycache__/
 tools/.video-tmp/
 tools/.why-crop.png

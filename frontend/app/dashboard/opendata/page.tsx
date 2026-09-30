@@ -140,7 +140,7 @@ export default function OpenDataPage() {
             <Stat label="Words read" value={<AnimatedNumber value={s.words / 1000} from={0} format={(v) => `${Math.round(v)}k`} />} sub="operator English" />
             <Stat label="Problems found" value={<AnimatedNumber value={s.events} from={0} />} tone="#ffc24d" sub={`in ${s.wells_with_events} wellbores`} />
             <motion.div key={s.seconds} initial={{ scale: rescan ? 1.06 : 1 }} animate={{ scale: 1 }}>
-              <Stat label="Scan time" value={`${s.seconds.toFixed(2)} s`} sub={rescan ? "just re-run live" : "on this laptop"} />
+              <Stat label="Scan time" value={`${s.seconds.toFixed(2)} s`} sub={rescan ? "just re-run live" : "one full pass"} />
             </motion.div>
             <Stat
               label="Held-out precision"

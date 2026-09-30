@@ -89,15 +89,27 @@ function LiveTicker() {
   return null;
 }
 
+/** Running on this machine / the LAN (dev instructions apply) rather than a hosted deployment. */
+const isLocalHost = () =>
+  typeof window !== "undefined" && /^(localhost|127\.|\[::1\]|192\.168\.|10\.)/.test(window.location.hostname);
+
 function BootScreen() {
+  // A hosted backend on a free tier sleeps when idle; the store keeps retrying while it wakes.
+  const attempts = useNWIS((s) => s.connectAttempts);
+  const waking = attempts > 0;
   return (
     <div className="flex h-full flex-col items-center justify-center gap-5">
       <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 14 }}>
         <LogoMark size={72} animated />
       </motion.div>
-      <div className="text-center">
-        <div className="text-[15px] font-bold text-ink">Loading the field knowledge base</div>
-        <div className="mt-1 text-[13px] text-ink-3">Wells · formations · 36 events · 84 report pages</div>
+      <div className="max-w-sm text-center">
+        <div className="text-[15px] font-bold text-ink">{waking ? "Waking up the NWIS server" : "Loading the field knowledge base"}</div>
+        <div className="mt-1 text-[13px] text-ink-3">
+          {waking
+            ? "The demo backend sleeps when nobody is using it and takes about a minute to start. Hang on — this page connects by itself."
+            : "Wells · formations · 36 events · 84 report pages"}
+        </div>
+        {waking && <div className="mt-2 font-mono text-[12px] text-ink-3">connecting · attempt {attempts + 1}</div>}
       </div>
       <div className="h-1.5 w-56 overflow-hidden rounded-[1px] bg-surface-3">
         <motion.div className="aurora h-full w-1/2 rounded-[1px]" animate={{ x: ["-100%", "200%"] }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }} />
@@ -117,6 +129,7 @@ export function CommandCenter({ children }: { children: ReactNode }) {
   }, [init]);
 
   if (loadError) {
+    const local = isLocalHost();
     return (
       <div className="flex h-screen items-center justify-center p-6">
         <motion.div initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="card max-w-lg p-7">
@@ -125,15 +138,23 @@ export function CommandCenter({ children }: { children: ReactNode }) {
               <Server size={20} />
             </span>
             <div>
-              <div className="text-[16px] font-extrabold text-ink">NWIS backend not reachable</div>
-              <p className="text-[13px] text-ink-3">{loadError}</p>
+              <div className="text-[16px] font-extrabold text-ink">
+                {local ? "NWIS backend not reachable" : "The NWIS demo server is not answering"}
+              </div>
+              <p className="text-[13px] text-ink-3">
+                {local ? loadError : "It may still be starting after a long idle period — try again in a minute."}
+              </p>
             </div>
           </div>
-          <pre className="mt-4 rounded-[3px] bg-[#0c0e14] p-4 font-mono text-[12.5px] leading-relaxed text-[#c7c3ff]">
-            {`cd backend
+          {local ? (
+            <pre className="mt-4 rounded-[3px] bg-[#0c0e14] p-4 font-mono text-[12.5px] leading-relaxed text-[#c7c3ff]">
+              {`cd backend
 .venv\\Scripts\\activate      # or: source .venv/bin/activate
 uvicorn main:app --port 8000`}
-          </pre>
+            </pre>
+          ) : (
+            <p className="mt-3 font-mono text-[12px] text-ink-3">Details: {loadError}</p>
+          )}
           <Button
             variant="primary"
             size="md"

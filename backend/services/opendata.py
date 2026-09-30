@@ -91,6 +91,46 @@ def extract_history(well: str, paragraphs: list[dict], lookup=None) -> list[dict
     return out
 
 
+# ------------------------------------------------------------------------------ prebuilt cache
+# The first shelf scan takes ~3.5 s on a laptop but ~30 s on a 0.1-CPU free host, so a Docker build runs
+# `precompute()` once and the server loads the result instead. The key hashes the bundles and every source file
+# that shapes an extraction, so a cache built by different code or data is ignored, never served stale.
+PREBUILT_FILE = OUT / "cache" / "scan_prebuilt.json.gz"
+_PREBUILT: dict = {}
+
+
+def _cache_key() -> str:
+    backend = Path(__file__).resolve().parents[1]
+    h = hashlib.sha1()
+    for p in [SHELF_FILE, AREA_FILE, *sorted((backend / "services").glob("*.py")), *sorted((backend / "opendata").glob("*.py"))]:
+        h.update(p.name.encode())
+        h.update(p.read_bytes())
+    return h.hexdigest()[:16]
+
+
+def _prebuilt(part: str):
+    if not _PREBUILT:
+        data = None
+        try:
+            with gzip.open(PREBUILT_FILE, "rt", encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, ValueError):
+            pass
+        _PREBUILT.update(data if data and data.get("key") == _cache_key() else {"key": None})
+    return _PREBUILT.get(part)
+
+
+def precompute() -> Path:
+    """Run the shelf scan and the study-area extraction once and save them for later server starts."""
+    scan = scan_shelf(fresh=True)
+    area = _extract_area()
+    PREBUILT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with gzip.open(PREBUILT_FILE, "wt", encoding="utf-8") as f:
+        json.dump({"key": _cache_key(), "scan": scan, "area_events": area}, f)
+    _PREBUILT.clear()
+    return PREBUILT_FILE
+
+
 # ------------------------------------------------------------------------------ shelf-wide scan
 _SCAN: dict = {}
 
@@ -99,6 +139,9 @@ def scan_shelf(fresh: bool = False) -> dict:
     """Run the extractor over every published history on the shelf (timed, so the UI can show it live)."""
     with _LOCK:
         if _SCAN and not fresh:
+            return _SCAN
+        if not fresh and (cached := _prebuilt("scan")):
+            _SCAN.update(cached)
             return _SCAN
         shelf = _shelf()
         t0 = time.perf_counter()
@@ -128,9 +171,14 @@ _FAMILY_RANK = {"kick": 5, "mud_loss": 4, "stuck_pipe": 3, "NPT": 2, "wellbore_i
 
 
 # ------------------------------------------------------------------------------ study area
+def _extract_area() -> dict[str, list[dict]]:
+    return {w["name"]: extract_history(w["name"], w["history"], formation_lookup(w["tops"])) for w in _area()["wells"]}
+
+
 @lru_cache(maxsize=1)
 def area_events() -> dict[str, list[dict]]:
-    return {w["name"]: extract_history(w["name"], w["history"], formation_lookup(w["tops"])) for w in _area()["wells"]}
+    cached = _prebuilt("area_events")
+    return cached if cached is not None else _extract_area()
 
 
 def _well(name: str) -> dict | None:

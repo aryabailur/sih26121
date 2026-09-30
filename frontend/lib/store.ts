@@ -44,6 +44,8 @@ interface ScenarioState {
 interface NWISState {
   ready: boolean;
   loadError: string | null;
+  /** Failed start-up attempts so far while the backend wakes (a free host sleeps when idle); 0 = first try. */
+  connectAttempts: number;
   sim: SimState | null;
   wells: WellListItem[];
   activeWell: WellDetail | null;
@@ -99,6 +101,8 @@ let depthTimer: ReturnType<typeof setTimeout> | null = null;
 let radiusTimer: ReturnType<typeof setTimeout> | null = null;
 let seq = 0;
 let scenarioRun = 0;
+let initRun: Promise<void> | null = null;
+const START_TIMEOUT_MS = 180_000;
 
 function clearTimers() {
   if (depthTimer) clearTimeout(depthTimer);
@@ -109,6 +113,7 @@ function clearTimers() {
 export const useNWIS = create<NWISState>((set, get) => ({
   ready: false,
   loadError: null,
+  connectAttempts: 0,
   sim: null,
   wells: [],
   activeWell: null,
@@ -139,17 +144,33 @@ export const useNWIS = create<NWISState>((set, get) => ({
   source: null,
   scenario: null,
 
-  init: async () => {
-    if (get().ready) return;
-    try {
-      const [active, sim] = await Promise.all([api.activeWell(), api.state()]);
-      set({ activeWell: active.well, formations: active.formations, depth: active.current_state.depth, sim, radiusKm: sim.default_radius_km });
-      await get().refreshStatic();
-      set({ ready: true, loadError: null });
-      await get().evaluateNow();
-    } catch (e) {
-      set({ loadError: e instanceof Error ? e.message : String(e) });
-    }
+  init: () => {
+    if (get().ready) return Promise.resolve();
+    // One start-up loop at a time (Strict Mode runs effects twice; Retry may be pressed mid-loop).
+    initRun ??= (async () => {
+      const started = Date.now();
+      for (let attempt = 0; ; attempt++) {
+        try {
+          const [active, sim] = await Promise.all([api.activeWell(), api.state()]);
+          set({ activeWell: active.well, formations: active.formations, depth: active.current_state.depth, sim, radiusKm: sim.default_radius_km });
+          await get().refreshStatic();
+          set({ ready: true, loadError: null, connectAttempts: 0 });
+          await get().evaluateNow();
+          return;
+        } catch (e) {
+          // A sleeping free host takes ~1 min to wake: keep retrying for up to 3 min before giving up.
+          if (Date.now() - started > START_TIMEOUT_MS) {
+            set({ loadError: e instanceof Error ? e.message : String(e), connectAttempts: 0 });
+            return;
+          }
+          set({ connectAttempts: attempt + 1 });
+          await sleep(Math.min(2000 + attempt * 1500, 8000));
+        }
+      }
+    })().finally(() => {
+      initRun = null;
+    });
+    return initRun;
   },
 
   refreshStatic: async () => {

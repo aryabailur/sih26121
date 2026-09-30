@@ -1,0 +1,3211 @@
+{
+ "series": {
+  "mud_loss": [
+   [
+    3000,
+    0.288
+   ],
+   [
+    3010,
+    0.298
+   ],
+   [
+    3020,
+    0.308
+   ],
+   [
+    3030,
+    0.318
+   ],
+   [
+    3040,
+    0.328
+   ],
+   [
+    3050,
+    0.338
+   ],
+   [
+    3060,
+    0.348
+   ],
+   [
+    3070,
+    0.358
+   ],
+   [
+    3080,
+    0.368
+   ],
+   [
+    3090,
+    0.378
+   ],
+   [
+    3100,
+    0.388
+   ],
+   [
+    3110,
+    0.398
+   ],
+   [
+    3120,
+    0.408
+   ],
+   [
+    3130,
+    0.418
+   ],
+   [
+    3140,
+    0.428
+   ],
+   [
+    3150,
+    0.672
+   ],
+   [
+    3160,
+    0.755
+   ],
+   [
+    3170,
+    0.755
+   ],
+   [
+    3180,
+    0.838
+   ],
+   [
+    3190,
+    0.755
+   ],
+   [
+    3200,
+    0.838
+   ],
+   [
+    3210,
+    0.755
+   ],
+   [
+    3220,
+    0.672
+   ],
+   [
+    3230,
+    0.507
+   ],
+   [
+    3240,
+    0.408
+   ],
+   [
+    3250,
+    0.393
+   ],
+   [
+    3260,
+    0.462
+   ],
+   [
+    3270,
+    0.447
+   ],
+   [
+    3280,
+    0.432
+   ],
+   [
+    3290,
+    0.4
+   ],
+   [
+    3300,
+    0.302
+   ],
+   [
+    3310,
+    0.287
+   ],
+   [
+    3320,
+    0.272
+   ],
+   [
+    3330,
+    0.272
+   ],
+   [
+    3340,
+    0.272
+   ],
+   [
+    3350,
+    0.272
+   ],
+   [
+    3360,
+    0.272
+   ],
+   [
+    3370,
+    0.272
+   ],
+   [
+    3380,
+    0.215
+   ],
+   [
+    3390,
+    0.215
+   ],
+   [
+    3400,
+    0.215
+   ],
+   [
+    3410,
+    0.215
+   ],
+   [
+    3420,
+    0.215
+   ],
+   [
+    3430,
+    0.215
+   ],
+   [
+    3440,
+    0.215
+   ],
+   [
+    3450,
+    0.215
+   ],
+   [
+    3460,
+    0.225
+   ],
+   [
+    3470,
+    0.235
+   ],
+   [
+    3480,
+    0.245
+   ],
+   [
+    3490,
+    0.255
+   ],
+   [
+    3500,
+    0.265
+   ],
+   [
+    3510,
+    0.275
+   ],
+   [
+    3520,
+    0.285
+   ],
+   [
+    3530,
+    0.345
+   ],
+   [
+    3540,
+    0.355
+   ],
+   [
+    3550,
+    0.365
+   ],
+   [
+    3560,
+    0.375
+   ],
+   [
+    3570,
+    0.385
+   ],
+   [
+    3580,
+    0.528
+   ],
+   [
+    3590,
+    0.538
+   ],
+   [
+    3600,
+    0.698
+   ],
+   [
+    3610,
+    0.698
+   ],
+   [
+    3620,
+    0.615
+   ],
+   [
+    3630,
+    0.615
+   ],
+   [
+    3640,
+    0.615
+   ],
+   [
+    3650,
+    0.615
+   ],
+   [
+    3660,
+    0.615
+   ]
+  ],
+  "stuck_pipe": [
+   [
+    3000,
+    0.0
+   ],
+   [
+    3010,
+    0.0
+   ],
+   [
+    3020,
+    0.0
+   ],
+   [
+    3030,
+    0.0
+   ],
+   [
+    3040,
+    0.0
+   ],
+   [
+    3050,
+    0.0
+   ],
+   [
+    3060,
+    0.0
+   ],
+   [
+    3070,
+    0.0
+   ],
+   [
+    3080,
+    0.262
+   ],
+   [
+    3090,
+    0.262
+   ],
+   [
+    3100,
+    0.262
+   ],
+   [
+    3110,
+    0.262
+   ],
+   [
+    3120,
+    0.262
+   ],
+   [
+    3130,
+    0.262
+   ],
+   [
+    3140,
+    0.262
+   ],
+   [
+    3150,
+    0.262
+   ],
+   [
+    3160,
+    0.262
+   ],
+   [
+    3170,
+    0.345
+   ],
+   [
+    3180,
+    0.345
+   ],
+   [
+    3190,
+    0.345
+   ],
+   [
+    3200,
+    0.345
+   ],
+   [
+    3210,
+    0.345
+   ],
+   [
+    3220,
+    0.262
+   ],
+   [
+    3230,
+    0.262
+   ],
+   [
+    3240,
+    0.322
+   ],
+   [
+    3250,
+    0.332
+   ],
+   [
+    3260,
+    0.425
+   ],
+   [
+    3270,
+    0.435
+   ],
+   [
+    3280,
+    0.445
+   ],
+   [
+    3290,
+    0.505
+   ],
+   [
+    3300,
+    0.432
+   ],
+   [
+    3310,
+    0.442
+   ],
+   [
+    3320,
+    0.452
+   ],
+   [
+    3330,
+    0.462
+   ],
+   [
+    3340,
+    0.472
+   ],
+   [
+    3350,
+    0.482
+   ],
+   [
+    3360,
+    0.492
+   ],
+   [
+    3370,
+    0.502
+   ],
+   [
+    3380,
+    0.745
+   ],
+   [
+    3390,
+    0.745
+   ],
+   [
+    3400,
+    0.828
+   ],
+   [
+    3410,
+    0.828
+   ],
+   [
+    3420,
+    0.828
+   ],
+   [
+    3430,
+    0.828
+   ],
+   [
+    3440,
+    0.497
+   ],
+   [
+    3450,
+    0.482
+   ],
+   [
+    3460,
+    0.467
+   ],
+   [
+    3470,
+    0.452
+   ],
+   [
+    3480,
+    0.437
+   ],
+   [
+    3490,
+    0.422
+   ],
+   [
+    3500,
+    0.407
+   ],
+   [
+    3510,
+    0.392
+   ],
+   [
+    3520,
+    0.377
+   ],
+   [
+    3530,
+    0.362
+   ],
+   [
+    3540,
+    0.362
+   ],
+   [
+    3550,
+    0.362
+   ],
+   [
+    3560,
+    0.362
+   ],
+   [
+    3570,
+    0.362
+   ],
+   [
+    3580,
+    0.345
+   ],
+   [
+    3590,
+    0.0
+   ],
+   [
+    3600,
+    0.0
+   ],
+   [
+    3610,
+    0.0
+   ],
+   [
+    3620,
+    0.0
+   ],
+   [
+    3630,
+    0.0
+   ],
+   [
+    3640,
+    0.0
+   ],
+   [
+    3650,
+    0.0
+   ],
+   [
+    3660,
+    0.0
+   ]
+  ],
+  "torque_spike": [
+   [
+    3000,
+    0.0
+   ],
+   [
+    3010,
+    0.0
+   ],
+   [
+    3020,
+    0.0
+   ],
+   [
+    3030,
+    0.0
+   ],
+   [
+    3040,
+    0.0
+   ],
+   [
+    3050,
+    0.0
+   ],
+   [
+    3060,
+    0.0
+   ],
+   [
+    3070,
+    0.0
+   ],
+   [
+    3080,
+    0.0
+   ],
+   [
+    3090,
+    0.0
+   ],
+   [
+    3100,
+    0.0
+   ],
+   [
+    3110,
+    0.0
+   ],
+   [
+    3120,
+    0.0
+   ],
+   [
+    3130,
+    0.0
+   ],
+   [
+    3140,
+    0.0
+   ],
+   [
+    3150,
+    0.0
+   ],
+   [
+    3160,
+    0.0
+   ],
+   [
+    3170,
+    0.0
+   ],
+   [
+    3180,
+    0.175
+   ],
+   [
+    3190,
+    0.175
+   ],
+   [
+    3200,
+    0.175
+   ],
+   [
+    3210,
+    0.175
+   ],
+   [
+    3220,
+    0.175
+   ],
+   [
+    3230,
+    0.175
+   ],
+   [
+    3240,
+    0.225
+   ],
+   [
+    3250,
+    0.225
+   ],
+   [
+    3260,
+    0.225
+   ],
+   [
+    3270,
+    0.225
+   ],
+   [
+    3280,
+    0.225
+   ],
+   [
+    3290,
+    0.275
+   ],
+   [
+    3300,
+    0.275
+   ],
+   [
+    3310,
+    0.275
+   ],
+   [
+    3320,
+    0.275
+   ],
+   [
+    3330,
+    0.275
+   ],
+   [
+    3340,
+    0.285
+   ],
+   [
+    3350,
+    0.295
+   ],
+   [
+    3360,
+    0.305
+   ],
+   [
+    3370,
+    0.315
+   ],
+   [
+    3380,
+    0.45
+   ],
+   [
+    3390,
+    0.46
+   ],
+   [
+    3400,
+    0.47
+   ],
+   [
+    3410,
+    0.48
+   ],
+   [
+    3420,
+    0.49
+   ],
+   [
+    3430,
+    0.5
+   ],
+   [
+    3440,
+    0.385
+   ],
+   [
+    3450,
+    0.395
+   ],
+   [
+    3460,
+    0.405
+   ],
+   [
+    3470,
+    0.415
+   ],
+   [
+    3480,
+    0.575
+   ],
+   [
+    3490,
+    0.575
+   ],
+   [
+    3500,
+    0.575
+   ],
+   [
+    3510,
+    0.575
+   ],
+   [
+    3520,
+    0.575
+   ],
+   [
+    3530,
+    0.575
+   ],
+   [
+    3540,
+    0.575
+   ],
+   [
+    3550,
+    0.41
+   ],
+   [
+    3560,
+    0.395
+   ],
+   [
+    3570,
+    0.38
+   ],
+   [
+    3580,
+    0.265
+   ],
+   [
+    3590,
+    0.25
+   ],
+   [
+    3600,
+    0.235
+   ],
+   [
+    3610,
+    0.345
+   ],
+   [
+    3620,
+    0.205
+   ],
+   [
+    3630,
+    0.315
+   ],
+   [
+    3640,
+    0.3
+   ],
+   [
+    3650,
+    0.3
+   ],
+   [
+    3660,
+    0.175
+   ]
+  ],
+  "kick": [
+   [
+    3000,
+    0.0
+   ],
+   [
+    3010,
+    0.0
+   ],
+   [
+    3020,
+    0.0
+   ],
+   [
+    3030,
+    0.0
+   ],
+   [
+    3040,
+    0.0
+   ],
+   [
+    3050,
+    0.0
+   ],
+   [
+    3060,
+    0.0
+   ],
+   [
+    3070,
+    0.0
+   ],
+   [
+    3080,
+    0.0
+   ],
+   [
+    3090,
+    0.0
+   ],
+   [
+    3100,
+    0.0
+   ],
+   [
+    3110,
+    0.0
+   ],
+   [
+    3120,
+    0.0
+   ],
+   [
+    3130,
+    0.0
+   ],
+   [
+    3140,
+    0.0
+   ],
+   [
+    3150,
+    0.0
+   ],
+   [
+    3160,
+    0.0
+   ],
+   [
+    3170,
+    0.0
+   ],
+   [
+    3180,
+    0.0
+   ],
+   [
+    3190,
+    0.0
+   ],
+   [
+    3200,
+    0.0
+   ],
+   [
+    3210,
+    0.0
+   ],
+   [
+    3220,
+    0.0
+   ],
+   [
+    3230,
+    0.0
+   ],
+   [
+    3240,
+    0.0
+   ],
+   [
+    3250,
+    0.0
+   ],
+   [
+    3260,
+    0.0
+   ],
+   [
+    3270,
+    0.0
+   ],
+   [
+    3280,
+    0.381
+   ],
+   [
+    3290,
+    0.381
+   ],
+   [
+    3300,
+    0.298
+   ],
+   [
+    3310,
+    0.298
+   ],
+   [
+    3320,
+    0.298
+   ],
+   [
+    3330,
+    0.298
+   ],
+   [
+    3340,
+    0.298
+   ],
+   [
+    3350,
+    0.298
+   ],
+   [
+    3360,
+    0.298
+   ],
+   [
+    3370,
+    0.298
+   ],
+   [
+    3380,
+    0.298
+   ],
+   [
+    3390,
+    0.298
+   ],
+   [
+    3400,
+    0.298
+   ],
+   [
+    3410,
+    0.298
+   ],
+   [
+    3420,
+    0.298
+   ],
+   [
+    3430,
+    0.298
+   ],
+   [
+    3440,
+    0.308
+   ],
+   [
+    3450,
+    0.401
+   ],
+   [
+    3460,
+    0.411
+   ],
+   [
+    3470,
+    0.421
+   ],
+   [
+    3480,
+    0.431
+   ],
+   [
+    3490,
+    0.358
+   ],
+   [
+    3500,
+    0.368
+   ],
+   [
+    3510,
+    0.378
+   ],
+   [
+    3520,
+    0.388
+   ],
+   [
+    3530,
+    0.448
+   ],
+   [
+    3540,
+    0.458
+   ],
+   [
+    3550,
+    0.468
+   ],
+   [
+    3560,
+    0.478
+   ],
+   [
+    3570,
+    0.488
+   ],
+   [
+    3580,
+    0.865
+   ],
+   [
+    3590,
+    0.865
+   ],
+   [
+    3600,
+    0.865
+   ],
+   [
+    3610,
+    0.865
+   ],
+   [
+    3620,
+    0.533
+   ],
+   [
+    3630,
+    0.518
+   ],
+   [
+    3640,
+    0.503
+   ],
+   [
+    3650,
+    0.488
+   ],
+   [
+    3660,
+    0.473
+   ]
+  ]
+ },
+ "first_alerts": {
+  "mud_loss": {
+   "depth": 3150,
+   "score": 0.672,
+   "severity": "high"
+  },
+  "stuck_pipe": {
+   "depth": 3380,
+   "score": 0.745,
+   "severity": "high"
+  },
+  "kick": {
+   "depth": 3580,
+   "score": 0.865,
+   "severity": "critical"
+  }
+ },
+ "at_3100": {
+  "mud_loss": {
+   "score": 0.388,
+   "severity": "medium",
+   "lead": 50.0,
+   "eligible": false
+  },
+  "stuck_pipe": {
+   "score": 0.262,
+   "severity": "low",
+   "lead": 280.0,
+   "eligible": false
+  }
+ },
+ "alert_3150": {
+  "risk_type": "mud_loss",
+  "score": 0.672,
+  "severity": "high",
+  "confidence": 0.845,
+  "lead_depth": 0.0,
+  "alert_eligible": true,
+  "recommendation": "Prepare loss-prevention measures before entering the historical loss window. OIL-AX-99: Keep ECD ≤1.48 sg between 3,100 and 3,250 m, pre-treat with 15 ppb background LCM before 3,140 m and drill the interval at reduced flow rate.",
+  "factors": [
+   {
+    "factor": "proximity",
+    "value": 1.0,
+    "weight": 0.3,
+    "contribution": 0.3,
+    "explanation": "inside window (0 m)"
+   },
+   {
+    "factor": "frequency",
+    "value": 0.4,
+    "weight": 0.2,
+    "contribution": 0.08,
+    "explanation": "2 well(s) / 5"
+   },
+   {
+    "factor": "similarity",
+    "value": 0.857,
+    "weight": 0.1,
+    "contribution": 0.086,
+    "explanation": "mean 86%"
+   },
+   {
+    "factor": "formation",
+    "value": 1.0,
+    "weight": 0.1,
+    "contribution": 0.1,
+    "explanation": "in Barail Group"
+   },
+   {
+    "factor": "parameter",
+    "value": 0.333,
+    "weight": 0.25,
+    "contribution": 0.083,
+    "explanation": "1/3 signals anomalous"
+   },
+   {
+    "factor": "trajectory",
+    "value": 0.45,
+    "weight": 0.05,
+    "contribution": 0.023,
+    "explanation": "inclination match 45%"
+   }
+  ],
+  "supporting_wells": [
+   {
+    "well_id": "W002",
+    "well_name": "OIL-AX-99",
+    "event_type": "mud_loss",
+    "depth": 3150.0,
+    "date": "2023-03-15",
+    "similarity": 0.927,
+    "distance_km": 1.18,
+    "severity": "critical"
+   },
+   {
+    "well_id": "W006",
+    "well_name": "OIL-AX-55",
+    "event_type": "mud_loss",
+    "depth": 3170.0,
+    "date": "2022-05-21",
+    "similarity": 0.787,
+    "distance_km": 1.83,
+    "severity": "medium"
+   }
+  ],
+  "evidence": [
+   {
+    "event_id": "EV-W002-01",
+    "well_id": "W002",
+    "well_name": "OIL-AX-99",
+    "event_type": "mud_loss",
+    "event_label": "Mud Loss",
+    "title": "Total loss of circulation in fractured Barail sandstone",
+    "severity": "critical",
+    "depth_start": 3150.0,
+    "depth_end": 3220.0,
+    "formation": "Barail Group",
+    "date": "2023-03-15",
+    "description": "Total loss of circulation encountered at 3150m while drilling through fractured Barail sandstone. Mud weight was 1.42 sg. Lost 45 m³ of OBM over 6 hours.",
+    "root_cause": "Natural fractures in Barail sandstone exacerbated by high ECD (1.52 sg).",
+    "mitigation": "Reduced mud weight to 1.38 sg, pumped LCM pills (calcium carbonate + graphite), cured losses after 18 hours.",
+    "lessons": "Keep ECD ≤1.48 sg between 3,100 and 3,250 m, pre-treat with 15 ppb background LCM before 3,140 m and drill the interval at reduced flow rate.",
+    "npt_hours": 18.0,
+    "document_id": "DOC-W002-DDR42",
+    "document_title": "DDR OIL-AX-99 Day 42",
+    "document_type": "DDR",
+    "page": 3,
+    "section": "Operations Time Log & Losses",
+    "similarity": 0.927,
+    "distance_km": 1.18
+   },
+   {
+    "event_id": "EV-W006-01",
+    "well_id": "W006",
+    "well_name": "OIL-AX-55",
+    "event_type": "mud_loss",
+    "event_label": "Mud Loss",
+    "title": "Partial losses in Barail sandstone",
+    "severity": "medium",
+    "depth_start": 3170.0,
+    "depth_end": 3205.0,
+    "formation": "Barail Group",
+    "date": "2022-05-21",
+    "description": "Partial losses of 8–12 m³/hr at 3,172 m; 38 m³ lost in total.",
+    "root_cause": "Induced fractures in Barail sandstone at an ECD of 1.51 sg.",
+    "mitigation": "Reduced flow rate from 2,050 to 1,750 l/min and pumped a 60 ppb LCM pill; losses healed in 5 hours.",
+    "lessons": "Drill the Barail between 3,150 and 3,220 m with ECD below 1.48 sg.",
+    "npt_hours": 7.0,
+    "document_id": "DOC-W006-ML",
+    "document_title": "Mud Log OIL-AX-55",
+    "document_type": "mud_log",
+    "page": 3,
+    "section": "Losses & Gas Record",
+    "similarity": 0.787,
+    "distance_km": 1.83
+   }
+  ],
+  "ml": {
+   "probability": 0.185,
+   "base_rate": 0.039,
+   "lift": 4.7,
+   "elevated": true,
+   "verdict": "agrees",
+   "horizon_m": 50.0
+  }
+ },
+ "brief": {
+  "well": {
+   "id": "W001",
+   "name": "OIL-AX-102",
+   "rig": "Rig DR-07 (2000 HP)",
+   "field": "Dikhow East (Demo Field)",
+   "total_depth_md": 3800.0
+  },
+  "generated_at": "2026-09-30T07:09:55Z",
+  "depth": 3100.0,
+  "horizon_m": 300.0,
+  "window": {
+   "start": 3100.0,
+   "end": 3400.0
+  },
+  "radius_km": 25.0,
+  "offsets_in_radius": 10,
+  "current_formation": "Barail Group",
+  "headline": "Next 300 m: 2 hazard windows with offset history — mud loss at 3,150 m (2 of 10 offsets); stuck pipe at 3,380 m (3 of 10 offsets). 2 would reach alert level on history alone. Formation tops ahead: Kopili Shale 3,290 m.",
+  "hazards": [
+   {
+    "zone_id": "RZ01",
+    "risk_type": "mud_loss",
+    "risk_label": "Mud Loss",
+    "formation": "Barail Group",
+    "window": {
+     "start": 3150.0,
+     "end": 3220.0
+    },
+    "distance_m": 50.0,
+    "position": "ahead",
+    "historical_severity": "critical",
+    "projected": {
+     "score": 0.588,
+     "severity": "high",
+     "alert_eligible": true,
+     "alert_threshold": 0.55,
+     "confidence": 0.745,
+     "factors": [
+      {
+       "factor": "proximity",
+       "value": 1.0,
+       "weight": 0.3,
+       "contribution": 0.3,
+       "explanation": "inside window (0 m)"
+      },
+      {
+       "factor": "frequency",
+       "value": 0.4,
+       "weight": 0.2,
+       "contribution": 0.08,
+       "explanation": "2 well(s) / 5"
+      },
+      {
+       "factor": "similarity",
+       "value": 0.857,
+       "weight": 0.1,
+       "contribution": 0.086,
+       "explanation": "mean 86%"
+      },
+      {
+       "factor": "formation",
+       "value": 1.0,
+       "weight": 0.1,
+       "contribution": 0.1,
+       "explanation": "in Barail Group"
+      },
+      {
+       "factor": "parameter",
+       "value": 0.0,
+       "weight": 0.25,
+       "contribution": 0.0,
+       "explanation": "0/0 signals anomalous"
+      },
+      {
+       "factor": "trajectory",
+       "value": 0.45,
+       "weight": 0.05,
+       "contribution": 0.023,
+       "explanation": "inclination match 45%"
+      }
+     ]
+    },
+    "now": {
+     "score": 0.388,
+     "severity": "medium",
+     "status": "watch"
+    },
+    "offsets_hit": 2,
+    "offsets_reached": 10,
+    "likelihood": 0.2,
+    "npt": {
+     "total": 25.0,
+     "mean_per_well": 12.5,
+     "worst": 18.0,
+     "expected": 2.5
+    },
+    "reasons": [
+     "2 mud loss event(s) recorded in this interval across 2 offset well(s) within 25 km: OIL-AX-99, OIL-AX-55.",
+     "Active well is 93% similar to OIL-AX-99, which recorded total loss of circulation in fractured barail sandstone at 3,150–3,220 m."
+    ],
+    "evidence": [
+     {
+      "event_id": "EV-W002-01",
+      "well_id": "W002",
+      "well_name": "OIL-AX-99",
+      "event_type": "mud_loss",
+      "event_label": "Mud Loss",
+      "title": "Total loss of circulation in fractured Barail sandstone",
+      "severity": "critical",
+      "depth_start": 3150.0,
+      "depth_end": 3220.0,
+      "formation": "Barail Group",
+      "date": "2023-03-15",
+      "description": "Total loss of circulation encountered at 3150m while drilling through fractured Barail sandstone. Mud weight was 1.42 sg. Lost 45 m³ of OBM over 6 hours.",
+      "root_cause": "Natural fractures in Barail sandstone exacerbated by high ECD (1.52 sg).",
+      "mitigation": "Reduced mud weight to 1.38 sg, pumped LCM pills (calcium carbonate + graphite), cured losses after 18 hours.",
+      "lessons": "Keep ECD ≤1.48 sg between 3,100 and 3,250 m, pre-treat with 15 ppb background LCM before 3,140 m and drill the interval at reduced flow rate.",
+      "npt_hours": 18.0,
+      "document_id": "DOC-W002-DDR42",
+      "document_title": "DDR OIL-AX-99 Day 42",
+      "document_type": "DDR",
+      "page": 3,
+      "section": "Operations Time Log & Losses",
+      "similarity": 0.927,
+      "distance_km": 1.18
+     },
+     {
+      "event_id": "EV-W006-01",
+      "well_id": "W006",
+      "well_name": "OIL-AX-55",
+      "event_type": "mud_loss",
+      "event_label": "Mud Loss",
+      "title": "Partial losses in Barail sandstone",
+      "severity": "medium",
+      "depth_start": 3170.0,
+      "depth_end": 3205.0,
+      "formation": "Barail Group",
+      "date": "2022-05-21",
+      "description": "Partial losses of 8–12 m³/hr at 3,172 m; 38 m³ lost in total.",
+      "root_cause": "Induced fractures in Barail sandstone at an ECD of 1.51 sg.",
+      "mitigation": "Reduced flow rate from 2,050 to 1,750 l/min and pumped a 60 ppb LCM pill; losses healed in 5 hours.",
+      "lessons": "Drill the Barail between 3,150 and 3,220 m with ECD below 1.48 sg.",
+      "npt_hours": 7.0,
+      "document_id": "DOC-W006-ML",
+      "document_title": "Mud Log OIL-AX-55",
+      "document_type": "mud_log",
+      "page": 3,
+      "section": "Losses & Gas Record",
+      "similarity": 0.787,
+      "distance_km": 1.83
+     }
+    ],
+    "what_worked": [
+     {
+      "well_name": "OIL-AX-55",
+      "text": "Reduced flow rate from 2,050 to 1,750 l/min and pumped a 60 ppb LCM pill; losses healed in 5 hours.",
+      "npt_hours": 7.0,
+      "event_id": "EV-W006-01",
+      "document_id": "DOC-W006-ML",
+      "document_title": "Mud Log OIL-AX-55",
+      "page": 3
+     },
+     {
+      "well_name": "OIL-AX-99",
+      "text": "Reduced mud weight to 1.38 sg, pumped LCM pills (calcium carbonate + graphite), cured losses after 18 hours.",
+      "npt_hours": 18.0,
+      "event_id": "EV-W002-01",
+      "document_id": "DOC-W002-DDR42",
+      "document_title": "DDR OIL-AX-99 Day 42",
+      "page": 3
+     }
+    ],
+    "lessons": [
+     {
+      "well_name": "OIL-AX-99",
+      "text": "Keep ECD ≤1.48 sg between 3,100 and 3,250 m, pre-treat with 15 ppb background LCM before 3,140 m and drill the interval at reduced flow rate.",
+      "event_id": "EV-W002-01",
+      "document_id": "DOC-W002-DDR42",
+      "document_title": "DDR OIL-AX-99 Day 42",
+      "page": 3
+     },
+     {
+      "well_name": "OIL-AX-55",
+      "text": "Drill the Barail between 3,150 and 3,220 m with ECD below 1.48 sg.",
+      "event_id": "EV-W006-01",
+      "document_id": "DOC-W006-ML",
+      "document_title": "Mud Log OIL-AX-55",
+      "page": 3
+     }
+    ],
+    "checks": [
+     "Monitor pit volume and flow-out continuously; tighten PVT alarm to ±1 m³.",
+     "Keep ECD below the offset loss-onset value — manage pump rate and ROP through the interval.",
+     "Pre-mix an LCM pill (sized CaCO₃ + graphite) and keep it on standby at the rig floor.",
+     "Review mud weight against the offset cure weight before entering the loss window.",
+     "Minimise surge pressures: control tripping and connection speeds."
+    ],
+    "offset_numbers": [
+     {
+      "key": "mud_weight",
+      "label": "Mud weight at the event",
+      "value": 1.42,
+      "unit": "sg",
+      "well_name": "OIL-AX-99",
+      "event_id": "EV-W002-01"
+     },
+     {
+      "key": "ecd",
+      "label": "ECD at loss onset",
+      "value": 1.52,
+      "unit": "sg",
+      "well_name": "OIL-AX-99",
+      "event_id": "EV-W002-01"
+     },
+     {
+      "key": "loss_volume_m3",
+      "label": "Mud lost",
+      "value": 45,
+      "unit": "m³",
+      "well_name": "OIL-AX-99",
+      "event_id": "EV-W002-01"
+     },
+     {
+      "key": "cure_mud_weight",
+      "label": "Mud weight that cured the losses",
+      "value": 1.38,
+      "unit": "sg",
+      "well_name": "OIL-AX-99",
+      "event_id": "EV-W002-01"
+     },
+     {
+      "key": "ecd",
+      "label": "ECD at loss onset",
+      "value": 1.51,
+      "unit": "sg",
+      "well_name": "OIL-AX-55",
+      "event_id": "EV-W006-01"
+     },
+     {
+      "key": "mud_weight",
+      "label": "Mud weight at the event",
+      "value": 1.41,
+      "unit": "sg",
+      "well_name": "OIL-AX-55",
+      "event_id": "EV-W006-01"
+     }
+    ],
+    "mud_window": {
+     "pore_max": 1.255,
+     "frac_min": 1.51,
+     "mw_plan": [
+      1.4
+     ],
+     "ecd_limit": 1.5,
+     "mw_min": 1.27,
+     "margin": 0.255,
+     "note": "Offset-calibrated window 1.25–1.51 sg: keep mud weight ≥ 1.27 sg and ECD ≤ 1.50 sg."
+    },
+    "breaches": []
+   },
+   {
+    "zone_id": "RZ02",
+    "risk_type": "stuck_pipe",
+    "risk_label": "Stuck Pipe",
+    "formation": "Kopili Shale",
+    "window": {
+     "start": 3380.0,
+     "end": 3430.0
+    },
+    "distance_m": 280.0,
+    "position": "ahead",
+    "historical_severity": "high",
+    "projected": {
+     "score": 0.662,
+     "severity": "high",
+     "alert_eligible": true,
+     "alert_threshold": 0.55,
+     "confidence": 0.892,
+     "factors": [
+      {
+       "factor": "proximity",
+       "value": 1.0,
+       "weight": 0.3,
+       "contribution": 0.3,
+       "explanation": "inside window (0 m)"
+      },
+      {
+       "factor": "frequency",
+       "value": 0.6,
+       "weight": 0.2,
+       "contribution": 0.12,
+       "explanation": "3 well(s) / 5"
+      },
+      {
+       "factor": "similarity",
+       "value": 0.945,
+       "weight": 0.1,
+       "contribution": 0.095,
+       "explanation": "mean 94%"
+      },
+      {
+       "factor": "formation",
+       "value": 1.0,
+       "weight": 0.1,
+       "contribution": 0.1,
+       "explanation": "in Kopili Shale"
+      },
+      {
+       "factor": "parameter",
+       "value": 0.0,
+       "weight": 0.25,
+       "contribution": 0.0,
+       "explanation": "0/0 signals anomalous"
+      },
+      {
+       "factor": "trajectory",
+       "value": 0.944,
+       "weight": 0.05,
+       "contribution": 0.047,
+       "explanation": "inclination match 94%"
+      }
+     ]
+    },
+    "now": {
+     "score": 0.262,
+     "severity": "low",
+     "status": "watch"
+    },
+    "offsets_hit": 3,
+    "offsets_reached": 10,
+    "likelihood": 0.3,
+    "npt": {
+     "total": 63.0,
+     "mean_per_well": 21.0,
+     "worst": 36.0,
+     "expected": 6.3
+    },
+    "reasons": [
+     "3 stuck pipe event(s) recorded in this interval across 3 offset well(s) within 25 km: OIL-AX-88, OIL-AX-66, OIL-AX-11.",
+     "Active well is 96% similar to OIL-AX-11, which recorded momentary stuck pipe on connection at 3,395–3,410 m."
+    ],
+    "evidence": [
+     {
+      "event_id": "EV-W003-01",
+      "well_id": "W003",
+      "well_name": "OIL-AX-88",
+      "event_type": "stuck_pipe",
+      "event_label": "Stuck Pipe",
+      "title": "Stuck pipe (differential sticking) during connection",
+      "severity": "high",
+      "depth_start": 3380.0,
+      "depth_end": 3420.0,
+      "formation": "Kopili Shale",
+      "date": "2022-11-08",
+      "description": "Pipe stuck at 3400m during connection. Overpull of 80 kN. Shale swelling observed in cuttings.",
+      "root_cause": "Reactive Kopili shale swelling due to inadequate KCl inhibition in mud system. Hole left open for 45 minutes during BHA change.",
+      "mitigation": "Spotted 15 m³ of diesel-based spotting fluid, worked pipe for 12 hours, freed at 120 kN overpull. Increased KCl to 7% in mud system.",
+      "lessons": "Maintain KCl ≥7% before entering the Kopili, keep static time under 15 minutes and spot a pill before BHA changes.",
+      "npt_hours": 36.0,
+      "document_id": "DOC-W003-DDR55",
+      "document_title": "DDR OIL-AX-88 Day 55",
+      "document_type": "DDR",
+      "page": 7,
+      "section": "Stuck Pipe Incident",
+      "similarity": 0.931,
+      "distance_km": 0.96
+     },
+     {
+      "event_id": "EV-W005-01",
+      "well_id": "W005",
+      "well_name": "OIL-AX-66",
+      "event_type": "stuck_pipe",
+      "event_label": "Stuck Pipe",
+      "title": "Mechanical sticking at key seat",
+      "severity": "high",
+      "depth_start": 3390.0,
+      "depth_end": 3430.0,
+      "formation": "Kopili Shale",
+      "date": "2021-06-22",
+      "description": "Mechanical sticking at 3410m due to key seating in dogleg. Torque increased from 12 kN·m to 28 kN·m over 30 minutes.",
+      "root_cause": "Key seat formation at 3400m dogleg (8°/30m). Insufficient reaming during trip out.",
+      "mitigation": "Back-reamed to 3350m, reamed down with under-reamer, freed pipe. Modified tripping procedures to include reaming every stand.",
+      "lessons": "Keep doglegs below 5°/30 m in the Kopili and ream every stand when tripping through it.",
+      "npt_hours": 24.0,
+      "document_id": "DOC-W005-DDR48",
+      "document_title": "DDR OIL-AX-66 Day 48",
+      "document_type": "DDR",
+      "page": 5,
+      "section": "Stuck Pipe Incident",
+      "similarity": 0.946,
+      "distance_km": 1.5
+     },
+     {
+      "event_id": "EV-W010-01",
+      "well_id": "W010",
+      "well_name": "OIL-AX-11",
+      "event_type": "stuck_pipe",
+      "event_label": "Stuck Pipe",
+      "title": "Momentary stuck pipe on connection",
+      "severity": "medium",
+      "depth_start": 3395.0,
+      "depth_end": 3410.0,
+      "formation": "Kopili Shale",
+      "date": "2022-03-08",
+      "description": "Pipe stuck momentarily on a connection at 3,402 m with 150 kN overpull; worked free in 2 hours.",
+      "root_cause": "Swelling Kopili shale with KCl depleted to 4.5%.",
+      "mitigation": "Worked pipe with jars and freed it in 2 hours; KCl restored to 7%.",
+      "lessons": "Check KCl every tour while in the Kopili.",
+      "npt_hours": 3.0,
+      "document_id": "DOC-W010-NPT",
+      "document_title": "NPT Report OIL-AX-11",
+      "document_type": "NPT_report",
+      "page": 2,
+      "section": "NPT Event 1",
+      "similarity": 0.958,
+      "distance_km": 1.12
+     }
+    ],
+    "what_worked": [
+     {
+      "well_name": "OIL-AX-11",
+      "text": "Worked pipe with jars and freed it in 2 hours; KCl restored to 7%.",
+      "npt_hours": 3.0,
+      "event_id": "EV-W010-01",
+      "document_id": "DOC-W010-NPT",
+      "document_title": "NPT Report OIL-AX-11",
+      "page": 2
+     },
+     {
+      "well_name": "OIL-AX-66",
+      "text": "Back-reamed to 3350m, reamed down with under-reamer, freed pipe. Modified tripping procedures to include reaming every stand.",
+      "npt_hours": 24.0,
+      "event_id": "EV-W005-01",
+      "document_id": "DOC-W005-DDR48",
+      "document_title": "DDR OIL-AX-66 Day 48",
+      "page": 5
+     },
+     {
+      "well_name": "OIL-AX-88",
+      "text": "Spotted 15 m³ of diesel-based spotting fluid, worked pipe for 12 hours, freed at 120 kN overpull. Increased KCl to 7% in mud system.",
+      "npt_hours": 36.0,
+      "event_id": "EV-W003-01",
+      "document_id": "DOC-W003-DDR55",
+      "document_title": "DDR OIL-AX-88 Day 55",
+      "page": 7
+     }
+    ],
+    "lessons": [
+     {
+      "well_name": "OIL-AX-88",
+      "text": "Maintain KCl ≥7% before entering the Kopili, keep static time under 15 minutes and spot a pill before BHA changes.",
+      "event_id": "EV-W003-01",
+      "document_id": "DOC-W003-DDR55",
+      "document_title": "DDR OIL-AX-88 Day 55",
+      "page": 7
+     },
+     {
+      "well_name": "OIL-AX-66",
+      "text": "Keep doglegs below 5°/30 m in the Kopili and ream every stand when tripping through it.",
+      "event_id": "EV-W005-01",
+      "document_id": "DOC-W005-DDR48",
+      "document_title": "DDR OIL-AX-66 Day 48",
+      "page": 5
+     },
+     {
+      "well_name": "OIL-AX-11",
+      "text": "Check KCl every tour while in the Kopili.",
+      "event_id": "EV-W010-01",
+      "document_id": "DOC-W010-NPT",
+      "document_title": "NPT Report OIL-AX-11",
+      "page": 2
+     }
+    ],
+    "checks": [
+     "Verify KCl / inhibitor concentration before entering the Kopili Shale.",
+     "Minimise static time on connections — keep pipe moving; never leave hole open without circulation.",
+     "Ream/back-ream every stand through doglegs above 5°/30 m.",
+     "Track torque & drag against the broomstick model; flag overpull above 50 kN.",
+     "Confirm jar placement and have spotting fluid available."
+    ],
+    "offset_numbers": [
+     {
+      "key": "overpull_kn",
+      "label": "Overpull",
+      "value": 80,
+      "unit": "kN",
+      "well_name": "OIL-AX-88",
+      "event_id": "EV-W003-01"
+     },
+     {
+      "key": "kcl_pct",
+      "label": "KCl in the mud",
+      "value": 4.0,
+      "unit": "%",
+      "well_name": "OIL-AX-88",
+      "event_id": "EV-W003-01"
+     },
+     {
+      "key": "static_minutes",
+      "label": "Static time before sticking",
+      "value": 45,
+      "unit": "min",
+      "well_name": "OIL-AX-88",
+      "event_id": "EV-W003-01"
+     },
+     {
+      "key": "mud_weight",
+      "label": "Mud weight at the event",
+      "value": 1.43,
+      "unit": "sg",
+      "well_name": "OIL-AX-88",
+      "event_id": "EV-W003-01"
+     },
+     {
+      "key": "torque_before",
+      "label": "Torque before the event",
+      "value": 12,
+      "unit": "kN·m",
+      "well_name": "OIL-AX-66",
+      "event_id": "EV-W005-01"
+     },
+     {
+      "key": "torque_peak",
+      "label": "Peak torque",
+      "value": 28,
+      "unit": "kN·m",
+      "well_name": "OIL-AX-66",
+      "event_id": "EV-W005-01"
+     },
+     {
+      "key": "dogleg_deg_30m",
+      "label": "Dogleg at the stuck point",
+      "value": 8,
+      "unit": "°/30 m",
+      "well_name": "OIL-AX-66",
+      "event_id": "EV-W005-01"
+     },
+     {
+      "key": "overpull_kn",
+      "label": "Overpull",
+      "value": 150,
+      "unit": "kN",
+      "well_name": "OIL-AX-11",
+      "event_id": "EV-W010-01"
+     },
+     {
+      "key": "kcl_pct",
+      "label": "KCl in the mud",
+      "value": 4.5,
+      "unit": "%",
+      "well_name": "OIL-AX-11",
+      "event_id": "EV-W010-01"
+     }
+    ],
+    "mud_window": {
+     "pore_max": 1.365,
+     "frac_min": 1.765,
+     "mw_plan": [
+      1.44
+     ],
+     "ecd_limit": 1.75,
+     "mw_min": 1.39,
+     "margin": 0.4,
+     "note": "Offset-calibrated window 1.36–1.76 sg: keep mud weight ≥ 1.39 sg and ECD ≤ 1.75 sg."
+    },
+    "breaches": []
+   }
+  ],
+  "formations": [
+   {
+    "name": "Barail Group",
+    "top_md": 2380.0,
+    "base_md": 3290.0,
+    "lithology": "sandstone / shale",
+    "risk_tags": [
+     "mud_loss",
+     "overpressure"
+    ],
+    "prognosed": false,
+    "pore_pressure_sg": 1.255,
+    "frac_gradient_sg": 1.555,
+    "mw_plan": 1.4,
+    "enters_in_window": false
+   },
+   {
+    "name": "Kopili Shale",
+    "top_md": 3290.0,
+    "base_md": 3575.0,
+    "lithology": "shale",
+    "risk_tags": [
+     "stuck_pipe",
+     "wellbore_instability"
+    ],
+    "prognosed": true,
+    "pore_pressure_sg": 1.365,
+    "frac_gradient_sg": 1.765,
+    "mw_plan": 1.44,
+    "enters_in_window": true
+   }
+  ],
+  "casing": [
+   {
+    "name": "conductor",
+    "size": "20\"",
+    "top_md": 0.0,
+    "shoe_md": 50.0,
+    "planned": false,
+    "in_window": false
+   },
+   {
+    "name": "surface",
+    "size": "13-3/8\"",
+    "top_md": 0.0,
+    "shoe_md": 790.0,
+    "planned": false,
+    "in_window": false
+   },
+   {
+    "name": "intermediate",
+    "size": "9-5/8\"",
+    "top_md": 0.0,
+    "shoe_md": 3020.0,
+    "planned": false,
+    "in_window": false
+   },
+   {
+    "name": "production liner",
+    "size": "7\"",
+    "top_md": 2920.0,
+    "shoe_md": 3795.0,
+    "planned": true,
+    "in_window": false
+   }
+  ],
+  "npt": {
+   "expected_hours": 8.8,
+   "worst_case_hours": 54.0,
+   "offset_total_hours": 88.0
+  },
+  "sources": [
+   {
+    "document_id": "DOC-W005-DDR48",
+    "title": "DDR OIL-AX-66 Day 48",
+    "doc_type": "DDR",
+    "well_name": "OIL-AX-66",
+    "pages": [
+     5
+    ]
+   },
+   {
+    "document_id": "DOC-W003-DDR55",
+    "title": "DDR OIL-AX-88 Day 55",
+    "doc_type": "DDR",
+    "well_name": "OIL-AX-88",
+    "pages": [
+     7
+    ]
+   },
+   {
+    "document_id": "DOC-W002-DDR42",
+    "title": "DDR OIL-AX-99 Day 42",
+    "doc_type": "DDR",
+    "well_name": "OIL-AX-99",
+    "pages": [
+     3
+    ]
+   },
+   {
+    "document_id": "DOC-W006-ML",
+    "title": "Mud Log OIL-AX-55",
+    "doc_type": "mud_log",
+    "well_name": "OIL-AX-55",
+    "pages": [
+     3
+    ]
+   },
+   {
+    "document_id": "DOC-W010-NPT",
+    "title": "NPT Report OIL-AX-11",
+    "doc_type": "NPT_report",
+    "well_name": "OIL-AX-11",
+    "pages": [
+     2
+    ]
+   }
+  ],
+  "method": "Projected severity scores each window with the bit at its top from offset history only (live-parameter factor = 0); likelihood = offsets that hit the window ÷ offsets drilled to that depth; expected NPT = likelihood × mean NPT per affected offset."
+ },
+ "model": {
+  "name": "NWIS explainable hybrid risk score",
+  "weights": {
+   "proximity": 0.3,
+   "frequency": 0.2,
+   "similarity": 0.1,
+   "formation": 0.1,
+   "parameter": 0.25,
+   "trajectory": 0.05
+  },
+  "thresholds": {
+   "critical": 0.75,
+   "high": 0.55,
+   "medium": 0.35
+  },
+  "lookahead_m": 300.0,
+  "approach_window_m": 150.0,
+  "factors": {
+   "proximity": "1.0 inside the offset event window; up to 0.5 when approaching (linear over 150 m); decays after passing.",
+   "frequency": "Distinct offset wells within the radius with this event in the window ÷ 5 (capped at 1).",
+   "similarity": "Mean well-similarity (formations, coverage, trajectory, parameters, distance) of those offsets.",
+   "formation": "1.0 when drilling the zone formation; 0.5 within 50 m above its prognosed top.",
+   "parameter": "Share of the risk family's live signals flagged against programme / rolling baseline / offset limits.",
+   "trajectory": "Inclination match with the offset well at the event depth."
+  },
+  "alert_policy": "High/critical-history zones alert at ≥0.55; medium/low-history zones alert only at ≥0.75 (live signal confirmation). Below that, the assessment is shown as a watch card.",
+  "limitations": [
+   "Rule-weighted — scores rank risk, they are not probabilities. The learned model below is a cross-check, not the alert driver.",
+   "The demo field is illustrative; weights must be tuned on authorised OIL history before operational use.",
+   "Decision support only — the engineer remains the decision maker."
+  ],
+  "learned": {
+   "method": "L2-regularised logistic regression on the six risk factors (Newton/IRLS, pure Python)",
+   "target": "offset well recorded the risk family within 50 m ahead of the bit (or at the bit)",
+   "validation": "leave-one-well-out backtest over completed offset wells",
+   "caveat": "Trained on the synthetic demo field — it demonstrates the calibration method; retrain on authorised OIL history before operational use. The hand-set score remains the alert driver.",
+   "status": "ready",
+   "error": null,
+   "intercept": -5.012,
+   "coefficients": {
+    "proximity": 1.055,
+    "frequency": -3.276,
+    "similarity": 0.541,
+    "formation": 1.977,
+    "parameter": 4.275,
+    "trajectory": -0.177
+   },
+   "learned_weights": {
+    "proximity": 0.134,
+    "frequency": 0.0,
+    "similarity": 0.069,
+    "formation": 0.252,
+    "parameter": 0.545,
+    "trajectory": 0.0
+   },
+   "hand_weights": {
+    "proximity": 0.3,
+    "frequency": 0.2,
+    "similarity": 0.1,
+    "formation": 0.1,
+    "parameter": 0.25,
+    "trajectory": 0.05
+   },
+   "positives": 62,
+   "wells": 12,
+   "base_rate": 0.0392,
+   "auc_model": 0.864,
+   "auc_rule": 0.755,
+   "at_alert": {
+    "model": {
+     "precision": 0.75,
+     "recall": 0.145
+    },
+    "rule": {
+     "precision": 0.089,
+     "recall": 0.274
+    }
+   },
+   "per_family": {
+    "NPT": {
+     "rows": 235,
+     "positives": 7,
+     "auc_model": 0.775,
+     "auc_rule": 0.411
+    },
+    "cementing_failure": {
+     "rows": 258,
+     "positives": 3,
+     "auc_model": 0.708,
+     "auc_rule": 0.742
+    },
+    "kick": {
+     "rows": 179,
+     "positives": 7,
+     "auc_model": 0.969,
+     "auc_rule": 0.921
+    },
+    "mud_loss": {
+     "rows": 446,
+     "positives": 24,
+     "auc_model": 0.886,
+     "auc_rule": 0.716
+    },
+    "stuck_pipe": {
+     "rows": 245,
+     "positives": 13,
+     "auc_model": 0.931,
+     "auc_rule": 0.917
+    },
+    "torque_spike": {
+     "rows": 220,
+     "positives": 8,
+     "auc_model": 0.936,
+     "auc_rule": 0.792
+    }
+   },
+   "horizon_m": 50.0,
+   "step_m": 20.0,
+   "l2": 1.0,
+   "radius_km": 25.0,
+   "seconds": 0.83
+  }
+ },
+ "opendata": {
+  "area": {
+   "source": {
+    "name": "Norwegian Offshore Directorate (Sodir) FactPages",
+    "url": "https://factpages.sodir.no/",
+    "licence": "Norwegian Licence for Open Government Data (NLOD 2.0)",
+    "licence_url": "https://data.norge.no/nlod/en/2.0",
+    "attribution": "Contains data from the Norwegian Offshore Directorate FactPages, used under NLOD 2.0.",
+    "retrieved": "2026-09-30",
+    "tables": [
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_history&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_exploration_all&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_formation_top&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_mud&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_casing_and_lot&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false"
+    ]
+   },
+   "area": "Sleipner · Volve · Johan Sverdrup area (quadrants 15–16, North Sea)",
+   "wells": 241,
+   "events": 60,
+   "wells_with_events": 50,
+   "by_family": {
+    "mud_loss": 21,
+    "stuck_pipe": 15,
+    "wellbore_instability": 10,
+    "kick": 7,
+    "NPT": 5,
+    "torque_spike": 1,
+    "cementing_failure": 1
+   },
+   "with_mud": 219,
+   "with_lot": 188,
+   "with_tops": 237,
+   "spotcheck": {
+    "n": 50,
+    "type_correct": 47,
+    "precision": 0.94,
+    "depth_checked": 31,
+    "depth_correct": 29,
+    "depth_accuracy": 0.935
+   },
+   "default_focus": "15/9-19 SR"
+  },
+  "shelf": {
+   "source": {
+    "name": "Norwegian Offshore Directorate (Sodir) FactPages",
+    "url": "https://factpages.sodir.no/",
+    "licence": "Norwegian Licence for Open Government Data (NLOD 2.0)",
+    "licence_url": "https://data.norge.no/nlod/en/2.0",
+    "attribution": "Contains data from the Norwegian Offshore Directorate FactPages, used under NLOD 2.0.",
+    "retrieved": "2026-09-30",
+    "tables": [
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_history&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_exploration_all&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_formation_top&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_mud&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false",
+     "https://factpages.sodir.no/public?/Factpages/external/tableview/wellbore_casing_and_lot&rs:Command=Render&rc:Toolbar=false&rc:Parameters=f&IpAddress=not_used&CultureCode=en&rs:Format=CSV&Top100=false"
+    ]
+   },
+   "histories": 1970,
+   "paragraphs": 12529,
+   "words": 783358,
+   "events": 611,
+   "wells_with_events": 475,
+   "by_family": {
+    "stuck_pipe": 161,
+    "mud_loss": 144,
+    "kick": 112,
+    "NPT": 100,
+    "wellbore_instability": 82,
+    "cementing_failure": 8,
+    "torque_spike": 4
+   },
+   "seconds": 2.26,
+   "years": [
+    1966,
+    2022
+   ]
+  }
+ },
+ "spotcheck": {
+  "method": "Held-out spot-check. The prose rules were tuned on the Sleipner–Volve–Johan Sverdrup study area (quadrants 15–16) and then frozen. Every k-th extraction (ordered by key) from wellbores OUTSIDE that area was read against its source sentence. Verdicts: correct = a real drilling incident of the stated type, at the stated depth when one is given; depth_off = right incident, wrong depth; not_event = not an incident of this well. Precision only — incidents the extractor missed are not counted (recall is not measured). Labels are reproducible: the key is sha1(well|sentence)[:10].",
+  "labelled": 50,
+  "rows": [
+   {
+    "key": "00d6c6e00e",
+    "well": "7321/7-1",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "Except from two fishing operations no significant drilling problems were experienced.",
+    "evidence": "Except from two fishing operations no significant drilling problems were experienced. The well was drilled with seawater and hi-vis pills down to 982 m and with gelled seawater / polymer from 982 m to TD. There was no shallow gas in the hole.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Two fishing operations; no depth given."
+   },
+   {
+    "key": "06a8e2a86d",
+    "well": "34/10-8",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2037.0,
+    "depth_end": 2037.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "Also the drill string became stuck during plug back operations at 2037 m and 9 days were lost when fishing for it.",
+    "evidence": "Also the drill string became stuck during plug back operations at 2037 m and 9 days were lost when fishing for it. The well was drilled with Gel/spud mud down to 875 m and with gel/lignosulphonate from 875 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "0c10f4264a",
+    "well": "2/4-17",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2081.0,
+    "depth_end": 2081.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "Drilling went without problems to 2081m were the well was sidetracked because the string became stuck while taking a survey.",
+    "evidence": "Drilling went without problems to 2081m were the well was sidetracked because the string became stuck while taking a survey.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "0ff14d7b1b",
+    "well": "30/9-2",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 1334.0,
+    "depth_end": 1334.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.75,
+    "sentence": "While running the 13 3/8\" casing, this got stuck at 1334 m.",
+    "evidence": "While running the 13 3/8\" casing, this got stuck at 1334 m. The casing was worked free using diesel in the mud and the casing was set at 1680 m. After drilling the 12 1/4\" hole to 2203 m the drill pipe got stuck with the bit at 2170 m.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "The casing was worked free using diesel in the mud and the casing was set at 1680 m.",
+    "verdict": "correct",
+    "note": "Casing stuck while running."
+   },
+   {
+    "key": "14b6162a11",
+    "well": "25/10-2 R",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2213.0,
+    "depth_end": 2213.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "Later the pipe became stuck, with the bottom of the fish at 2213 m, and it became necessary to sidetrack the hole.",
+    "evidence": "Later the pipe became stuck, with the bottom of the fish at 2213 m, and it became necessary to sidetrack the hole. Six cones were lost in the hole while drilling at 2497 m in the sidetrack hole; otherwise no problems were experienced. Initial drilling from the sea floor to 396 m was with seawater and gel.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Depth is the bottom of the fish."
+   },
+   {
+    "key": "18ea6fbb06",
+    "well": "6407/2-2",
+    "type": "overpressure",
+    "label": "Overpressure",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "A study of wire line logs, sidewalls cores and hole response indicate that the gas was overpressured, and trapped in a non-reservoir lithology.",
+    "evidence": "A study of wire line logs, sidewalls cores and hole response indicate that the gas was overpressured, and trapped in a non-reservoir lithology. Base Cretaceous unconformity was encountered at 2409.5 m. The upper Jurassic was developed with 11.5 m of hot shales Spekk Formation and 39.5 m of silty claystones of the Melke Formation.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "not_event",
+    "note": "Log interpretation that the gas was overpressured — geology, not a well-control incident."
+   },
+   {
+    "key": "1d335c02ef",
+    "well": "30/11-4",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": 1918.0,
+    "depth_end": 1918.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "After unsuccessful fishing the well was sidetracked from 1918 m.",
+    "evidence": "After unsuccessful fishing the well was sidetracked from 1918 m. The well was drilled with bentonite and brack water down to 813 m, with KCl/polymer mud from 813 m to 4205 m, with gel/lignosulphonate/lignite mud from 4205 m to 5059 m, and with gel/polymer lignite mud from 5059 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "depth_off",
+    "note": "1,918 m is the sidetrack point, not where the fishing happened."
+   },
+   {
+    "key": "2096bbcd7b",
+    "well": "7/8-4",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": 4250.0,
+    "depth_end": 4250.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.75,
+    "sentence": "The pipe was unscrewed at 4250 m and during fishing operations two more sections of pipe were lost in the hole, one with the top at 4192 m, the other at 4183 m.",
+    "evidence": "The pipe was unscrewed at 4250 m and during fishing operations two more sections of pipe were lost in the hole, one with the top at 4192 m, the other at 4183 m. The operator then decided on a sidetrack, and the hole was cemented back to 4130 m and a sidetrack was kicked off from 4140 m. Eleven days were lost due to the plug back and sidetrack operation.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "Eleven days were lost due to the plug back and sidetrack operation.",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "2536f03010",
+    "well": "34/2-2",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "Fishing was attempted but the fish could not be retrieved.",
+    "evidence": "Fishing was attempted but the fish could not be retrieved. The well bore was technically suspended on 12 December 1980 as a dry well. Operations were resumed the same day as the re-entry 34/2-2 R.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "28dd46c869",
+    "well": "6506/12-5",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "There were minor incidents with a failed anchor and lost circulation in the top hole.",
+    "evidence": "There were minor incidents with a failed anchor and lost circulation in the top hole. A poorly cemented 9 5/8\" casing required 116 hours amendment before normal drilling could commence. The well was drilled with spud mud down to 393 m.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Lost circulation in the top hole; no depth given."
+   },
+   {
+    "key": "2df11b2915",
+    "well": "7/7-3",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "The well took 17 days more than planned to drill, mainly due to a 8,5 days downtime related to BOP repair and loss of circulation at end of 12 1/4\" section.",
+    "evidence": "The well took 17 days more than planned to drill, mainly due to a 8,5 days downtime related to BOP repair and loss of circulation at end of 12 1/4\" section. The well was drilled with seawater and hi-vis pills down to 918 m, and with ANCO 2000 mud from 918 m to 2677 m. From 2677 m to 3354 m the mud was gradually displaced to an ANCOTHERM/Bentonite system.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "32e4497d66",
+    "well": "30/3-1 R",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 3657.0,
+    "depth_end": 3672.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "A window was cut in the 9 5/8\" casing from 3657 m to 3672 m and the hole was kicked off from this depth after problems with lost circulation had been solved.",
+    "evidence": "A window was cut in the 9 5/8\" casing from 3657 m to 3672 m and the hole was kicked off from this depth after problems with lost circulation had been solved.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "depth_off",
+    "note": "3,657 m is the casing window, not the loss zone."
+   },
+   {
+    "key": "36d785c1e3",
+    "well": "6406/3-5",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 1116.0,
+    "depth_end": 1116.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "The circulation was lost at 1116 m, and the section was cemented.",
+    "evidence": "The circulation was lost at 1116 m, and the section was cemented. After this drilling progressed with a mud weight of 1.25 g/cm3. This resulted in lost circulation at 1340 m.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "3b1575c4e7",
+    "well": "6507/10-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2220.0,
+    "depth_end": 2220.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.75,
+    "sentence": "The well was then sidetracked again to 2220 m at which point the string got stuck again.",
+    "evidence": "The well was then sidetracked again to 2220 m at which point the string got stuck again. This time the string was jarred free and the 12 1/4\" hole was finally drilled to 2780 m. Problems with the BOP and wellhead delayed operations in the 8 1/2\" section.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "This time the string was jarred free and the 12 1/4\" hole was finally drilled to 2780 m.",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "3e1da330a1",
+    "well": "6205/3-1",
+    "type": "wellbore_instability",
+    "label": "Wellbore Instability",
+    "family": "wellbore_instability",
+    "family_label": "Wellbore Instability",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.55,
+    "sentence": "Apart from some experiences with tight hole, drilling went on without any significant problems.",
+    "evidence": "Apart from some experiences with tight hole, drilling went on without any significant problems. The well was suspended at 4300 m in the Lower Cretaceous Åsgard Formation on 11 February 1990 because of environmental restrictions, which prohibited drilling through any formations containing hydrocarbons after 15 February. None of the objective horizons were penetrated.",
+    "paragraph": 2,
+    "section": "General",
+    "cause": "The well was suspended at 4300 m in the Lower Cretaceous Åsgard Formation on 11 February 1990 because of environmental restrictions, which prohibited drilling through any formations containing hydrocarbons after 15 February.",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Tight hole did occur ('apart from some experiences with tight hole')."
+   },
+   {
+    "key": "43dc5324a3",
+    "well": "9/4-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2963.0,
+    "depth_end": 2963.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.75,
+    "sentence": "At 2963 m the drill pipe stuck in salt, and after five days of unsuccessful fishing operations, it was decided to abandon the hole.",
+    "evidence": "At 2963 m the drill pipe stuck in salt, and after five days of unsuccessful fishing operations, it was decided to abandon the hole. The lower part of the hole could not be logged due to the unrecovered fish.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "The lower part of the hole could not be logged due to the unrecovered fish.",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "4896065364",
+    "well": "1/3-9 S",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": 2535.0,
+    "depth_end": 2535.0,
+    "formation": null,
+    "severity": "critical",
+    "confidence": 0.75,
+    "sentence": "The 12 1/4\" Section was notably different from plan, after an unexpected water kick was taken at 2535 m.",
+    "evidence": "The 12 1/4\" Section was notably different from plan, after an unexpected water kick was taken at 2535 m. This not only reduced the mud systems ability to accept contaminants, with a required MW increase up to 1.7sg, but also severely reduced the ROP, due to high overbalance drilling, later in the section. This also resulted in setting the 9 5/8\" casing high, leaving reactive shales open whilst drilling the 8 1/2\" section.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "This not only reduced the mud systems ability to accept contaminants, with a required MW increase up to 1.7sg, but also severely reduced the ROP, due to high overbalance drilling, later in the section.",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "4d36156c60",
+    "well": "6507/12-2",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": 1005.0,
+    "depth_end": 1005.0,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.65,
+    "sentence": "When pulling out of hole after drilling the 17 1/2\" to 1005 m a shallow gas kick was taken.",
+    "evidence": "When pulling out of hole after drilling the 17 1/2\" to 1005 m a shallow gas kick was taken.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "52671618d5",
+    "well": "2/3-2",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.5,
+    "sentence": "Problems with stuck pipe occurred.",
+    "evidence": "Problems with stuck pipe occurred. High pump pressure and difficulty in washing past 265 m required pulling out of the hole again. It was found that two drill collars and the bit had backed off.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "562322bb3f",
+    "well": "31/2-13 S",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 1531.0,
+    "depth_end": 1700.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "Mud losses to the formation occurred at 1531 and 1700 m, 100 bbls at each depth.",
+    "evidence": "Mud losses to the formation occurred at 1531 and 1700 m, 100 bbls at each depth. A drill break occurred at 1744 m in the 12 1/4\" hole section. The well was drilled with seawater and viscous pills down to 473 m, with Gelled mud from 473 m from 473 m to 750 m, with seawater from 750 m to 825 m, and with oil based mud from 825 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Losses at 1,531 and 1,700 m; the first is kept."
+   },
+   {
+    "key": "5fe5d19572",
+    "well": "2/1-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.5,
+    "sentence": "A 5 7/8\" hole was drilled to 4178 (TD) where the well kicked and the pipe got stuck.",
+    "evidence": "A 5 7/8\" hole was drilled to 4178 (TD) where the well kicked and the pipe got stuck. During killing operations returns were lost and circulation could not be re-established.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Stuck pipe is right; the kick in the same sentence was missed."
+   },
+   {
+    "key": "635b750a3a",
+    "well": "30/6-7",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 2285.0,
+    "depth_end": 2285.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "At 2285 m the 13 3/8\" casing got stuck and a pill of EZY spot and diesel was pumped in the hole, without effect.",
+    "evidence": "At 2285 m the 13 3/8\" casing got stuck and a pill of EZY spot and diesel was pumped in the hole, without effect. The drilling fluid used in the 12 1/4\" section from 2285 m to 2915 m the well was drilled with a Dextrid/KCl mud. From 2915 m to TD the mud was converted to a dispersed system by adding lignosulfonate.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "69dbf35eb1",
+    "well": "31/2-12",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.5,
+    "sentence": "Some instability problems and well kicks were encountered while drilling and testing in the reservoir.",
+    "evidence": "Some instability problems and well kicks were encountered while drilling and testing in the reservoir. The well was drilled with Seawater and gel down to 807 m, with KCl/polymer mud from 807 m to 1338 m, and with CaCl2/CaCO3/polymer mud from 1338 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "7124b04a19",
+    "well": "24/9-15 A",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 3853.0,
+    "depth_end": 3853.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "At 3853 m a pressure-drop of 87 bar and loss of circulation occurred, and it was decided to abandon the hole without reaching the second targeted dyke and to preserve the main bore for the Frosk test producer wells.",
+    "evidence": "At 3853 m a pressure-drop of 87 bar and loss of circulation occurred, and it was decided to abandon the hole without reaching the second targeted dyke and to preserve the main bore for the Frosk test producer wells. Hence, 3853 m in the Hordaland Group shales became TD of the well. The well was drilled with oil-based mud from kick-off top TD.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "779fbabf6e",
+    "well": "2/7-15",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "After shut-in the circulation was lost, probably because the formation broke down.",
+    "evidence": "After shut-in the circulation was lost, probably because the formation broke down. The circulation was resumed by appropriate mud adjustments, and the return mud then contained 3% oil and was slightly gas-cut. The well was drilled with bentonite, Flosal and lime down to 503 m, with Drispac mud from 503 m to 1387 m, and with Drispac/lignosulphonate mud from 1387 m to TD.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "7af1e89e69",
+    "well": "35/8-3",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 3863.0,
+    "depth_end": 3863.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "The BHA got stuck a second time at 3863 m in the 8 1/2\" section.",
+    "evidence": "The BHA got stuck a second time at 3863 m in the 8 1/2\" section.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "80b8c04a64",
+    "well": "33/5-2",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 1653.0,
+    "depth_end": 1653.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "When attainting to run the 13 3/8\" casing in the hole, the casing got stuck at 1653 m.",
+    "evidence": "When attainting to run the 13 3/8\" casing in the hole, the casing got stuck at 1653 m. After displacing Diesel/Milfree around the string, the casing came free and could be landed at 1974.5 m and cemented 100 m back into the 20\" casing.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "87541106dc",
+    "well": "8/3-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 1660.0,
+    "depth_end": 1660.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "While pulling out of the hole to pick up a core barrel at a depth of 296I m the pipe stuck at 1660 m, and was pumped free with seawater.",
+    "evidence": "While pulling out of the hole to pick up a core barrel at a depth of 296I m the pipe stuck at 1660 m, and was pumped free with seawater. The hole began caving immediately. Extensive caving over the interval 1320 m to 2030 m lead to bridging, stuck pipe, and logging problems.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "8cbd1b7e45",
+    "well": "6407/1-8 S",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.5,
+    "sentence": "No shallow gas or shallow water influx was observed.",
+    "evidence": "No shallow gas or shallow water influx was observed.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "not_event",
+    "note": "Negated: 'No shallow gas or shallow water influx was observed' — the negation is five words before the trigger."
+   },
+   {
+    "key": "936d61e539",
+    "well": "7228/9-1 S",
+    "type": "wellbore_instability",
+    "label": "Wellbore Instability",
+    "family": "wellbore_instability",
+    "family_label": "Wellbore Instability",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "critical",
+    "confidence": 0.45,
+    "sentence": "Due to severe difficulties with tight hole in the top-hole section, the well was re-spudded twice.",
+    "evidence": "Due to severe difficulties with tight hole in the top-hole section, the well was re-spudded twice. The primary reason for the problems was the extremely reactive swelling clay. Exposed to water, the clay swelled without space to expand and thereby raise the formation pressure.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "996f791d7e",
+    "well": "34/2-3",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "critical",
+    "confidence": 0.5,
+    "sentence": "Shut in drill pipe and casing pressures indicated a formation pore pressure of 14.6 ppg EMW.",
+    "evidence": "Shut in drill pipe and casing pressures indicated a formation pore pressure of 14.6 ppg EMW. The well kick was killed with 15.0 ppg mud. The bottoms-up sample was collected which appeared to contain traces of hydrocarbons.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Shut-in pressures after a kick."
+   },
+   {
+    "key": "9cb49e4018",
+    "well": "1/9-3 R",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "critical",
+    "confidence": 0.5,
+    "sentence": "When running the 9 5/8\" casing problems occurred with stuck pipe.",
+    "evidence": "When running the 9 5/8\" casing problems occurred with stuck pipe. This resulted in severe delays, but the casing was landed at planned depth.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "a5cceca218",
+    "well": "6507/5-4 A",
+    "type": "wellbore_instability",
+    "label": "Wellbore Instability",
+    "family": "wellbore_instability",
+    "family_label": "Wellbore Instability",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": "Melke Fm",
+    "severity": "low",
+    "confidence": 0.45,
+    "sentence": "This was due to hole instability problems in the lower part of Melke Formation caused by stuck casing 21 m above planned setting depth for the 9 5/8\" casing.",
+    "evidence": "This was due to hole instability problems in the lower part of Melke Formation caused by stuck casing 21 m above planned setting depth for the 9 5/8\" casing. An oil-down-to scenario was proven in the primary Garn reservoir, with an oil pressure gradient down to at least 3772 m. Good shows were recorded and confirmed by post-well organic geochemical analyses in Not, Ile, and part of the Ror Formations.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "abce1fcd63",
+    "well": "34/10-10",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.5,
+    "sentence": "When disconnecting the marine riser on 21 August, the well started to flow.",
+    "evidence": "When disconnecting the marine riser on 21 August, the well started to flow. The rig was quickly moved off location and out of danger from the gas flow.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Well started to flow when the riser was disconnected."
+   },
+   {
+    "key": "b022783732",
+    "well": "25/2-12",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 890.0,
+    "depth_end": 1000.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "During clean-up of the hole, mud was lost to the sand formation at 890 m to 1000 m. \"Lost circulation material\" (LCM) was pumped into the well to isolate it.",
+    "evidence": "During clean-up of the hole, mud was lost to the sand formation at 890 m to 1000 m. \"Lost circulation material\" (LCM) was pumped into the well to isolate it. The well was in periods unstable.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "b30dffefe4",
+    "well": "1/6-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 3456.0,
+    "depth_end": 3456.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "The pipe stuck at 3456 m, but was freed after spotting with pipe-free/diesel.",
+    "evidence": "The pipe stuck at 3456 m, but was freed after spotting with pipe-free/diesel. The well was drilled with seawater down to 448 m, with seawater/lignosulphonate and a shale inhibitor (shalock) from 448 m to 1586 m, and with seawater/lignosulphonate/ligcon (caustisized lignite) from 1586 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "b66e09a6be",
+    "well": "26/4-1",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.5,
+    "sentence": "Drilling proceeded without significant problems, except for several occurrences of lost circulation due to increasing formation pressure in Tertiary rocks.",
+    "evidence": "Drilling proceeded without significant problems, except for several occurrences of lost circulation due to increasing formation pressure in Tertiary rocks. The well was drilled with seawater and bentonite down to 236 m, with seawater / bentonite /PAC from 236 m to 723 m, with KCl / Polymer mud from 723 m to 2680 m, and with seawater / polymer from 2680 to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "b9d4974a30",
+    "well": "25/2-9",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 2297.0,
+    "depth_end": 2297.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "At 2297 m 800 l/min of mud was lost due to a leakage between 13 3/4\" casing and 20\" casing.",
+    "evidence": "At 2297 m 800 l/min of mud was lost due to a leakage between 13 3/4\" casing and 20\" casing. The 9 5/8\" casing was set to 888 m and the well was gradually brought under control.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Mud lost through a casing leak — an operational loss rather than a formation loss."
+   },
+   {
+    "key": "bd36b581fb",
+    "well": "7117/9-1",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": 299.0,
+    "depth_end": 299.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "In this attempt high torque in extremely hard top layers caused the drill string to twist off at 299 m.",
+    "evidence": "In this attempt high torque in extremely hard top layers caused the drill string to twist off at 299 m. The third hole was spudded on 30 April. The drilling progressed without further problems.",
+    "paragraph": 3,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "c09ad2a920",
+    "well": "30/8-5",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": 3563.0,
+    "depth_end": 3563.0,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.65,
+    "sentence": "After a drill break at 3563 m, 7 m fluid influx was again recorded, 72 TVD above the sand with high pressure and kick in 30/8-5.",
+    "evidence": "After a drill break at 3563 m, 7 m fluid influx was again recorded, 72 TVD above the sand with high pressure and kick in 30/8-5. It was decided to terminate the well at 3563 m. The well was drilled with seawater and hi-vis pills down to 1153 m, with Innovert NS oil-based mud down to 3156 m and with Bara ECD oil-based mud from 3156 m to final TD.",
+    "paragraph": 4,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "c4de969c32",
+    "well": "25/10-1",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 1572.0,
+    "depth_end": 1572.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "The pipe got stuck at 1572 m.",
+    "evidence": "The pipe got stuck at 1572 m.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "c878e07a69",
+    "well": "26/5-1",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 1320.0,
+    "depth_end": 1320.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "Stuck pipe, mud losses and gas peaks, possibly related to a fault zone, occurred in the interval 1320 m to 1480 in the 12 1/4\" hole section.",
+    "evidence": "Stuck pipe, mud losses and gas peaks, possibly related to a fault zone, occurred in the interval 1320 m to 1480 in the 12 1/4\" hole section. The well was drilled with seawater and hi-vis pills down to 778 m and with Carbosea oil based mud from 778 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": "Losses right; the stuck pipe in the same sentence was missed."
+   },
+   {
+    "key": "cf866227d8",
+    "well": "34/10-9",
+    "type": "mud_loss",
+    "label": "Mud Loss",
+    "family": "mud_loss",
+    "family_label": "Mud Loss",
+    "depth_start": 1730.0,
+    "depth_end": 1760.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.65,
+    "sentence": "Lost circulation combined with high gas readings, was experienced on several occasions in this zone between ca 1730 and 1760 m.",
+    "evidence": "Lost circulation combined with high gas readings, was experienced on several occasions in this zone between ca 1730 and 1760 m. Apart from that, the drilling was carried out without any specific problems. The well was drilled with seawater and high viscosity slugs down to 845 m, and with a gel/lignosulphonate mud system from 845 m to TD.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "d4f8142c64",
+    "well": "9/8-1",
+    "type": "wellbore_instability",
+    "label": "Wellbore Instability",
+    "family": "wellbore_instability",
+    "family_label": "Wellbore Instability",
+    "depth_start": 300.0,
+    "depth_end": 300.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.6,
+    "sentence": "While reaming the hole to 26\", cavings and fill of shell fragments and gravel caused problems from about 300 m, necessitating the 20\" casing to be set high at 360 m.",
+    "evidence": "While reaming the hole to 26\", cavings and fill of shell fragments and gravel caused problems from about 300 m, necessitating the 20\" casing to be set high at 360 m.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "da3f175595",
+    "well": "7121/7-2",
+    "type": "fishing",
+    "label": "Fishing Operation",
+    "family": "NPT",
+    "family_label": "NPT Risk",
+    "depth_start": 871.0,
+    "depth_end": 871.0,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.75,
+    "sentence": "At 871 m in the 17 1/2\" section the string parted and 9.5 hours was spent fishing to retrieve the lost equipment.",
+    "evidence": "At 871 m in the 17 1/2\" section the string parted and 9.5 hours was spent fishing to retrieve the lost equipment. At 1698 m, TD in the 17 1/2\" section a H2S alarm occurred with 28 ppm H2S in the mud gas. The problem was cured by placing spud mud with a concentration of 15 kg/m3 of ZnCO3 behind 13-3/8\" casing to prevent H2S growing in mud.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "The problem was cured by placing spud mud with a concentration of 15 kg/m3 of ZnCO3 behind 13-3/8\" casing to prevent H2S growing in mud.",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "dff50082d8",
+    "well": "34/7-22",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 1086.0,
+    "depth_end": 1086.0,
+    "formation": null,
+    "severity": "high",
+    "confidence": 0.65,
+    "sentence": "The unexpected large amounts of sand caused operational problems due to instability and the drill string got stuck at 1086 m, on 17 August.",
+    "evidence": "The unexpected large amounts of sand caused operational problems due to instability and the drill string got stuck at 1086 m, on 17 August. The string was backed off and the well was re-spudded on 18 August. The casing program was re-designed to penetrate and stabilize the sandy Utsira Formation and Hordaland Group with a weighted mud system.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "e25c9c5fb4",
+    "well": "9/2-8 S",
+    "type": "stuck_pipe",
+    "label": "Stuck Pipe",
+    "family": "stuck_pipe",
+    "family_label": "Stuck Pipe",
+    "depth_start": 5936.0,
+    "depth_end": 5936.0,
+    "formation": "Sandnes Fm",
+    "severity": "high",
+    "confidence": 0.75,
+    "sentence": "At 5936 m the BHA became stuck while drilling the Sandnes Formation.",
+    "evidence": "At 5936 m the BHA became stuck while drilling the Sandnes Formation. The well was subsequently sidetracked to 9/2-8S T2 from 5680 m on the 4 October 1997. The T2 sidetrack was only drilled to 6011 m due to the BHA becoming stuck at 6002 m while pulling out of hole.",
+    "paragraph": 2,
+    "section": "General",
+    "cause": "The T2 sidetrack was only drilled to 6011 m due to the BHA becoming stuck at 6002 m while pulling out of hole.",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "e8e7baa4e3",
+    "well": "2/1-4",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.5,
+    "sentence": "The first well in the block, well 2/1-1 drilled in 1972, was abandoned after taking a kick in the Late Jurassic.",
+    "evidence": "The first well in the block, well 2/1-1 drilled in 1972, was abandoned after taking a kick in the Late Jurassic. The second well, well 2/1-2 drilled in1978 encountered water wet Late Jurassic sandstones. The 2/1-3 well was drilled in 1980 on the downthrown side of a NW-SE trending fault complex and found oil in a 60 m thick Late Jurassic sandstone.",
+    "paragraph": 1,
+    "section": "General",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "not_event",
+    "note": "Describes the kick in an earlier well (2/1-1), not this one."
+   },
+   {
+    "key": "f243c8a4c2",
+    "well": "2/4-17",
+    "type": "kick",
+    "label": "Kick",
+    "family": "kick",
+    "family_label": "Kick / Overpressure",
+    "depth_start": 4357.0,
+    "depth_end": 4357.0,
+    "formation": null,
+    "severity": "medium",
+    "confidence": 0.65,
+    "sentence": "While pulling out of the hole, following the cutting core to a depth of 4357.1 m, an influx of gas occurred and the well was shut in.",
+    "evidence": "While pulling out of the hole, following the cutting core to a depth of 4357.1 m, an influx of gas occurred and the well was shut in. Following a 22 hours well kill operation, the well was brought back under control.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   },
+   {
+    "key": "f856d4a0ec",
+    "well": "7/11-5",
+    "type": "wellbore_instability",
+    "label": "Wellbore Instability",
+    "family": "wellbore_instability",
+    "family_label": "Wellbore Instability",
+    "depth_start": null,
+    "depth_end": null,
+    "formation": null,
+    "severity": "low",
+    "confidence": 0.45,
+    "sentence": "The drilling went forth without incident except for gumbo problems in the top of the 17 1/2\" section and minor problems with tight hole in the 8 3/8\" section.",
+    "evidence": "The drilling went forth without incident except for gumbo problems in the top of the 17 1/2\" section and minor problems with tight hole in the 8 3/8\" section. The well was drilled with sea water and hi-vis pills down to 615 m and with KCl/Drispac mud from 615 m to 2115 m. From 2115 m to TD the well was drilled with KCl/Drispac mud, converted to a fully dispersed gel-lignosulphonate mud in the limestone section.",
+    "paragraph": 2,
+    "section": "Operations and results",
+    "cause": "",
+    "mitigation": "",
+    "verdict": "correct",
+    "note": ""
+   }
+  ],
+  "summary": {
+   "n": 50,
+   "type_correct": 47,
+   "precision": 0.94,
+   "depth_checked": 31,
+   "depth_correct": 29,
+   "depth_accuracy": 0.935
+  }
+ },
+ "latency": {
+  "evaluate_ms": 5.9,
+  "search_ms": 5.1,
+  "brief_ms": 12.9
+ }
+}

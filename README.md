@@ -58,6 +58,22 @@ also works from another laptop on the same network during a live demo.
 
 Run the backend tests: `cd backend && python -m pytest -q` (22 API tests).
 
+### Hosting it (Vercel + Render)
+
+Vercel serves only the Next.js cockpit; the FastAPI backend needs its own always-on host.
+
+1. **Backend on Render** — Render → New → **Blueprint** → this repo → Apply. `render.yaml` builds `backend/Dockerfile`
+   (Tesseract included, demo database and real-data scan baked into the image) as the free web service `nwis-api`.
+   Check `https://<service>.onrender.com/api/health` returns `{"status":"ok",…}`.
+2. **Frontend on Vercel** — Project → Settings → Environment Variables → `NWIS_BACKEND_URL` =
+   `https://<service>.onrender.com` (Production + Preview), then **Redeploy**: the `/api/*` proxy is fixed at build
+   time, so the variable only takes effect on a new build.
+3. *(optional)* The free instance sleeps after 15 min idle; the cockpit then shows "Waking up the NWIS server" and
+   connects by itself (~1 min). To keep it awake for judging, add the GitHub repository variable
+   `NWIS_API_URL` = the Render URL — `.github/workflows/keep-api-awake.yml` then pings it every 10 minutes.
+
+Any Docker host works the same way: `docker build -t nwis-api backend && docker run -p 8000:8000 nwis-api`.
+
 ---
 
 ## The 3-minute demo

@@ -1,6 +1,6 @@
 # NWIS — project handoff (read this first)
 
-> Snapshot for a new Claude session. Last updated **2026-09-29 (session 3)**.
+> Snapshot for a new Claude session. Last updated **2026-09-30 (session 5: SIH idea deck redone)**.
 > Repo: **https://github.com/aryabailur/sih26121** (branch `main`). `CLAUDE.md` = short technical gotchas;
 > this file = the full picture. Session 2 is pushed (`2a61a13`); the session-3 features (§3) are **uncommitted** — see §2.
 
@@ -102,6 +102,18 @@ pipeline on real public data; ask OIL for pages. Built:
    **94 % precision (47/50), 94 % depth (29/31)**; labels `backend/opendata/spotcheck.json`; `tests/test_opendata.py`
    (4 tests) guards label drift. Deck → **13 slides** (new 11 "Proven on real records"); screenshots 21–22.
 9. `docs/OIL_DATA_REQUEST.md` — the e-mail for the OIL SPOC asking for 2–3 anonymised DDR/WCR pages (user sends it).
+
+**Session 4** — demo film (`tools/video/`) and a first SIH idea deck (python-pptx on the official template).
+
+**Session 5** — the user rejected that deck ("very bad, looks AI slop"; wanted winners' design flow — diagrams, charts,
+tables, images — non-AI colours and a proper technical architecture). Rebuilt `tools/sih_deck/` from scratch:
+six slides as HTML/SVG (`deck.mjs`) on a measured replica of the template chrome → vector PDF (Chromium, embedded
+Archivo + IBM Plex Mono, live links) + a `.pptx` on the real template (content as a 3× overlay, link hotspots,
+speaker notes). Editorial palette: paper, ink, navy table heads, one yellow marker; lithology-patterned
+cross-section hero; layered on-prem architecture with the live loop; alert flowchart; risk-vs-depth replay chart;
+measured-feasibility and risk→strategy tables; 12-month Gantt; NPT part-to-whole bars; comparison matrix; real-data
+KPIs. All prototype numbers come from `facts.json` (`facts.py` runs the engine in-process). Built-in QA flags
+overflow/collisions.
 
 **Advice already given to the user** (don't repeat unprompted): keep the demo-field disclosure (done, reworded);
 real public data = Sodir FactPages (done) / Equinor **Volve** DDRs (needs sign-up — not built);
@@ -254,12 +266,21 @@ commit, delete, file · opendata: `/opendata/summary`, `/opendata/shelf?fresh=`,
    takes follow the live UI; takes whose selectors changed need a tweak in record.mjs).
 3. **Offline map fallback** for the venue (cache Esri/terrain tiles for the field area) — offered, not built.
 4. **Real-data proof**: Volve importer once the user downloads the data; or ingest OIL sample pages if obtained.
-5. ~~Deck on the official SIH template~~ — done (session 4): `docs/NWIS_SIH2026_Idea_Presentation.pptx/.pdf`, 6 slides,
-   built by `tools/sih_deck/build.py` (industry NPT stats, OIL 70 wells/yr, ₹21 crore/yr illustration, 16 cited refs).
-   **Team still fills in:** team name, team ID, theme (as on the SIH portal), verify the official PS title, deployed
-   prototype URL and demo-video URL — pass them as flags and rebuild with `--pdf`.
-6. Nice-to-haves: evidence graph view (Well → Report → Event → Formation → Risk → Mitigation), well-log track,
-   mobile layout (< 1280 px stacks but isn't tuned), cloud deployment, Hindi/Assamese voice + brief.
+5. ~~Deck on the official SIH template~~ — redone in session 5: `docs/NWIS_SIH2026_Idea_Presentation.pdf` (the
+   upload) + `.pptx`, 6 slides, `cd tools/sih_deck && .venv\Scripts\python.exe build.py` (industry NPT stats, OIL
+   70 wells/yr, ₹21 crore/yr illustration, 8 cited refs). Team name "Team Huzzards" is filled in.
+   **Team still fills in:** team ID, theme (as on the SIH portal), verify the official PS title, deployed prototype
+   URL and demo-video URL — pass `--team-id=… --theme="…" --prototype=URL --video=URL` and rebuild.
+6. **Hosting** (session 6): the user put the frontend on Vercel; it showed the welcome page but no data because
+   `NWIS_BACKEND_URL` was unset (proxy → 127.0.0.1). Added `backend/Dockerfile` + `.dockerignore`, `render.yaml`
+   (free web service `nwis-api`, Singapore), `.github/workflows/keep-api-awake.yml` (inert until repo variable
+   `NWIS_API_URL` is set), a build-time real-data cache (`services/opendata.precompute()`), a wake-up retry loop +
+   hosted-aware error card in the cockpit, and README "Hosting it". Verified with Docker at Render limits (0.1 CPU /
+   512 MB): cold start ~35 s, ~90 MB, every endpoint < 1 s; production frontend → container loads the cockpit and
+   recovers alone from a sleeping backend. **User steps:** create the Render Blueprint, set `NWIS_BACKEND_URL` on
+   Vercel, redeploy. Hugging Face Docker Spaces now need PRO (June–Aug 2026) — not an option.
+7. Nice-to-haves: evidence graph view (Well → Report → Event → Formation → Risk → Mitigation), well-log track,
+   mobile layout (< 1280 px stacks but isn't tuned), Hindi/Assamese voice + brief.
 
 ## 12. Commit history (pushed)
 

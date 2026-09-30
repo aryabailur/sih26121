@@ -1,0 +1,19 @@
+# Keeps the free Render instance of the NWIS API awake during judging (it sleeps after 15 min idle).
+# Inert until you add a repository variable: Settings → Secrets and variables → Actions → Variables →
+#   NWIS_API_URL = https://<your-service>.onrender.com
+# Delete the variable (or this file) to stop. One always-on free service fits Render's 750 free hours a month.
+name: Keep the NWIS API awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    if: ${{ vars.NWIS_API_URL != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Ping /api/health
+        run: curl -fsS --retry 3 --retry-delay 20 --max-time 150 "${{ vars.NWIS_API_URL }}/api/health" > /dev/null

@@ -1,0 +1,20 @@
+# Render Blueprint for the NWIS API (the Next.js cockpit is hosted on Vercel and proxies /api/* to this service).
+#   Render → New → Blueprint → pick this repo → Apply. The service URL (https://<name>.onrender.com) is what
+#   Vercel's NWIS_BACKEND_URL must point to.
+# Free plan: 512 MB / 0.1 CPU; sleeps after 15 min idle and wakes on the next request (~1 min, the cockpit
+# shows "Waking up the NWIS server" and retries by itself). The SQLite demo DB is baked into the image, so every
+# wake-up starts from the clean demo state.
+services:
+  - type: web
+    name: nwis-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NWIS_DEMO_MODE
+        value: "1"

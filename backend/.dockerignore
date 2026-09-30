@@ -1,0 +1,10 @@
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+tests/
+data/nwis.db
+data/nwis.db-journal
+data/uploads/
+data/opendata/cache/

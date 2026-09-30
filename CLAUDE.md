@@ -55,6 +55,11 @@ Deviations from the spec are recorded in `docs/ASSUMPTIONS.md` — keep that tab
   invalidate the held-out labels in `backend/opendata/spotcheck.json` — `tests/test_opendata.py` checks every key
   still exists; re-label honestly (never tune on the held-out wells). `extract_events(narrative=True)` is prose
   mode; uploads use the default mode.
+- **Hosting**: Vercel (frontend) proxies `/api/*` to `NWIS_BACKEND_URL`, read at **build** time — without it the
+  hosted site shows the welcome page but no data. Backend = `backend/Dockerfile` on Render (`render.yaml`, free:
+  0.1 CPU / 512 MB, sleeps after 15 min). The image bakes the seeded DB and `services/opendata.precompute()`
+  (the 1,970-history scan, ~30 s at 0.1 CPU; cache keyed on bundles + source, ignored if stale). Cold start ≈ 35 s;
+  `store.init` retries for 3 min and shows "Waking up the NWIS server" meanwhile.
 - The risk scenario is tuned: changing weights, event depths or `seed/parameters.py` precursors can move alert
   depths — re-run `tests.scenario_sweep` and `pytest`.
 - Scenario runner (`lib/store.ts`): a fresh run clears alerts (`POST /api/risk/alerts/clear`) and restores the
