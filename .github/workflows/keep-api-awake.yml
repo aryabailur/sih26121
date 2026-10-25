@@ -1,12 +1,14 @@
 # Keeps the free Render instance of the NWIS API awake during judging (it sleeps after 15 min idle).
 # Inert until you add a repository variable: Settings → Secrets and variables → Actions → Variables →
-#   NWIS_API_URL = https://<your-service>.onrender.com
+#   NWIS_API_URL = https://<your-service>.onrender.com  (or the Vercel site: its /api/* proxy reaches the same API;
+#   set to https://sih26121.vercel.app)
 # Delete the variable (or this file) to stop. One always-on free service fits Render's 750 free hours a month.
+# Every 5 min: GitHub often starts scheduled runs several minutes late, and Render sleeps after 15 idle minutes.
 name: Keep the NWIS API awake
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
