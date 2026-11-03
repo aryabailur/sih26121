@@ -42,3 +42,4 @@ next-env.d.ts
 
 # MapLibre worker copied from node_modules at predev/prebuild
 /public/maplibre/
+!.env.production
