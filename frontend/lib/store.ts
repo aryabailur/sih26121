@@ -103,9 +103,6 @@ let seq = 0;
 let scenarioRun = 0;
 let initRun: Promise<void> | null = null;
 const START_TIMEOUT_MS = 180_000;
-/** The hosted backend's own address (set in .env.production), used only to wake it; empty when run locally. */
-const WAKE_URL = (process.env.NEXT_PUBLIC_NWIS_WAKE_URL ?? "").replace(/\/+$/, "");
-
 function clearTimers() {
   if (depthTimer) clearTimeout(depthTimer);
   if (radiusTimer) clearTimeout(radiusTimer);
@@ -166,11 +163,6 @@ export const useNWIS = create<NWISState>((set, get) => ({
             return;
           }
           set({ connectAttempts: attempt + 1 });
-          // While Render sleeps, its Cloudflare edge challenges (429) requests that arrive through Vercel's proxy, so
-          // proxied calls can never wake it. Ping the backend directly from the browser instead: that request comes
-          // from the visitor's own connection, gets through, and starts the instance. The response is opaque
-          // (no-cors) — only its side effect matters; the next proxied attempt then succeeds.
-          if (attempt % 3 === 0 && WAKE_URL) void fetch(`${WAKE_URL}/api/health`, { mode: "no-cors", cache: "no-store" }).catch(() => {});
           await sleep(Math.min(2000 + attempt * 1500, 8000));
         }
       }

@@ -39,10 +39,20 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Where /api/* lives. Empty (same origin, via the Next.js rewrite) locally. On the hosted site the browser calls the
+ * Render API directly (NEXT_PUBLIC_NWIS_API_URL, .env.production): Render's Cloudflare edge answers requests that
+ * come through Vercel's proxy with 429 bot challenges, which a fetch() can never pass. The backend allows the origin
+ * via NWIS_CORS_ORIGINS / NWIS_CORS_ORIGIN_REGEX.
+ */
+export const API_BASE = (process.env.NEXT_PUBLIC_NWIS_API_URL ?? "").replace(/\/+$/, "");
+/** Absolute URL of an /api path, for links (downloads, source files) as well as fetches. */
+export const apiUrl = (path: string) => `${API_BASE}${path}`;
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(path, {
+    res = await fetch(apiUrl(path), {
       ...init,
       headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
       cache: "no-store",

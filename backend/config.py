@@ -38,8 +38,11 @@ DOC_STAGE_DELAY = float(os.getenv("NWIS_DOC_STAGE_DELAY", "0.7"))
 
 CORS_ORIGINS = os.getenv(
     "NWIS_CORS_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000",
+    "http://localhost:3000,http://127.0.0.1:3000,https://sih26121.vercel.app",
 ).split(",")
+# The hosted cockpit calls the API straight from the browser (Render's edge blocks Vercel's proxy), so its Vercel
+# origins — production and preview deployments of this project — must be allowed.
+CORS_ORIGIN_REGEX = os.getenv("NWIS_CORS_ORIGIN_REGEX", r"https://sih26121(-[a-z0-9-]+)?\.vercel\.app")
 
 DATA_DISCLAIMER = (
     "Demo field modelled on real Upper Assam stratigraphy: wells, events, documents and parameters are illustrative, "

@@ -4,6 +4,7 @@ import { Download, FileUp, ScanLine, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { apiUrl } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export const TEXT_SAMPLE = "DDR_OIL-AX-22_Day45_SAMPLE.pdf";
@@ -62,11 +63,11 @@ export function UploadZone({ onFile, onSample, busy }: { onFile: (f: File) => vo
       </Button>
       <div className="flex items-center justify-center gap-3 text-[12.5px] font-semibold text-brand-ink">
         <Download size={12} />
-        <a href={`/api/documents/samples/${TEXT_SAMPLE}`} className="hover:underline" download>
+        <a href={apiUrl(`/api/documents/samples/${TEXT_SAMPLE}`)} className="hover:underline" download>
           Text PDF
         </a>
         <span className="text-ink-4">·</span>
-        <a href={`/api/documents/samples/${SCANNED_SAMPLE}`} className="hover:underline" download>
+        <a href={apiUrl(`/api/documents/samples/${SCANNED_SAMPLE}`)} className="hover:underline" download>
           Scanned PDF
         </a>
         <span className="font-medium text-ink-3">to try drag-and-drop</span>

@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, inspect, select
 
-from config import CORS_ORIGINS, DATA_DISCLAIMER, DEMO_MODE
+from config import CORS_ORIGIN_REGEX, CORS_ORIGINS, DATA_DISCLAIMER, DEMO_MODE
 from database import SessionLocal, engine, init_db
 from routers import documents, events, formations, opendata, risk, search, simulation, wells
 
@@ -51,7 +51,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_credentials=False,
+app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_origin_regex=CORS_ORIGIN_REGEX, allow_credentials=False,
                    allow_methods=["*"], allow_headers=["*"])
 
 for r in (wells, events, formations, risk, search, documents, simulation, opendata):

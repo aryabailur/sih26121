@@ -3,6 +3,7 @@
 import { Download, FileText } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+import { apiUrl } from "@/lib/api";
 import { FamilyChip, SeverityBadge } from "@/components/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Dialog } from "@/components/ui/dialog";
@@ -54,7 +55,7 @@ function SourceViewerBody({ source }: { source: SourceTarget }) {
             <span>
               Provenance: document <b className="font-mono text-ink-2">{doc.id}</b> · page {current?.page ?? "—"} · section “{current?.section}”
             </span>
-            <a href={`/api/documents/${doc.id}/file`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand-soft px-3 py-1 font-bold text-brand-ink hover:brightness-95">
+            <a href={apiUrl(`/api/documents/${doc.id}/file`)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand-soft px-3 py-1 font-bold text-brand-ink hover:brightness-95">
               <Download size={13} /> Original file
             </a>
           </div>
